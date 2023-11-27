@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bung5knnx5cud"]
+
+[node name="Main" type="Node"]
+
+[node name="PlayerSnakeHead" type="Sprite2D" parent="."]
+position = Vector2(1, 0)
