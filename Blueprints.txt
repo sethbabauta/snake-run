@@ -1,0 +1,10 @@
+<Blueprint Name="PhysicalObject">
+	<Component Name="Physics" Speed="0" Direction="N"/>
+	<Component Name="Render" Sprite="icon.svg"/>
+</Blueprint>
+
+<Blueprint Name="PlayerSnake" Inherits="PhysicalObject">
+	<Component Name="Physics" Speed="1" Direction="N"/>
+	<Component Name="PlayerControlled"/>
+	<Component Name="SnakeBody"/>
+</Blueprint>

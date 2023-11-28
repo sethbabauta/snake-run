@@ -13,7 +13,6 @@ func _process(delta):
 class Event:
 	var id: String
 	var parameters: Dictionary
-	
 
 class Component:
 	"""
