@@ -1,6 +1,11 @@
-[gd_scene format=3 uid="uid://bung5knnx5cud"]
+[gd_scene load_steps=2 format=3 uid="uid://bung5knnx5cud"]
+
+[ext_resource type="Script" path="res://scripts/GameEngine.gd" id="1_1y226"]
 
 [node name="Main" type="Node"]
 
 [node name="PlayerSnakeHead" type="Sprite2D" parent="."]
 position = Vector2(1, 0)
+
+[node name="GameEngine" type="Node" parent="."]
+script = ExtResource("1_1y226")
