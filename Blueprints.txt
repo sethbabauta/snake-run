@@ -1,4 +1,9 @@
 <Blueprint Name="PhysicalObject">
 	<Component Name="Physics" Speed="0" Direction="N"/>
+	<Component Name="Render" Sprite="johngoals.jpg"/>
+</Blueprint>
+
+<Blueprint Name="PhysicalObject2">
+	<Component Name="Physics" Speed="1" Direction="S"/>
 	<Component Name="Render" Sprite="icon.svg"/>
 </Blueprint>
