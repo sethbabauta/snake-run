@@ -27,47 +27,71 @@ class GameObject:
 
 class GameObjectFactory:
 	var blueprints: Dictionary = {}
-	
+
 	func _init():
 		blueprints = load_blueprints()
-	
-	func load_blueprints() -> Dictionary:
-		var blueprint_dict: Dictionary = {
-			"Blueprint": {},
-			"Component": {},
+
+	func _get_blueprint_params(parser: XMLParser) -> Dictionary:
+		var blueprint_params: Dictionary = {}
+		for idx in parser.get_attribute_count():
+			blueprint_params[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
+
+		return blueprint_params
+
+	func _format_blueprint(parser: XMLParser) -> Dictionary:
+		var blueprint: Dictionary = {
+			"params": {},
+			"components": {},
 		}
+		var blueprint_params: Dictionary = _get_blueprint_params(parser)
+		blueprint["params"] = blueprint_params
+		
+		var node_name = parser.get_node_name()
+		parser.read()
+		while not (parser.get_node_type() == XMLParser.NODE_ELEMENT_END and node_name == "Blueprint"):
+			var component_params: Dictionary = {}
+			var component_name = parser.get_attribute_value(0)
+			
+			for idx in range(1, parser.get_attribute_count()):
+				component_params[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
+			blueprint["components"][component_name] = component_params
+			
+			parser.read()
+			node_name = parser.get_node_name()
+
+		return blueprint
+
+	func load_blueprints() -> Dictionary:
+		"""
+		Converts XML Blueprints into dict like:
+		{
+			bp1: {
+				params: { Name: "bp1" },
+				components: {
+					comp1: { p1: "p1", p2: "p2" },
+					comp2: { p1: "p1", p2: "p2" },
+				},
+			},
+			bp2: {
+				params: { Name: "bp2", Inherits: "bp1" },
+				components: {
+					comp3: { p1: "p1", p2: "p2" },
+				},
+			},
+		}
+		"""
+		var blueprints: Dictionary = {}
 		var parser = XMLParser.new()
 		parser.open(BLUEPRINTS_PATH)
 		while parser.read() != ERR_FILE_EOF:
-			# if parsing NODE_ELEMENT of name Blueprint create new dict inside 
-			# blueprint_dict named after the blueprint name
-			
-			# add component details to a new dict until parsing NODE_ELEMENT_END 
-			# of name Blueprint set dict inside blueprint_dict
-			
-			
-			if parser.get_node_type() == XMLParser.NODE_ELEMENT_END:
-				print(parser.get_node_name())
-			if parser.get_node_type() == XMLParser.NODE_ELEMENT:
-				var node_name = parser.get_node_name()
-				var attributes_dict = {}
+			var node_name = parser.get_node_name()
+			assert(node_name == "Blueprint", "Blueprints formatting error: Blueprint not found")
 
-				if node_name == "Blueprint":
-					for idx in parser.get_attribute_count():
-						attributes_dict[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
-					blueprint_dict[node_name] = attributes_dict
+			var formatted_blueprint = _format_blueprint(parser)
+			var blueprint_name = formatted_blueprint["params"]["Name"]
+			blueprints[blueprint_name] = formatted_blueprint
 
-				if node_name == "Component":
-					var component_name = parser.get_attribute_value(0)
-					for idx in range(1, parser.get_attribute_count()):
-						attributes_dict[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
-					blueprint_dict[node_name][component_name] = attributes_dict
-
-				# print("The ", node_name, " element has the following attributes: ", attributes_dict)
-				# blueprint_dict[node_name].append(attributes_dict)
-
-		print(blueprint_dict)
-		return blueprint_dict
+		return blueprints
 
 	func create_object(blueprint: String) -> GameObject:
 		var new_game_object: GameObject = GameObject.new()
