@@ -3,7 +3,6 @@
 	<Component Name="Render" Sprite="johngoals.jpg"/>
 </Blueprint>
 
-<Blueprint Name="PhysicalObject2">
-	<Component Name="Physics" Speed="1" Direction="S"/>
+<Blueprint Name="PhysicalObject2" Inherits="PhysicalObject">
 	<Component Name="Render" Sprite="icon.svg"/>
 </Blueprint>

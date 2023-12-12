@@ -6,6 +6,7 @@ func _ready():
 func generate_nodes() -> void:
 	var game_object_factory = GameEngine.GameObjectFactory.new()
 	var physical_object = game_object_factory.create_object("PhysicalObject")
+	print(physical_object.components.Physics)
 	var physical_object_sprite_node = Sprite2D.new()
 	var physical_object_render_component = physical_object.components.get("Render")
 
