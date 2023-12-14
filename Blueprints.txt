@@ -1,8 +1,8 @@
 <Blueprint Name="PhysicalObject">
-	<Component Name="Physics" Speed="0" Direction="N"/>
-	<Component Name="Render" Sprite="johngoals.jpg"/>
+	<Component Name="Physics" speed="0" direction="N"/>
+	<Component Name="Render" texture="johngoals.jpg"/>
 </Blueprint>
 
 <Blueprint Name="PhysicalObject2" Inherits="PhysicalObject">
-	<Component Name="Render" Sprite="icon.svg"/>
+	<Component Name="Render" texture="icon.svg"/>
 </Blueprint>

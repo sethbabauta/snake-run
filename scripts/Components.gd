@@ -1,14 +1,14 @@
-extends Node
+extends GameEngine
 
 class_name Components
 
-class Physics:
+
+class Physics extends Component:
 	enum Directions {N=1, S=-1, E=1, W=-1}
-	var direction: Directions = Directions.N
+
 	var speed: int = 0
+	var direction: Directions = Directions.N
 
-class Render:
-	var texture: String
 
-	func _init(texture="res://Sprites/johngoals.jpg"):
-		texture = texture
+class Render extends Component:
+	var texture: String = ""
