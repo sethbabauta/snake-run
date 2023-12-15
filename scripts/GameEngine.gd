@@ -63,19 +63,12 @@ class GameObjectFactory:
 		)
 
 		var new_blueprint: Dictionary = blueprint.duplicate(true)
-		new_blueprint["components"] = (
-			blueprints
-			.get(blueprint_to_inherit)
-			.get("components")
-			.duplicate(true)
-		)
+		new_blueprint["components"] = blueprints.get(blueprint_to_inherit).get("components").duplicate(true)
 
 		return new_blueprint
 
 
 	func _format_blueprint(parser: XMLParser, blueprints: Dictionary) -> Dictionary:
-		const MAX_LOOP_COUNT = 1000
-
 		var blueprint: Dictionary = {
 			"params": {},
 			"components": {},
@@ -90,13 +83,7 @@ class GameObjectFactory:
 		var node_name: String = parser.get_node_name()
 		var loop_count: int = 0
 
-		while (
-			not (
-				parser.get_node_type() == XMLParser.NODE_ELEMENT_END
-				and node_name == "Blueprint"
-			)
-			and loop_count < MAX_LOOP_COUNT
-		):
+		while not (parser.get_node_type() == XMLParser.NODE_ELEMENT_END and node_name == "Blueprint") and loop_count < 1000:
 			var component_params: Dictionary = {}
 			var component_name: String = parser.get_attribute_value(0)
 
@@ -181,3 +168,5 @@ class GameObjectFactory:
 		new_game_object.components = _create_components(blueprint_components)
 
 		return new_game_object
+
+
