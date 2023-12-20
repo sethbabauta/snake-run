@@ -2,11 +2,6 @@ extends Node
 
 class_name GameEngine
 
-const BLUEPRINTS_PATH = "res://Blueprints.txt"
-const SPRITES_PATH = "res://Sprites/"
-const BASE_MOVE_SPEED = 239
-
-
 
 class Component:
     """
@@ -43,6 +38,7 @@ class GameObject:
     var components: Dictionary
     var rigidbody: RigidBody2D
     var factory_from: GameObjectFactory
+    var component_priority: Array
 
     func _init(
             name: String = "NoName",
@@ -59,8 +55,9 @@ class GameObject:
 
     # return event so that it's clear that event is changing in place
     func fire_event(event: Event) -> Event:
-        for component in self.components.values():
-            event = component.fire_event(event)
+        for component_name in component_priority:
+            print("component name: ", component_name, " ", event.parameters)
+            event = self.components[component_name].fire_event(event)
 
         return event
 
@@ -71,7 +68,7 @@ class GameObjectFactory:
 
     func _init() -> void:
         self.blueprints = self.load_blueprints()
-        print(self.blueprints)
+#        print(self.blueprints)
 
 
     func _get_blueprint_parameters(parser: XMLParser) -> Dictionary:
@@ -196,7 +193,7 @@ class GameObjectFactory:
         """
         var blueprints: Dictionary = {}
         var parser: XMLParser = XMLParser.new()
-        parser.open(BLUEPRINTS_PATH)
+        parser.open(Main.BLUEPRINTS_PATH)
 
         while parser.read() != ERR_FILE_EOF:
             var node_name: String = parser.get_node_name()
@@ -220,7 +217,7 @@ class GameObjectFactory:
         for parameter_name in component_parameters.keys():
             if parameter_name == "texture":
                 component_parameters[parameter_name] = (
-                        SPRITES_PATH + component_parameters[parameter_name]
+                        Main.SPRITES_PATH + component_parameters[parameter_name]
                 )
 
             if parameter_name in new_component:
@@ -260,6 +257,7 @@ class GameObjectFactory:
         var blueprint_components: Dictionary = blueprint.get("components")
 
         new_game_object.components = self._create_components(blueprint_components, new_game_object)
+        new_game_object.component_priority = blueprint.get("component_priority")
 
         return new_game_object
 
@@ -274,3 +272,10 @@ class GameObjectFactory:
     func unsubscribe(game_object: GameObject, list_name: String) -> void:
         if self.subscribe_lists.has(list_name):
             self.subscribe_lists[list_name].erase(game_object)
+
+
+    func notify_subscribers(event: Event, list_name: String) -> void:
+        var subscribers = self.subscribe_lists.get(list_name)
+        if subscribers:
+            for game_object in subscribers:
+                game_object.fire_event(event)

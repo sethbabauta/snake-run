@@ -8,25 +8,27 @@ class Movable extends Component:
     var direction: String = "N"
 
 
-    func _move_forward(event: Event) -> void:
+    func _move_forward() -> void:
         match self.direction:
             "N":
-                self.game_object.rigidbody.global_translate(Vector2.UP * GameEngine.BASE_MOVE_SPEED)
+                self.game_object.rigidbody.global_translate(Vector2.UP * Main.BASE_MOVE_SPEED)
             "S":
-                self.game_object.rigidbody.global_translate(Vector2.DOWN * GameEngine.BASE_MOVE_SPEED)
+                self.game_object.rigidbody.global_translate(Vector2.DOWN * Main.BASE_MOVE_SPEED)
             "E":
-                self.game_object.rigidbody.global_translate(Vector2.RIGHT * GameEngine.BASE_MOVE_SPEED)
+                self.game_object.rigidbody.global_translate(Vector2.RIGHT * Main.BASE_MOVE_SPEED)
             "W":
-                self.game_object.rigidbody.global_translate(Vector2.LEFT * GameEngine.BASE_MOVE_SPEED)
+                self.game_object.rigidbody.global_translate(Vector2.LEFT * Main.BASE_MOVE_SPEED)
 
 
     func _change_direction(event: Event) -> void:
+        print(event.parameters)
         self.direction = event.parameters.get("direction")
+        print("changing: ", self.direction)
 
 
     func fire_event(event: Event) -> Event:
         if event.id == "MoveForward":
-            self._move_forward(event)
+            self._move_forward()
         if event.id == "ChangeDirection":
             self._change_direction(event)
 
@@ -41,7 +43,15 @@ class PlayerControlled extends Component:
 
     func fire_event(event: Event) -> Event:
         if event.id == "ChangeDirection":
-            pass
+            match event.parameters.get("input"):
+                "turn_up":
+                    event.parameters["direction"] = "N"
+                "turn_left":
+                    event.parameters["direction"] = "W"
+                "turn_down":
+                    event.parameters["direction"] = "S"
+                "turn_right":
+                    event.parameters["direction"] = "E"
 
         return event
 
