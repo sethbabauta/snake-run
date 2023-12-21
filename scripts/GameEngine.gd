@@ -56,7 +56,6 @@ class GameObject:
     # return event so that it's clear that event is changing in place
     func fire_event(event: Event) -> Event:
         for component_name in component_priority:
-            print("component name: ", component_name, " ", event.parameters)
             event = self.components[component_name].fire_event(event)
 
         return event
@@ -202,7 +201,9 @@ class GameObjectFactory:
                     "Blueprints formatting error: Blueprint not found.",
             )
 
-            var formatted_blueprint: Dictionary = self._format_blueprint(parser, blueprints)
+            var formatted_blueprint: Dictionary = (
+                    self._format_blueprint(parser, blueprints)
+            )
             var blueprint_name: String = formatted_blueprint["parameters"]["Name"]
 
             blueprints[blueprint_name] = formatted_blueprint
@@ -224,7 +225,10 @@ class GameObjectFactory:
                 new_component[parameter_name] = component_parameters[parameter_name]
 
 
-    func _create_components(blueprint_components: Dictionary, game_object: GameObject) -> Dictionary:
+    func _create_components(
+            blueprint_components: Dictionary,
+            game_object: GameObject,
+    ) -> Dictionary:
         var components_class: Components = Components.new()
         var components: Dictionary = {}
 
@@ -232,11 +236,19 @@ class GameObjectFactory:
             var current_component_name: String = blueprint_components.keys()[idx]
             assert(
                     current_component_name in components_class,
-                    "Create Components error: Component name " + current_component_name + " not found.",
+                    (
+                            "Create Components error: Component name "
+                            + current_component_name
+                            + " not found."
+                    ),
             )
 
-            var current_parameters: Dictionary = blueprint_components.values()[idx]
-            var new_component: Variant = components_class[current_component_name].new(game_object)
+            var current_parameters: Dictionary = (
+                    blueprint_components.values()[idx].duplicate(true)
+            )
+            var new_component: Variant = (
+                    components_class[current_component_name].new(game_object)
+            )
             self._set_component_parameters(new_component, current_parameters)
             new_component.first_time_setup()
 
@@ -256,7 +268,9 @@ class GameObjectFactory:
         var blueprint: Dictionary = self.blueprints.get(blueprint_name)
         var blueprint_components: Dictionary = blueprint.get("components")
 
-        new_game_object.components = self._create_components(blueprint_components, new_game_object)
+        new_game_object.components = (
+                self._create_components(blueprint_components, new_game_object)
+        )
         new_game_object.component_priority = blueprint.get("component_priority")
 
         return new_game_object

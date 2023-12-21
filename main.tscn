@@ -7,5 +7,4 @@
 script = ExtResource("1_h36ad")
 
 [node name="PlayerSnakeHead" type="Sprite2D" parent="."]
-position = Vector2(1, 0)
 texture = ExtResource("1_1go04")

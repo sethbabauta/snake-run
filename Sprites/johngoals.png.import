@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dguo0r3dgildt"
-path="res://.godot/imported/johngoals.jpg-69eb08b3096f3b28f450ad43ca00354a.ctex"
+uid="uid://c0ugsissxvnu5"
+path="res://.godot/imported/johngoals.png-996e222c81425c8f0d25c6091ca9f024.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/johngoals.jpg"
-dest_files=["res://.godot/imported/johngoals.jpg-69eb08b3096f3b28f450ad43ca00354a.ctex"]
+source_file="res://Sprites/johngoals.png"
+dest_files=["res://.godot/imported/johngoals.png-996e222c81425c8f0d25c6091ca9f024.ctex"]
 
 [params]
 

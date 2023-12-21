@@ -4,6 +4,6 @@
 </Blueprint>
 
 <Blueprint Name="JohnGoals" Inherits="MovableObject">
-	<Component Name="Render" texture="johngoals.jpg"/>
+	<Component Name="Render" texture="johngoals.png"/>
 	<Component Name="PlayerControlled" priority="99"/>
 </Blueprint>
