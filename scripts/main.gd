@@ -24,14 +24,6 @@ func _ready() -> void:
     )
     john_goals_object.fire_event(set_position_event)
 
-    # Demo: Multiple player controlled objs
-    var john_goals_object2:= game_object_factory.create_object("JohnGoals", self)
-    var set_position_event2:= GameEngine.Event.new(
-        "SetPosition",
-        {"position": Vector2(400, 400)}
-    )
-    john_goals_object2.fire_event(set_position_event2)
-
 
 func _fire_change_direction_event(input_name: String):
     var new_event:= GameEngine.Event.new("TryChangeDirection", {"input": input_name})
