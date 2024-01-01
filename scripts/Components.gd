@@ -9,7 +9,7 @@ class Movable extends Component:
     var direction: String = "N"
 
     func _init(game_object: GameObject = null) -> void:
-        self.game_object = game_object
+        super(game_object)
         self.game_object.factory_from.subscribe(game_object, "movable")
 
 
@@ -41,7 +41,8 @@ class Movable extends Component:
     func _try_change_direction(event: Event) -> void:
         var new_event:= Event.new("ChangeDirection", event.parameters.duplicate(true))
         new_event.parameters["current_direction"] = self.direction
-        self.game_object.fire_event(new_event)
+        var event_job: Array = [self.game_object, new_event]
+        self.game_object.fire_event_complete.append(event_job)
 
 
     func fire_event(event: Event) -> Event:
@@ -114,3 +115,15 @@ class Render extends Component:
             )
 
         return event
+
+
+class SnakeBody extends Component:
+    var next_body: GameObject = null
+    var prev_body: GameObject = null
+
+    func connect_bodies(next_body: GameObject, prev_body: GameObject) -> void:
+        var next_body_snakebody: SnakeBody = next_body.components.get("SnakeBody")
+        var prev_body_snakebody: SnakeBody = prev_body.components.get("SnakeBody")
+        if next_body_snakebody and prev_body_snakebody:
+            next_body_snakebody.prev_body = prev_body
+            prev_body_snakebody.next_body = next_body

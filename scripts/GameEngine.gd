@@ -39,6 +39,7 @@ class GameObject:
     var rigidbody: RigidBody2D
     var factory_from: GameObjectFactory
     var component_priority: Array
+    var fire_event_complete: Array = []
 
     func _init(
             name: String = "NoName",
@@ -57,6 +58,15 @@ class GameObject:
     func fire_event(event: Event) -> Event:
         for component_name in component_priority:
             event = self.components[component_name].fire_event(event)
+
+        if self.fire_event_complete:
+            var event_job_queue: Array = self.fire_event_complete.duplicate(true)
+
+            for event_job in event_job_queue:
+                var event_target: GameObject = event_job[0]
+                var next_event: Event = event_job[1]
+                self.fire_event_complete.erase(event_job)
+                event_target.fire_event(next_event)
 
         return event
 
@@ -108,7 +118,7 @@ class GameObjectFactory:
 
         # format for sorting like [["name", 100], ["name2", 99]]
         for component_name in blueprint["components"].keys():
-            var priority = int(blueprint["components"][component_name]["priority"])
+            var priority:= int(blueprint["components"][component_name]["priority"])
             var formatted_component: Array = [component_name, priority]
             temp_component_priority.append(formatted_component)
 
