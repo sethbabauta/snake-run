@@ -1,8 +1,9 @@
-<Blueprint Name="PhysicalObject">
-	<Component Name="Physics" speed="0" direction="N"/>
+<Blueprint Name="MovableObject">
+	<Component Name="Movable" speed="1" direction="N"/>
 	<Component Name="Render" texture="icon.svg"/>
 </Blueprint>
 
-<Blueprint Name="JohnGoals" Inherits="PhysicalObject">
-	<Component Name="Render" texture="johngoals.jpg"/>
+<Blueprint Name="JohnGoals" Inherits="MovableObject">
+	<Component Name="Render" texture="johngoals.png"/>
+	<Component Name="PlayerControlled" priority="99"/>
 </Blueprint>
