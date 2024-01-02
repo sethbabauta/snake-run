@@ -1,15 +1,15 @@
 <Blueprint Name="MovableObject">
-	<Component Name="Movable" speed="1" direction="N"/>
+	<Component Name="Movable" speed="1" direction="N" priority="101"/>
 	<Component Name="Render" texture="icon.svg"/>
 </Blueprint>
 
 <Blueprint Name="JohnGoals" Inherits="MovableObject">
 	<Component Name="Render" texture="johngoals.png"/>
 	<Component Name="PlayerControlled" priority="99"/>
-    <Component Name="SnakeBody"/>
+	<Component Name="SnakeBody"/>
 </Blueprint>
 
 <Blueprint Name="JohnGoalsSnakeBody">
 	<Component Name="Render" texture="johngoals.png"/>
-    <Component Name="SnakeBody"/>
+	<Component Name="SnakeBody"/>
 </Blueprint>

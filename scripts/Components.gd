@@ -41,8 +41,7 @@ class Movable extends Component:
     func _try_change_direction(event: Event) -> void:
         var new_event:= Event.new("ChangeDirection", event.parameters.duplicate(true))
         new_event.parameters["current_direction"] = self.direction
-        var event_job: Array = [self.game_object, new_event]
-        self.game_object.fire_event_complete.append(event_job)
+        self.game_object.queue_event_job(self.game_object, new_event)
 
 
     func fire_event(event: Event) -> Event:
@@ -120,10 +119,37 @@ class Render extends Component:
 class SnakeBody extends Component:
     var next_body: GameObject = null
     var prev_body: GameObject = null
+    var prev_location: Vector2
 
-    func connect_bodies(next_body: GameObject, prev_body: GameObject) -> void:
+    static func connect_bodies(next_body: GameObject, prev_body: GameObject) -> void:
         var next_body_snakebody: SnakeBody = next_body.components.get("SnakeBody")
         var prev_body_snakebody: SnakeBody = prev_body.components.get("SnakeBody")
         if next_body_snakebody and prev_body_snakebody:
             next_body_snakebody.prev_body = prev_body
             prev_body_snakebody.next_body = next_body
+
+
+    func _follow_next_body() -> void:
+        if self.next_body:
+            var next_snake_body: SnakeBody = self.next_body.components.get("SnakeBody")
+            self.prev_location = self.game_object.rigidbody.global_position
+            self.game_object.rigidbody.global_position = next_snake_body.prev_location
+
+        if self.prev_body:
+            self.game_object.queue_event_job(self.prev_body, Event.new("FollowNextBody"))
+
+
+    func _move_forward() -> void:
+        self.prev_location = self.game_object.rigidbody.global_position
+
+        if self.prev_body:
+            self.game_object.queue_event_job(prev_body, Event.new("FollowNextBody"))
+
+
+    func fire_event(event: Event) -> Event:
+        if event.id == "FollowNextBody":
+            self._follow_next_body()
+        if event.id == "MoveForward":
+            self._move_forward()
+
+        return event

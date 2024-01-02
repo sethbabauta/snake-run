@@ -24,6 +24,14 @@ func _ready() -> void:
     )
     john_goals_object.fire_event(set_position_event)
 
+    var john_goals_snake_body_1:= game_object_factory.create_object("JohnGoalsSnakeBody", self)
+    Components.SnakeBody.connect_bodies(john_goals_object, john_goals_snake_body_1)
+    set_position_event = GameEngine.Event.new(
+        "SetPosition",
+        {"position": john_goals_object.rigidbody.global_position + (Vector2.DOWN * BASE_MOVE_SPEED)}
+    )
+    john_goals_snake_body_1.fire_event(set_position_event)
+
 
 func _fire_change_direction_event(input_name: String):
     var new_event:= GameEngine.Event.new("TryChangeDirection", {"input": input_name})

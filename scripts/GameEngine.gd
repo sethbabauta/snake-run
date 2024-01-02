@@ -71,6 +71,11 @@ class GameObject:
         return event
 
 
+    func queue_event_job(target: GameObject, new_event: Event) -> void:
+        var event_job: Array = [target, new_event]
+        self.fire_event_complete.append(event_job)
+
+
 class GameObjectFactory:
     var blueprints: Dictionary = {}
     var subscribe_lists: Dictionary = {}
