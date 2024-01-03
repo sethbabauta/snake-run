@@ -17,23 +17,32 @@ func _init() -> void:
 
 
 func _ready() -> void:
+    _spawn_player_snake(Vector2(304, 304), 5)
+
+
+func _spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
     var john_goals_object:= game_object_factory.create_object("JohnGoals", self)
     var set_position_event:= GameEngine.Event.new(
         "SetPosition",
-        {"position": Vector2(304, 304)}
+        {"position": start_position}
     )
     john_goals_object.fire_event(set_position_event)
 
-    var john_goals_snake_body_1:= game_object_factory.create_object("JohnGoalsSnakeBody", self)
-    Components.SnakeBody.connect_bodies(john_goals_object, john_goals_snake_body_1)
-    set_position_event = GameEngine.Event.new(
-        "SetPosition",
-        {"position": john_goals_object.rigidbody.global_position + (Vector2.DOWN * BASE_MOVE_SPEED)}
-    )
-    john_goals_snake_body_1.fire_event(set_position_event)
+    var jg_snake_body: Components.SnakeBody = john_goals_object.components.get("SnakeBody")
+    for snake_body_idx in range(snake_length-1):
+        var new_snake_body_obj:= game_object_factory.create_object("JohnGoalsSnakeBody", self)
+        var tail: GameEngine.GameObject = jg_snake_body.get_tail_game_object()
+
+        Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
+
+        set_position_event = GameEngine.Event.new(
+            "SetPosition",
+            {"position": tail.rigidbody.global_position + (Vector2.DOWN * BASE_MOVE_SPEED)}
+        )
+        new_snake_body_obj.fire_event(set_position_event)
 
 
-func _fire_change_direction_event(input_name: String):
+func _fire_change_direction_event(input_name: String) -> void:
     var new_event:= GameEngine.Event.new("TryChangeDirection", {"input": input_name})
     self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 

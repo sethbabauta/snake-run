@@ -129,6 +129,14 @@ class SnakeBody extends Component:
             prev_body_snakebody.next_body = next_body
 
 
+    func get_tail_game_object() -> GameObject:
+        if not self.prev_body:
+            return self.game_object
+
+        var prev_snake_body: SnakeBody = self.prev_body.components.get("SnakeBody")
+        return prev_snake_body.get_tail_game_object()
+
+
     func _follow_next_body() -> void:
         if self.next_body:
             var next_snake_body: SnakeBody = self.next_body.components.get("SnakeBody")
