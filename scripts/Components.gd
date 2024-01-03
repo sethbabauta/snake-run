@@ -32,6 +32,9 @@ class Movable extends Component:
                         Vector2.LEFT * Main.BASE_MOVE_SPEED
                 )
 
+        var new_event:= Event.new("MovedForward", {"direction": self.direction})
+        self.game_object.queue_event_job(self.game_object, new_event)
+
 
     func _change_direction(event: Event) -> void:
         if event.parameters.get("direction") in self.VALID_DIRECTIONS:
@@ -56,6 +59,9 @@ class Movable extends Component:
 
 
 class PlayerControlled extends Component:
+    var last_direction_moved: String = "0"
+
+
     func _init(game_object: GameObject = null) -> void:
         super(game_object)
         self.game_object.factory_from.subscribe(
@@ -63,7 +69,36 @@ class PlayerControlled extends Component:
         )
 
 
-    func _is_opposite_direction(current_direction: String, new_direction: String) -> bool:
+    func change_direction(event: Event) -> void:
+        var new_direction: String
+        match event.parameters.get("input"):
+            "turn_up":
+                new_direction = "N"
+            "turn_left":
+                new_direction = "W"
+            "turn_down":
+                new_direction = "S"
+            "turn_right":
+                new_direction = "E"
+
+        if not _is_opposite_direction(
+                self.last_direction_moved,
+                new_direction,
+        ):
+            event.parameters["direction"] = new_direction
+        else:
+            event.parameters["direction"] = "0"
+
+
+    func save_direction(event: Event) -> void:
+        self.last_direction_moved = event.parameters.get("direction")
+
+
+    func _is_opposite_direction(
+            current_direction: String,
+            new_direction: String,
+    ) -> bool:
+
         if current_direction == "N" and new_direction == "S":
             return true
         if current_direction == "S" and new_direction == "N":
@@ -77,21 +112,9 @@ class PlayerControlled extends Component:
 
     func fire_event(event: Event) -> Event:
         if event.id == "ChangeDirection":
-            var new_direction: String
-            match event.parameters.get("input"):
-                "turn_up":
-                    new_direction = "N"
-                "turn_left":
-                    new_direction = "W"
-                "turn_down":
-                    new_direction = "S"
-                "turn_right":
-                    new_direction = "E"
-
-            if not _is_opposite_direction(event.parameters.get("current_direction"), new_direction):
-                event.parameters["direction"] = new_direction
-            else:
-                event.parameters["direction"] = "0"
+            self.change_direction(event)
+        if event.id == "MovedForward":
+            self.save_direction(event)
 
         return event
 
@@ -121,7 +144,12 @@ class SnakeBody extends Component:
     var prev_body: GameObject = null
     var prev_location: Vector2
 
-    static func connect_bodies(next_body: GameObject, prev_body: GameObject) -> void:
+
+    static func connect_bodies(
+            next_body: GameObject,
+            prev_body: GameObject,
+    ) -> void:
+
         var next_body_snakebody: SnakeBody = next_body.components.get("SnakeBody")
         var prev_body_snakebody: SnakeBody = prev_body.components.get("SnakeBody")
         if next_body_snakebody and prev_body_snakebody:
@@ -144,7 +172,10 @@ class SnakeBody extends Component:
             self.game_object.rigidbody.global_position = next_snake_body.prev_location
 
         if self.prev_body:
-            self.game_object.queue_event_job(self.prev_body, Event.new("FollowNextBody"))
+            self.game_object.queue_event_job(
+                    self.prev_body,
+                    Event.new("FollowNextBody"),
+            )
 
 
     func _move_forward() -> void:

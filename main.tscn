@@ -1,10 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bung5knnx5cud"]
+[gd_scene load_steps=2 format=3 uid="uid://bung5knnx5cud"]
 
-[ext_resource type="Texture2D" uid="uid://72astrsqehcg" path="res://Sprites/icon.svg" id="1_1go04"]
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_h36ad"]
+[ext_resource type="Script" path="res://Scripts/main.gd" id="1_rch0c"]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_h36ad")
-
-[node name="PlayerSnakeHead" type="Sprite2D" parent="."]
-texture = ExtResource("1_1go04")
+script = ExtResource("1_rch0c")

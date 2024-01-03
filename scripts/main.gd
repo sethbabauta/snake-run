@@ -1,9 +1,8 @@
-extends Node
-
-class_name Main
+class_name Main extends Node
 
 const BLUEPRINTS_PATH = "res://Blueprints.txt"
 const SPRITES_PATH = "res://Sprites/"
+const PHYSICS_OBJECT_PATH = "res://Scenes/PhysicsObject.tscn"
 const TICK_THRESHOLD = 15
 const SPRITE_SCALE_FACTOR = 0.2
 const BASE_MOVE_SPEED = 32
