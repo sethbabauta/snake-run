@@ -3,13 +3,13 @@
 	<Component Name="Render" texture="icon.svg"/>
 </Blueprint>
 
-<Blueprint Name="JohnGoalsSnakeBody" Inherits="PhysicalObject">
-	<Component Name="Render" texture="johngoals.png"/>
+<Blueprint Name="SnakeBody" Inherits="PhysicalObject">
+	<Component Name="Render" texture="snake.png"/>
 	<Component Name="SnakeBody"/>
 	<Component Name="Poisonous"/>
 </Blueprint>
 
-<Blueprint Name="JohnGoals" Inherits="JohnGoalsSnakeBody">
+<Blueprint Name="PlayerSnakeHead" Inherits="SnakeBody">
 	<Component Name="PlayerControlled" priority="101"/>
 	<Component Name="Movable" speed="1" direction="N" priority="99"/>
 </Blueprint>
