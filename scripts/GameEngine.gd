@@ -1,6 +1,4 @@
-extends Node
-
-class_name GameEngine
+class_name GameEngine extends Resource
 
 
 class Component:
@@ -36,26 +34,27 @@ class GameObject:
     var name: String
     var main_node: Node
     var components: Dictionary
-    var rigidbody: RigidBody2D
+    var physics_body: Area2D
     var factory_from: GameObjectFactory
     var component_priority: Array
     var fire_event_complete: Array = []
+
 
     func _init(
             name: String = "NoName",
             main_node: Node = null,
             components: Dictionary = {},
-            rigidbody:= RigidBody2D.new(),
+            physics_body = null,
     ) -> void:
         self.name = name
         self.main_node = main_node
         self.components = components
-        self.rigidbody = rigidbody
-        self.main_node.add_child(self.rigidbody)
+        self.physics_body = physics_body
 
 
     # return event so that it's clear that event is changing in place
     func fire_event(event: Event) -> Event:
+        # higher priority number first
         for component_name in component_priority:
             event = self.components[component_name].fire_event(event)
 
@@ -127,8 +126,8 @@ class GameObjectFactory:
             var formatted_component: Array = [component_name, priority]
             temp_component_priority.append(formatted_component)
 
-        # sort ascending
-        temp_component_priority.sort_custom(func(a, b): return a[1] < b[1])
+        # sort descending
+        temp_component_priority.sort_custom(func(a, b): return a[1] > b[1])
 
         # format for saving like ["name2", "name"]
         for component in temp_component_priority:

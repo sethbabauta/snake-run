@@ -1,6 +1,4 @@
-extends GameEngine
-
-class_name Components
+class_name Components extends GameEngine
 
 
 class Movable extends Component:
@@ -16,19 +14,19 @@ class Movable extends Component:
     func _move_forward() -> void:
         match self.direction:
             "N":
-                self.game_object.rigidbody.global_translate(
+                self.game_object.physics_body.global_translate(
                         Vector2.UP * Main.BASE_MOVE_SPEED
                 )
             "S":
-                self.game_object.rigidbody.global_translate(
+                self.game_object.physics_body.global_translate(
                         Vector2.DOWN * Main.BASE_MOVE_SPEED
                 )
             "E":
-                self.game_object.rigidbody.global_translate(
+                self.game_object.physics_body.global_translate(
                         Vector2.RIGHT * Main.BASE_MOVE_SPEED
                 )
             "W":
-                self.game_object.rigidbody.global_translate(
+                self.game_object.physics_body.global_translate(
                         Vector2.LEFT * Main.BASE_MOVE_SPEED
                 )
 
@@ -54,6 +52,37 @@ class Movable extends Component:
             self._change_direction(event)
         if event.id == "TryChangeDirection":
             self._try_change_direction(event)
+
+        return event
+
+
+class PhysicsBody extends Component:
+    var physics_body_scene: PackedScene = preload(Main.PHYSICS_OBJECT_PATH)
+    var physics_body_node: PhysicsObject
+
+
+    func _init(game_object: GameObject = null) -> void:
+        super(game_object)
+        self.physics_body_node = self.physics_body_scene.instantiate()
+
+
+    func first_time_setup() -> void:
+        self.game_object.physics_body = self.physics_body_node
+        self.game_object.main_node.add_child(self.physics_body_node)
+        self.physics_body_node.game_object = self.game_object
+
+
+    func _check_eat() -> void:
+        if self.physics_body_node.has_overlapping_areas():
+            var areas: Array = self.physics_body_node.get_overlapping_areas().duplicate(true)
+            var new_event:= Event.new("Eat", {"eater": self.game_object})
+            for area in areas:
+                area.game_object.fire_event(new_event)
+
+
+    func fire_event(event: Event) -> Event:
+        if event.id == "MovedForward":
+            self._check_eat()
 
         return event
 
@@ -119,20 +148,31 @@ class PlayerControlled extends Component:
         return event
 
 
+class Poisonous extends Component:
+
+    func _end_game() -> void:
+        self.game_object.main_node.get_tree().quit()
+
+    func fire_event(event: Event) -> Event:
+        if event.id == "Eat":
+            self._end_game()
+
+        return event
+
+
 class Render extends Component:
     var texture: String = ""
     var sprite_node: Sprite2D
 
 
     func first_time_setup() -> void:
-        self.sprite_node = Sprite2D.new()
+        self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
         self.sprite_node.texture = load(self.texture)
-        self.game_object.rigidbody.add_child(sprite_node)
 
 
     func fire_event(event: Event) -> Event:
         if event.id == "SetPosition":
-            self.game_object.rigidbody.global_position = (
+            self.game_object.physics_body.global_position = (
                     event.parameters.get("position")
             )
 
@@ -168,8 +208,8 @@ class SnakeBody extends Component:
     func _follow_next_body() -> void:
         if self.next_body:
             var next_snake_body: SnakeBody = self.next_body.components.get("SnakeBody")
-            self.prev_location = self.game_object.rigidbody.global_position
-            self.game_object.rigidbody.global_position = next_snake_body.prev_location
+            self.prev_location = self.game_object.physics_body.global_position
+            self.game_object.physics_body.global_position = next_snake_body.prev_location
 
         if self.prev_body:
             self.game_object.queue_event_job(
@@ -179,7 +219,7 @@ class SnakeBody extends Component:
 
 
     func _move_forward() -> void:
-        self.prev_location = self.game_object.rigidbody.global_position
+        self.prev_location = self.game_object.physics_body.global_position
 
         if self.prev_body:
             self.game_object.queue_event_job(prev_body, Event.new("FollowNextBody"))

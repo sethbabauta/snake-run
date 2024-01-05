@@ -1,15 +1,20 @@
-<Blueprint Name="MovableObject">
-	<Component Name="Movable" speed="1" direction="N" priority="101"/>
+<Blueprint Name="PhysicalObject">
+	<Component Name="PhysicsBody" priority="101"/>
 	<Component Name="Render" texture="icon.svg"/>
 </Blueprint>
 
-<Blueprint Name="JohnGoals" Inherits="MovableObject">
+<Blueprint Name="JohnGoalsSnakeBody" Inherits="PhysicalObject">
 	<Component Name="Render" texture="johngoals.png"/>
-	<Component Name="PlayerControlled" priority="99"/>
 	<Component Name="SnakeBody"/>
+	<Component Name="Poisonous"/>
 </Blueprint>
 
-<Blueprint Name="JohnGoalsSnakeBody">
-	<Component Name="Render" texture="johngoals.png"/>
-	<Component Name="SnakeBody"/>
+<Blueprint Name="JohnGoals" Inherits="JohnGoalsSnakeBody">
+	<Component Name="PlayerControlled" priority="101"/>
+	<Component Name="Movable" speed="1" direction="N" priority="99"/>
+</Blueprint>
+
+<Blueprint Name="Barrier" Inherits="PhysicalObject">
+	<Component Name="Render" texture="barrier.png"/>
+	<Component Name="Poisonous"/>
 </Blueprint>

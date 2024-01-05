@@ -3,7 +3,7 @@ class_name Main extends Node
 const BLUEPRINTS_PATH = "res://Blueprints.txt"
 const SPRITES_PATH = "res://Sprites/"
 const PHYSICS_OBJECT_PATH = "res://Scenes/PhysicsObject.tscn"
-const TICK_THRESHOLD = 15
+const TICK_THRESHOLD = 10
 const SPRITE_SCALE_FACTOR = 0.2
 const BASE_MOVE_SPEED = 32
 
@@ -12,15 +12,22 @@ var game_object_factory: GameEngine.GameObjectFactory
 
 
 func _init() -> void:
-    game_object_factory = GameEngine.GameObjectFactory.new()
+    self.game_object_factory = GameEngine.GameObjectFactory.new()
 
 
 func _ready() -> void:
-    _spawn_player_snake(Vector2(304, 304), 5)
+    _spawn_player_snake(Vector2(304, 304), 6)
+
+    var barrier:= self.game_object_factory.create_object("Barrier", self)
+    var set_position_event:= GameEngine.Event.new(
+        "SetPosition",
+        {"position": Vector2(176, 176)}
+    )
+    barrier.fire_event(set_position_event)
 
 
 func _spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
-    var john_goals_object:= game_object_factory.create_object("JohnGoals", self)
+    var john_goals_object:= self.game_object_factory.create_object("JohnGoals", self)
     var set_position_event:= GameEngine.Event.new(
         "SetPosition",
         {"position": start_position}
@@ -29,14 +36,14 @@ func _spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
 
     var jg_snake_body: Components.SnakeBody = john_goals_object.components.get("SnakeBody")
     for snake_body_idx in range(snake_length-1):
-        var new_snake_body_obj:= game_object_factory.create_object("JohnGoalsSnakeBody", self)
+        var new_snake_body_obj:= self.game_object_factory.create_object("JohnGoalsSnakeBody", self)
         var tail: GameEngine.GameObject = jg_snake_body.get_tail_game_object()
 
         Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
         set_position_event = GameEngine.Event.new(
             "SetPosition",
-            {"position": tail.rigidbody.global_position + (Vector2.DOWN * BASE_MOVE_SPEED)}
+            {"position": tail.physics_body.global_position + (Vector2.DOWN * BASE_MOVE_SPEED)}
         )
         new_snake_body_obj.fire_event(set_position_event)
 
