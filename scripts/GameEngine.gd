@@ -1,6 +1,4 @@
-extends Node
-
-class_name GameEngine
+class_name GameEngine extends Resource
 
 
 class Component:
@@ -36,29 +34,46 @@ class GameObject:
     var name: String
     var main_node: Node
     var components: Dictionary
-    var rigidbody: RigidBody2D
+    var physics_body: Area2D
     var factory_from: GameObjectFactory
     var component_priority: Array
+    var fire_event_complete: Array = []
+
 
     func _init(
             name: String = "NoName",
             main_node: Node = null,
             components: Dictionary = {},
-            rigidbody:= RigidBody2D.new(),
+            physics_body = null,
     ) -> void:
         self.name = name
         self.main_node = main_node
         self.components = components
-        self.rigidbody = rigidbody
-        self.main_node.add_child(self.rigidbody)
+        self.physics_body = physics_body
 
 
     # return event so that it's clear that event is changing in place
     func fire_event(event: Event) -> Event:
+#        print("event: ", event.id, " ", event.parameters)
+        # higher priority number first
         for component_name in component_priority:
             event = self.components[component_name].fire_event(event)
 
+        if self.fire_event_complete:
+            var event_job_queue: Array = self.fire_event_complete.duplicate(true)
+
+            for event_job in event_job_queue:
+                var event_target: GameObject = event_job[0]
+                var next_event: Event = event_job[1]
+                self.fire_event_complete.erase(event_job)
+                event_target.fire_event(next_event)
+
         return event
+
+
+    func queue_event_job(target: GameObject, new_event: Event) -> void:
+        var event_job: Array = [target, new_event]
+        self.fire_event_complete.append(event_job)
 
 
 class GameObjectFactory:
@@ -108,12 +123,12 @@ class GameObjectFactory:
 
         # format for sorting like [["name", 100], ["name2", 99]]
         for component_name in blueprint["components"].keys():
-            var priority = int(blueprint["components"][component_name]["priority"])
+            var priority:= int(blueprint["components"][component_name]["priority"])
             var formatted_component: Array = [component_name, priority]
             temp_component_priority.append(formatted_component)
 
-        # sort ascending
-        temp_component_priority.sort_custom(func(a, b): return a[1] < b[1])
+        # sort descending
+        temp_component_priority.sort_custom(func(a, b): return a[1] > b[1])
 
         # format for saving like ["name2", "name"]
         for component in temp_component_priority:
