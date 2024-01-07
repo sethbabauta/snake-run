@@ -18,3 +18,8 @@
 	<Component Name="Render" texture="barrier.png"/>
 	<Component Name="Poisonous"/>
 </Blueprint>
+
+<Blueprint Name="Apple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="apple.png"/>
+	<Component Name="Nutritious"/>
+</Blueprint>

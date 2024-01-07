@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://bung5knnx5cud"]
+[gd_scene load_steps=3 format=3 uid="uid://bung5knnx5cud"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_rch0c"]
+[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/CollisionQuery.tscn" id="2_rragb"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_rch0c")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 320)
+
+[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("2_rragb")]
