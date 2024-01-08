@@ -23,85 +23,8 @@ func _ready() -> void:
 	self.spawn_player_snake(start_position, 7)
 	self._spawn_start_barriers()
 
-
-func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
-	var snake_head:= self.game_object_factory.create_object("PlayerSnakeHead", self)
-	var set_position_event:= GameEngine.Event.new(
-		"SetPosition",
-		{"position": start_position}
-	)
-	snake_head.fire_event(set_position_event)
-
-	var jg_snake_body: Components.SnakeBody = snake_head.components.get("SnakeBody")
-
-	for snake_body_idx in range(snake_length-1):
-		var new_snake_body_obj:= self.game_object_factory.create_object("SnakeBody", self)
-		var tail: GameEngine.GameObject = jg_snake_body.get_tail_game_object()
-
-		Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
-
-		set_position_event = GameEngine.Event.new(
-			"SetPosition",
-			{"position": tail.physics_body.global_position + (Vector2.DOWN * self.BASE_MOVE_SPEED)}
-		)
-		new_snake_body_obj.fire_event(set_position_event)
-
-
-func _spawn_start_barriers() -> void:
-	for coordinate in range(self.max_simple_size.x):
-		self._spawn_barrier(Vector2(coordinate, 0))
-		self._spawn_barrier(Vector2(coordinate, self.max_simple_size.y-1))
-		self._spawn_barrier(Vector2(0, coordinate))
-		self._spawn_barrier(Vector2(self.max_simple_size.x-1, coordinate))
-
-
-func _spawn_barrier(position: Vector2) -> void:
-	var world_position: Vector2 = convert_simple_to_world_coordinates(position)
-	var barrier:= self.game_object_factory.create_object("Barrier", self)
-	var set_position_event:= GameEngine.Event.new(
-		"SetPosition",
-		{"position": world_position}
-	)
-	barrier.fire_event(set_position_event)
-
-
-func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
-	var new_coordinates:= (
-			(coordinates.round() - (Vector2.ONE * (self.BASE_MOVE_SPEED / 2)))
-			.snapped(Vector2.ONE * self.BASE_MOVE_SPEED) / self.BASE_MOVE_SPEED
-	)
-	return new_coordinates
-
-
-func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
-	var new_coordinates:= (
-			(coordinates.round() * self.BASE_MOVE_SPEED)
-			+ (Vector2.ONE * (self.BASE_MOVE_SPEED / 2))
-	)
-	return new_coordinates
-
-
-func _fire_change_direction_event(input_name: String) -> void:
-	var new_event:= GameEngine.Event.new("TryChangeDirection", {"input": input_name})
-	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
-	print(self.get_empty_positions())
-
-
-func get_empty_positions() -> Array:
-	var empty_positions: Array = []
-	var query_scene: PackedScene = load(self.SCENES_PATH + "CollisionQuery.tscn")
-	var query_area: Area2D = query_scene.instantiate()
-	self.add_child(query_area)
-
-	# todo: make range all VISIBLE positions
-	for y in range(self.max_simple_size.y):
-		for x in range(self.max_simple_size.x):
-			var world_position = self.convert_simple_to_world_coordinates(Vector2(x, y))
-			query_area.global_position = world_position
-			if query_area.has_overlapping_areas():
-				empty_positions.append(world_position)
-
-	return empty_positions
+	await get_tree().create_timer(0.01).timeout
+	self.spawn_apple()
 
 
 func _physics_process(delta: float) -> void:
@@ -124,3 +47,111 @@ func _physics_process(delta: float) -> void:
 		self.game_object_factory.notify_subscribers(new_event, "movable")
 
 		ticks = 0
+
+
+func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
+	var new_coordinates:= (
+			(coordinates.round() * self.BASE_MOVE_SPEED)
+			+ (Vector2.ONE * (self.BASE_MOVE_SPEED / 2))
+	)
+	return new_coordinates
+
+
+func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
+	var new_coordinates:= (
+			(coordinates.round() - (Vector2.ONE * (self.BASE_MOVE_SPEED / 2)))
+			.snapped(Vector2.ONE * self.BASE_MOVE_SPEED) / self.BASE_MOVE_SPEED
+	)
+	return new_coordinates
+
+
+func spawn_apple() -> void:
+	var apple:= self.game_object_factory.create_object("Apple", self)
+	var set_position_event:= GameEngine.Event.new(
+		"SetPosition",
+		{"position": self.get_random_valid_world_position()}
+	)
+	apple.fire_event(set_position_event)
+
+
+func spawn_player_body(player_game_object: GameEngine.GameObject) -> void:
+	var player_snake_body: Components.SnakeBody = player_game_object.components.get("SnakeBody")
+	var new_snake_body_obj:= self.game_object_factory.create_object("SnakeBody", self)
+	var tail: GameEngine.GameObject = player_snake_body.get_tail_game_object()
+
+	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
+
+	var set_position_event:= GameEngine.Event.new(
+		"SetPosition",
+		{"position": tail.physics_body.global_position + (Vector2.DOWN * self.BASE_MOVE_SPEED)}
+	)
+	new_snake_body_obj.fire_event(set_position_event)
+
+
+func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
+	var snake_head:= self.game_object_factory.create_object("PlayerSnakeHead", self)
+	var set_position_event:= GameEngine.Event.new(
+		"SetPosition",
+		{"position": start_position}
+	)
+	snake_head.fire_event(set_position_event)
+
+	for snake_body_idx in range(snake_length-1):
+		self.spawn_player_body(snake_head)
+
+
+func get_random_valid_world_position() -> Vector2:
+	var taken_positions: Array = []
+	var query_area: Area2D = self.get_node("Camera2D/CollisionQuery")
+
+	if query_area.has_overlapping_areas():
+		for area in query_area.get_overlapping_areas():
+			taken_positions.append(area.global_position)
+
+	var position:= Vector2.ONE
+
+	for try_count in range(1000):
+		position = self.get_random_world_position()
+		if position not in taken_positions:
+			break
+
+	return position
+
+
+func get_random_world_position() -> Vector2:
+	var rng:= RandomNumberGenerator.new()
+	var position:= Vector2(
+			rng.randi_range(0, self.max_simple_size.x-1),
+			rng.randi_range(0, self.max_simple_size.y-1),
+	)
+	position = self.convert_simple_to_world_coordinates(position)
+
+	return position
+
+
+func _fire_change_direction_event(input_name: String) -> void:
+	var new_event:= GameEngine.Event.new("TryChangeDirection", {"input": input_name})
+	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _spawn_barrier(position: Vector2) -> void:
+	var world_position: Vector2 = convert_simple_to_world_coordinates(position)
+	var barrier:= self.game_object_factory.create_object("Barrier", self)
+	var set_position_event:= GameEngine.Event.new(
+		"SetPosition",
+		{"position": world_position}
+	)
+	barrier.fire_event(set_position_event)
+
+
+func _spawn_start_barriers() -> void:
+	self._spawn_barrier(Vector2(0, 0))
+	self._spawn_barrier(Vector2(self.max_simple_size.x-1, 0))
+	self._spawn_barrier(Vector2(0, self.max_simple_size.y-1))
+	self._spawn_barrier(Vector2(self.max_simple_size.x-1, self.max_simple_size.y-1))
+
+	for coordinate in range(1, self.max_simple_size.x-1):
+		self._spawn_barrier(Vector2(coordinate, 0))
+		self._spawn_barrier(Vector2(coordinate, self.max_simple_size.y-1))
+		self._spawn_barrier(Vector2(0, coordinate))
+		self._spawn_barrier(Vector2(self.max_simple_size.x-1, coordinate))

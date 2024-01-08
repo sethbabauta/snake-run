@@ -32,12 +32,13 @@ class Event:
 
 class GameObject:
 	var name: String
-	var main_node: Node
+	var main_node: Main
 	var components: Dictionary
 	var physics_body: Area2D
 	var factory_from: GameObjectFactory
 	var component_priority: Array
 	var fire_event_complete: Array = []
+	var subscribed_to: Array = []
 
 
 	func _init(
@@ -74,6 +75,14 @@ class GameObject:
 	func queue_event_job(target: GameObject, new_event: Event) -> void:
 		var event_job: Array = [target, new_event]
 		self.fire_event_complete.append(event_job)
+
+
+	func delete_self() -> void:
+		var subscribed_copy = self.subscribed_to.duplicate(true)
+		for list_name in subscribed_copy:
+			self.factory_from.unsubscribe(self, list_name)
+
+		self.physics_body.queue_free()
 
 
 class GameObjectFactory:
@@ -297,10 +306,14 @@ class GameObjectFactory:
 		else:
 			self.subscribe_lists[list_name] = [game_object]
 
+		game_object.subscribed_to.append(list_name)
+
 
 	func unsubscribe(game_object: GameObject, list_name: String) -> void:
 		if self.subscribe_lists.has(list_name):
 			self.subscribe_lists[list_name].erase(game_object)
+
+		game_object.subscribed_to.erase(list_name)
 
 
 	func notify_subscribers(event: Event, list_name: String) -> void:

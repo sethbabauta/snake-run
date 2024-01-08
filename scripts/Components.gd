@@ -57,7 +57,22 @@ class Movable extends Component:
 
 
 class Nutritious extends Component:
-	pass
+
+	func _eat_nutritious(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		if eater:
+			var new_event:= Event.new("Grow", {"amount": 1})
+			eater.fire_event(new_event)
+
+		self.game_object.main_node.spawn_apple()
+		self.game_object.delete_self()
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			self._eat_nutritious(event)
+
+		return event
 
 
 class PhysicsBody extends Component:
@@ -84,9 +99,15 @@ class PhysicsBody extends Component:
 				area.game_object.fire_event(new_event)
 
 
+	func _grow() -> void:
+		self.game_object.main_node.spawn_player_body(self.game_object)
+
+
 	func fire_event(event: Event) -> Event:
 		if event.id == "MovedForward":
 			self._check_eat()
+		if event.id == "Grow":
+			self._grow()
 
 		return event
 
