@@ -1,0 +1,1 @@
+class_name CollisionQuery extends Area2D

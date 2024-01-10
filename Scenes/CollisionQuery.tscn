@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cldb30o8i8473"]
+
+[ext_resource type="Script" path="res://CollisionQuery.gd" id="1_vatsn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nrc2q"]
+size = Vector2(640, 640)
+
+[node name="CollisionQuery" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1_vatsn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nrc2q")
