@@ -11,6 +11,22 @@ class Movable extends Component:
 		self.game_object.factory_from.subscribe(game_object, "movable")
 
 
+	func fire_event(event: Event) -> Event:
+		if event.id == "MoveForward":
+			self._move_forward()
+		if event.id == "ChangeDirection":
+			self._change_direction(event)
+		if event.id == "TryChangeDirection":
+			self._try_change_direction(event)
+
+		return event
+
+
+	func _change_direction(event: Event) -> void:
+		if event.parameters.get("direction") in self.VALID_DIRECTIONS:
+			self.direction = event.parameters.get("direction")
+
+
 	func _move_forward() -> void:
 		match self.direction:
 			"N":
@@ -34,29 +50,20 @@ class Movable extends Component:
 		self.game_object.queue_event_job(self.game_object, new_event)
 
 
-	func _change_direction(event: Event) -> void:
-		if event.parameters.get("direction") in self.VALID_DIRECTIONS:
-			self.direction = event.parameters.get("direction")
-
-
 	func _try_change_direction(event: Event) -> void:
 		var new_event:= Event.new("ChangeDirection", event.parameters.duplicate(true))
 		new_event.parameters["current_direction"] = self.direction
 		self.game_object.queue_event_job(self.game_object, new_event)
 
 
+class Nutritious extends Component:
+
 	func fire_event(event: Event) -> Event:
-		if event.id == "MoveForward":
-			self._move_forward()
-		if event.id == "ChangeDirection":
-			self._change_direction(event)
-		if event.id == "TryChangeDirection":
-			self._try_change_direction(event)
+		if event.id == "Eat":
+			self._eat_nutritious(event)
 
 		return event
 
-
-class Nutritious extends Component:
 
 	func _eat_nutritious(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
@@ -66,13 +73,6 @@ class Nutritious extends Component:
 
 		self.game_object.main_node.spawn_apple()
 		self.game_object.delete_self()
-
-
-	func fire_event(event: Event) -> Event:
-		if event.id == "Eat":
-			self._eat_nutritious(event)
-
-		return event
 
 
 class PhysicsBody extends Component:
@@ -85,6 +85,15 @@ class PhysicsBody extends Component:
 		self.physics_body_node = self.physics_body_scene.instantiate()
 
 
+	func fire_event(event: Event) -> Event:
+		if event.id == "MovedForward":
+			self._check_eat()
+		if event.id == "Grow":
+			self._grow()
+
+		return event
+
+
 	func first_time_setup() -> void:
 		self.game_object.physics_body = self.physics_body_node
 		self.game_object.main_node.add_child(self.physics_body_node)
@@ -95,26 +104,17 @@ class PhysicsBody extends Component:
 		if self.physics_body_node.has_overlapping_areas():
 			var areas: Array = self.physics_body_node.get_overlapping_areas().duplicate(true)
 			var new_event:= Event.new("Eat", {"eater": self.game_object})
+
 			for area in areas:
 				area.game_object.fire_event(new_event)
 
 
 	func _grow() -> void:
-		self.game_object.main_node.spawn_player_body(self.game_object)
-
-
-	func fire_event(event: Event) -> Event:
-		if event.id == "MovedForward":
-			self._check_eat()
-		if event.id == "Grow":
-			self._grow()
-
-		return event
+		self.game_object.main_node.spawn_player_body(self.game_object, Vector2.ZERO)
 
 
 class PlayerControlled extends Component:
 	var last_direction_moved: String = "0"
-
 
 	func _init(game_object: GameObject = null) -> void:
 		super(game_object)
@@ -123,7 +123,16 @@ class PlayerControlled extends Component:
 		)
 
 
-	func change_direction(event: Event) -> void:
+	func fire_event(event: Event) -> Event:
+		if event.id == "ChangeDirection":
+			self._change_direction(event)
+		if event.id == "MovedForward":
+			self._save_direction(event)
+
+		return event
+
+
+	func _change_direction(event: Event) -> void:
 		var new_direction: String
 		match event.parameters.get("input"):
 			"turn_up":
@@ -144,10 +153,6 @@ class PlayerControlled extends Component:
 			event.parameters["direction"] = "0"
 
 
-	func save_direction(event: Event) -> void:
-		self.last_direction_moved = event.parameters.get("direction")
-
-
 	func _is_opposite_direction(
 			current_direction: String,
 			new_direction: String,
@@ -164,19 +169,11 @@ class PlayerControlled extends Component:
 		return false
 
 
-	func fire_event(event: Event) -> Event:
-		if event.id == "ChangeDirection":
-			self.change_direction(event)
-		if event.id == "MovedForward":
-			self.save_direction(event)
-
-		return event
+	func _save_direction(event: Event) -> void:
+		self.last_direction_moved = event.parameters.get("direction")
 
 
 class Poisonous extends Component:
-
-	func _end_game() -> void:
-		self.game_object.main_node.get_tree().quit()
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
@@ -185,15 +182,14 @@ class Poisonous extends Component:
 		return event
 
 
+	func _end_game() -> void:
+		self.game_object.main_node.get_tree().quit()
+
+
 class Render extends Component:
 	var texture: String = ""
 	var sprite_node: Sprite2D
-
-
-	func first_time_setup() -> void:
-		self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
-		self.sprite_node.texture = load(self.texture)
-
+	var z_idx: int
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "SetPosition":
@@ -204,10 +200,24 @@ class Render extends Component:
 		return event
 
 
+	func first_time_setup() -> void:
+		self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
+		self.sprite_node.texture = load(self.texture)
+		self.sprite_node.z_index = z_idx
+
+
 class SnakeBody extends Component:
 	var next_body: GameObject = null
 	var prev_body: GameObject = null
 	var prev_location: Vector2
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "FollowNextBody":
+			self._follow_next_body()
+		if event.id == "MoveForward":
+			self._move_forward()
+
+		return event
 
 
 	static func connect_bodies(
@@ -248,12 +258,3 @@ class SnakeBody extends Component:
 
 		if self.prev_body:
 			self.game_object.queue_event_job(prev_body, Event.new("FollowNextBody"))
-
-
-	func fire_event(event: Event) -> Event:
-		if event.id == "FollowNextBody":
-			self._follow_next_body()
-		if event.id == "MoveForward":
-			self._move_forward()
-
-		return event

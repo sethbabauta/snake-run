@@ -4,7 +4,7 @@
 </Blueprint>
 
 <Blueprint Name="SnakeBody" Inherits="PhysicalObject">
-	<Component Name="Render" texture="snake.png"/>
+	<Component Name="Render" texture="snake.png" z_idx="1"/>
 	<Component Name="SnakeBody"/>
 	<Component Name="Poisonous"/>
 </Blueprint>
@@ -15,7 +15,7 @@
 </Blueprint>
 
 <Blueprint Name="Barrier" Inherits="PhysicalObject">
-	<Component Name="Render" texture="barrier.png"/>
+	<Component Name="Render" texture="barrier.png" z_idx="2"/>
 	<Component Name="Poisonous"/>
 </Blueprint>
 

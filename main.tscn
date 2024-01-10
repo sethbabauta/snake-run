@@ -10,3 +10,9 @@ script = ExtResource("1_rch0c")
 position = Vector2(320, 320)
 
 [node name="CollisionQuery" parent="Camera2D" instance=ExtResource("2_rragb")]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.15
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

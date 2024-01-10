@@ -20,33 +20,30 @@ func _ready() -> void:
 	self.max_simple_size = get_viewport().get_visible_rect().size / BASE_MOVE_SPEED
 
 	var start_position: Vector2 = self.convert_simple_to_world_coordinates(Vector2(9, 9))
-	self.spawn_player_snake(start_position, 7)
+	self.spawn_player_snake(start_position, 5)
 	self._spawn_start_barriers()
 
 	await get_tree().create_timer(0.01).timeout
 	self.spawn_apple()
 
 
-func _physics_process(delta: float) -> void:
-	ticks += 1
-
-	if Input.is_action_just_pressed("turn_up"):
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("turn_up"):
 		_fire_change_direction_event("turn_up")
 
-	if Input.is_action_just_pressed("turn_left"):
+	if event.is_action_pressed("turn_left"):
 		_fire_change_direction_event("turn_left")
 
-	if Input.is_action_just_pressed("turn_down"):
+	if event.is_action_pressed("turn_down"):
 		_fire_change_direction_event("turn_down")
 
-	if Input.is_action_just_pressed("turn_right"):
+	if event.is_action_pressed("turn_right"):
 		_fire_change_direction_event("turn_right")
 
-	if ticks > self.TICK_THRESHOLD:
-		var new_event:= GameEngine.Event.new("MoveForward")
-		self.game_object_factory.notify_subscribers(new_event, "movable")
 
-		ticks = 0
+func _on_timer_timeout() -> void:
+	var new_event:= GameEngine.Event.new("MoveForward")
+	await self.game_object_factory.notify_subscribers(new_event, "movable")
 
 
 func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
@@ -74,7 +71,11 @@ func spawn_apple() -> void:
 	apple.fire_event(set_position_event)
 
 
-func spawn_player_body(player_game_object: GameEngine.GameObject) -> void:
+func spawn_player_body(
+		player_game_object: GameEngine.GameObject,
+		spawn_direction: Vector2 = Vector2.DOWN,
+) -> void:
+
 	var player_snake_body: Components.SnakeBody = player_game_object.components.get("SnakeBody")
 	var new_snake_body_obj:= self.game_object_factory.create_object("SnakeBody", self)
 	var tail: GameEngine.GameObject = player_snake_body.get_tail_game_object()
@@ -83,7 +84,7 @@ func spawn_player_body(player_game_object: GameEngine.GameObject) -> void:
 
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
-		{"position": tail.physics_body.global_position + (Vector2.DOWN * self.BASE_MOVE_SPEED)}
+		{"position": tail.physics_body.global_position + (spawn_direction * self.BASE_MOVE_SPEED)}
 	)
 	new_snake_body_obj.fire_event(set_position_event)
 

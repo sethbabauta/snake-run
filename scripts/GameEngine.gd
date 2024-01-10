@@ -55,7 +55,7 @@ class GameObject:
 
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
-#        print("event: ", event.id, " ", event.parameters)
+#		print("event: ", event.id, " ", event.parameters)
 		# higher priority number first
 		for component_name in component_priority:
 			event = self.components[component_name].fire_event(event)
