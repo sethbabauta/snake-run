@@ -72,15 +72,15 @@ func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
 
 
 func spawn_apple() -> void:
-	var rng:= RandomNumberGenerator.new()
-	var roll: int = rng.randi_range(1, 20)
-	if self.score > 20 and roll > 15:
-		var poison_apple:= self.game_object_factory.create_object("PoisonApple", self)
-		var set_position_event:= GameEngine.Event.new(
-			"SetPosition",
-			{"position": self.get_random_valid_world_position()}
-		)
-		poison_apple.fire_event(set_position_event)
+#	var rng:= RandomNumberGenerator.new()
+#	var roll: int = rng.randi_range(1, 20)
+#	if self.score > 20 and roll > 15:
+#		var poison_apple:= self.game_object_factory.create_object("PoisonApple", self)
+#		var set_position_event:= GameEngine.Event.new(
+#			"SetPosition",
+#			{"position": self.get_random_valid_world_position()}
+#		)
+#		poison_apple.fire_event(set_position_event)
 
 	var apple:= self.game_object_factory.create_object("Apple", self)
 	var set_position_event:= GameEngine.Event.new(
