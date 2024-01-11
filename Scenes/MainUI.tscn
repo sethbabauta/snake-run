@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://2esaq6uvofnq"]
 
-[ext_resource type="Script" path="res://Scenes/main_ui.gd" id="1_2vvkr"]
+[ext_resource type="Script" path="res://Scripts/main_ui.gd" id="1_7s0us"]
 
 [node name="MainUI" type="Control" node_paths=PackedStringArray("score_label")]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_2vvkr")
+script = ExtResource("1_7s0us")
 score_label = NodePath("Score")
 
 [node name="Score" type="Label" parent="."]
