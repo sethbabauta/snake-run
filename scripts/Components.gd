@@ -66,6 +66,7 @@ class Nutritious extends Component:
 
 
 	func _eat_nutritious(event: Event) -> void:
+		self.game_object.main_node.add_to_score(1)
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		if eater:
 			var new_event:= Event.new("Grow", {"amount": 1})

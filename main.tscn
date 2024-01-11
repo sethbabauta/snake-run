@@ -1,18 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://bung5knnx5cud"]
+[gd_scene load_steps=4 format=3 uid="uid://bung5knnx5cud"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_rch0c"]
 [ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/CollisionQuery.tscn" id="2_rragb"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/MainUI.tscn" id="3_ll2od"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_rch0c")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.15
+autostart = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 320)
 
 [node name="CollisionQuery" parent="Camera2D" instance=ExtResource("2_rragb")]
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 0.15
-autostart = true
+[node name="MainUI" parent="." instance=ExtResource("3_ll2od")]
+z_index = 10
 
+[connection signal="SCORE_CHANGED" from="." to="MainUI" method="_on_main_score_changed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
