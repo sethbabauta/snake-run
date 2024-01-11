@@ -1,13 +1,16 @@
 class_name Main extends Node
 
+signal SCORE_CHANGED
+
 const BLUEPRINTS_PATH = "res://Blueprints.txt"
 const SCENES_PATH = "res://Scenes/"
 const SPRITES_PATH = "res://Sprites/"
 const PHYSICS_OBJECT_PATH = "res://Scenes/PhysicsObject.tscn"
 const TICK_THRESHOLD = 10
 const BASE_MOVE_SPEED = 32
+const START_LENGTH = 5
 
-var ticks: int = 0
+var score: int = START_LENGTH
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
 
@@ -17,10 +20,11 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	SCORE_CHANGED.emit(self.score)
 	self.max_simple_size = get_viewport().get_visible_rect().size / BASE_MOVE_SPEED
 
 	var start_position: Vector2 = self.convert_simple_to_world_coordinates(Vector2(9, 9))
-	self.spawn_player_snake(start_position, 5)
+	self.spawn_player_snake(start_position, self.START_LENGTH)
 	self._spawn_start_barriers()
 
 	await get_tree().create_timer(0.01).timeout
@@ -46,6 +50,11 @@ func _on_timer_timeout() -> void:
 	await self.game_object_factory.notify_subscribers(new_event, "movable")
 
 
+func add_to_score(amount: int) -> void:
+	self.score += amount
+	SCORE_CHANGED.emit(self.score)
+
+
 func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
 	var new_coordinates:= (
 			(coordinates.round() * self.BASE_MOVE_SPEED)
@@ -63,6 +72,16 @@ func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
 
 
 func spawn_apple() -> void:
+#	var rng:= RandomNumberGenerator.new()
+#	var roll: int = rng.randi_range(1, 20)
+#	if self.score > 20 and roll > 15:
+#		var poison_apple:= self.game_object_factory.create_object("PoisonApple", self)
+#		var set_position_event:= GameEngine.Event.new(
+#			"SetPosition",
+#			{"position": self.get_random_valid_world_position()}
+#		)
+#		poison_apple.fire_event(set_position_event)
+
 	var apple:= self.game_object_factory.create_object("Apple", self)
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
