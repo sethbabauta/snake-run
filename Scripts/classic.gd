@@ -2,10 +2,10 @@ class_name Main extends Node
 
 signal SCORE_CHANGED
 
-const BLUEPRINTS_PATH = "res://Blueprints.txt"
+const BLUEPRINTS_PATH = "res://blueprints.txt"
 const SCENES_PATH = "res://Scenes/"
 const SPRITES_PATH = "res://Sprites/"
-const PHYSICS_OBJECT_PATH = "res://Scenes/PhysicsObject.tscn"
+const PHYSICS_OBJECT_PATH = "res://Scenes/physics_object.tscn"
 const TICK_THRESHOLD = 10
 const BASE_MOVE_SPEED = 32
 const START_LENGTH = 5

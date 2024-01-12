@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bung5knnx5cud"]
+
+[ext_resource type="Script" path="res://Scripts/classic.gd" id="1_rch0c"]
+[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="2_rragb"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="3_t4vht"]
+
+[node name="Classic" type="Node"]
+script = ExtResource("1_rch0c")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.15
+autostart = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 320)
+
+[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("2_rragb")]
+
+[node name="GameUI" parent="." instance=ExtResource("3_t4vht")]
+
+[connection signal="SCORE_CHANGED" from="." to="GameUI" method="_on_classic_score_changed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

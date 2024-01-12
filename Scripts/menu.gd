@@ -1,6 +1,7 @@
 class_name Menu extends Control
 
-@export var main_node: PackedScene
+@export var classic_node: PackedScene
+
 
 func _on_start_pressed() -> void:
-	pass # Replace with function body.
+	get_tree().change_scene_to_packed(classic_node)
