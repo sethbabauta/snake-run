@@ -178,13 +178,9 @@ class Poisonous extends Component:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._end_game()
+			self.game_object.main_node.gamemode_node.end_game()
 
 		return event
-
-
-	func _end_game() -> void:
-		self.game_object.main_node.get_tree().quit()
 
 
 class Render extends Component:

@@ -1,6 +1,7 @@
 class_name Main extends Node
 
 @export var query_area: Area2D
+@export var gamemode_node: Node
 
 signal SCORE_CHANGED
 
@@ -10,9 +11,8 @@ const SPRITES_PATH = "res://Sprites/"
 const PHYSICS_OBJECT_PATH = "res://Scenes/physics_object.tscn"
 const TICK_THRESHOLD = 10
 const BASE_MOVE_SPEED = 32
-const START_LENGTH = 5
 
-var score: int = START_LENGTH
+var score: int
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
 
@@ -22,6 +22,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	self.score = gamemode_node.START_LENGTH
 	SCORE_CHANGED.emit(self.score)
 	self.max_simple_size = get_viewport().get_visible_rect().size / BASE_MOVE_SPEED
 
@@ -105,7 +106,6 @@ func spawn_player_body(
 
 func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
 	var snake_head:= self.game_object_factory.create_object("PlayerSnakeHead", self)
-	print("test", snake_head.main_node)
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
 		{"position": start_position}

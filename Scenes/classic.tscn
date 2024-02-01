@@ -8,10 +8,12 @@
 [node name="Classic" type="Node" node_paths=PackedStringArray("main_node")]
 script = ExtResource("1_rch0c")
 main_node = NodePath("Main")
+menu_scene = "res://Scenes/menu.tscn"
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area")]
+[node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
 script = ExtResource("1_uov1u")
 query_area = NodePath("../Camera2D/CollisionQuery")
+gamemode_node = NodePath("..")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.15

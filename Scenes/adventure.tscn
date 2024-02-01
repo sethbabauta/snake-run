@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://bp7t0beqye1cy"]
+
+[ext_resource type="Script" path="res://Scripts/adventure.gd" id="1_h5vo3"]
+[ext_resource type="Script" path="res://Scripts/main.gd" id="2_qgmaq"]
+[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="3_43hq6"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="4_gegtj"]
+
+[node name="Adventure" type="Node" node_paths=PackedStringArray("main_node")]
+script = ExtResource("1_h5vo3")
+main_node = NodePath("Main")
+menu_scene = "res://Scenes/menu.tscn"
+
+[node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
+script = ExtResource("2_qgmaq")
+query_area = NodePath("../Camera2D/CollisionQuery")
+gamemode_node = NodePath("..")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.15
+autostart = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 320)
+
+[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("3_43hq6")]
+
+[node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
+
+[connection signal="SCORE_CHANGED" from="Main" to="GameUI" method="_on_main_score_changed"]
+[connection signal="timeout" from="Timer" to="Main" method="_on_timer_timeout"]
