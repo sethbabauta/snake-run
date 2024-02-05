@@ -8,7 +8,7 @@
 [node name="Adventure" type="Node" node_paths=PackedStringArray("main_node")]
 script = ExtResource("1_h5vo3")
 main_node = NodePath("Main")
-menu_scene = "res://Scenes/menu.tscn"
+adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
 script = ExtResource("2_qgmaq")

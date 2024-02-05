@@ -1,7 +1,7 @@
 class_name Adventure extends Node
 
 @export var main_node: Main
-@export_file("*.tscn") var menu_scene
+@export_file("*.tscn") var adventure_death_screen
 
 const START_LENGTH = 3
 
@@ -15,4 +15,4 @@ func _ready():
 
 
 func end_game() -> void:
-	get_tree().change_scene_to_file(menu_scene)
+	get_tree().change_scene_to_file(adventure_death_screen)

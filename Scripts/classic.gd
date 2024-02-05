@@ -1,7 +1,7 @@
 class_name Classic extends Node
 
 @export var main_node: Main
-@export_file("*.tscn") var menu_scene
+@export_file("*.tscn") var classic_death_screen
 
 const START_LENGTH = 5
 
@@ -15,5 +15,5 @@ func _ready():
 
 
 func end_game() -> void:
-	get_tree().change_scene_to_file(menu_scene)
+	get_tree().change_scene_to_file(classic_death_screen)
 
