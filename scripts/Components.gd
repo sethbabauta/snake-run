@@ -6,8 +6,8 @@ class Movable extends Component:
 	var speed: int = 0
 	var direction: String = "N"
 
-	func _init(game_object: GameObject = null) -> void:
-		super(game_object)
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
 		self.game_object.factory_from.subscribe(game_object, "movable")
 
 
@@ -81,8 +81,8 @@ class PhysicsBody extends Component:
 	var physics_body_node: PhysicsObject
 
 
-	func _init(game_object: GameObject = null) -> void:
-		super(game_object)
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
 		self.physics_body_node = self.physics_body_scene.instantiate()
 
 
@@ -117,8 +117,8 @@ class PhysicsBody extends Component:
 class PlayerControlled extends Component:
 	var last_direction_moved: String = "0"
 
-	func _init(game_object: GameObject = null) -> void:
-		super(game_object)
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
 		self.game_object.factory_from.subscribe(
 				game_object, "player_controlled"
 		)

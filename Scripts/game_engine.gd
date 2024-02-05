@@ -8,8 +8,10 @@ class Component:
 	"""
 	var name: String
 	var game_object: GameObject
+	var priority: int
 
-	func _init(game_object: GameObject = null) -> void:
+	func _init(name: String, game_object: GameObject = null) -> void:
+		self.name = name
 		self.game_object = game_object
 
 
@@ -19,6 +21,21 @@ class Component:
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
 		return event
+		
+		
+	func set_parameters(component_parameters: Dictionary) -> void:
+		for parameter_name in component_parameters.keys():
+			if parameter_name == "texture":
+				component_parameters[parameter_name] = (
+						Main.SPRITES_PATH + component_parameters[parameter_name]
+				)
+
+			if parameter_name in self:
+				self[parameter_name] = component_parameters[parameter_name]
+				
+				
+	func _to_string() -> String:
+		return "%d, priority: %d" % [self.name, self.priority]
 
 
 class Event:
@@ -52,13 +69,38 @@ class GameObject:
 		self.components = components
 		self.physics_body = physics_body
 
+	
+	func add_component(
+			component_name: String,
+			component_parameters: Dictionary,
+	) -> void:
+		var components_class: Components = Components.new()
+		var new_component: Variant = (
+				components_class[component_name].new(component_name, self)
+		)
+		new_component.set_parameters(component_parameters)
+		new_component.first_time_setup()
+
+		self.components[component_name] = new_component
+
+		# add to component_priority
+		self._insert_component_priority(new_component)
+	
+	
+	func delete_self() -> void:
+		var subscribed_copy = self.subscribed_to.duplicate(true)
+		for list_name in subscribed_copy:
+			self.factory_from.unsubscribe(self, list_name)
+
+		self.physics_body.queue_free()
+
 
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
 #		print("event: ", event.id, " ", event.parameters)
 		# higher priority number first
-		for component_name in component_priority:
-			event = self.components[component_name].fire_event(event)
+		for component in self.component_priority:
+			event = self.components[component.name].fire_event(event)
 
 		if self.fire_event_complete:
 			var event_job_queue: Array = self.fire_event_complete.duplicate(true)
@@ -75,15 +117,29 @@ class GameObject:
 	func queue_event_job(target: GameObject, new_event: Event) -> void:
 		var event_job: Array = [target, new_event]
 		self.fire_event_complete.append(event_job)
-
-
-	func delete_self() -> void:
-		var subscribed_copy = self.subscribed_to.duplicate(true)
-		for list_name in subscribed_copy:
-			self.factory_from.unsubscribe(self, list_name)
-
-		self.physics_body.queue_free()
-
+		
+		
+	func remove_component(component_name: String) -> void:
+		if component_name in self.components:
+			self.component_priority.erase(component_name)
+			self.components.erase(component_name)
+			
+			
+	func _component_priority_bsearch_function(
+			current_component: Component,
+			new_component: Component,
+	) -> bool:
+		# descending
+		return current_component.priority > new_component.priority
+	
+	
+	func _insert_component_priority(new_component: Component) -> void:
+		var insert_index: int = self.component_priority.bsearch_custom(
+				new_component,
+				self._component_priority_bsearch_function,
+		)
+		self.component_priority.insert(insert_index, new_component)
+		
 
 class GameObjectFactory:
 	var blueprints: Dictionary = {}
@@ -126,33 +182,12 @@ class GameObjectFactory:
 		return new_blueprint
 
 
-	func _get_component_priority(blueprint: Dictionary) -> Array:
-		var temp_component_priority: Array = []
-		var component_priority: Array = []
-
-		# format for sorting like [["name", 100], ["name2", 99]]
-		for component_name in blueprint["components"].keys():
-			var priority:= int(blueprint["components"][component_name]["priority"])
-			var formatted_component: Array = [component_name, priority]
-			temp_component_priority.append(formatted_component)
-
-		# sort descending
-		temp_component_priority.sort_custom(func(a, b): return a[1] > b[1])
-
-		# format for saving like ["name2", "name"]
-		for component in temp_component_priority:
-			component_priority.append(component[0])
-
-		return component_priority
-
-
 	func _format_blueprint(parser: XMLParser, blueprints: Dictionary) -> Dictionary:
 		const MAX_LOOPS = 1000
 
 		var blueprint: Dictionary = {
 			"parameters": {},
 			"components": {},
-			"component_priority": []
 		}
 		var blueprint_parameters: Dictionary = self._get_blueprint_parameters(parser)
 		blueprint["parameters"] = blueprint_parameters
@@ -186,8 +221,6 @@ class GameObjectFactory:
 			node_name = parser.get_node_name()
 			loop_count += 1
 
-		blueprint["component_priority"] = self._get_component_priority(blueprint)
-
 		return blueprint
 
 
@@ -201,7 +234,6 @@ class GameObjectFactory:
 					comp1: { p1: "p1", p2: "p2" },
 					comp2: { p1: "p1", p2: "p2" },
 				},
-				component_priority: [comp1, comp2],
 			},
 			bp2: {
 				parameters: { Name: "bp2", Inherits: "bp1" },
@@ -210,7 +242,6 @@ class GameObjectFactory:
 					comp2: { p1: "p1", p2: "p2" },
 					comp3: { p1: "p1", priority: "99" },
 				},
-				component_priority: [comp3, comp1, comp2],
 			},
 		}
 		"""
@@ -235,50 +266,17 @@ class GameObjectFactory:
 		return blueprints
 
 
-	func _set_component_parameters(
-			new_component: Variant,
-			component_parameters: Dictionary,
-	) -> void:
-		for parameter_name in component_parameters.keys():
-			if parameter_name == "texture":
-				component_parameters[parameter_name] = (
-						Main.SPRITES_PATH + component_parameters[parameter_name]
-				)
-
-			if parameter_name in new_component:
-				new_component[parameter_name] = component_parameters[parameter_name]
-
-
-	func _create_components(
+	func _add_components_from_blueprint(
 			blueprint_components: Dictionary,
 			game_object: GameObject,
-	) -> Dictionary:
-		var components_class: Components = Components.new()
-		var components: Dictionary = {}
-
+	) -> void:
 		for idx in blueprint_components.size():
 			var current_component_name: String = blueprint_components.keys()[idx]
-			assert(
-					current_component_name in components_class,
-					(
-							"Create Components error: Component name "
-							+ current_component_name
-							+ " not found."
-					),
-			)
 
 			var current_parameters: Dictionary = (
 					blueprint_components.values()[idx].duplicate(true)
 			)
-			var new_component: Variant = (
-					components_class[current_component_name].new(game_object)
-			)
-			self._set_component_parameters(new_component, current_parameters)
-			new_component.first_time_setup()
-
-			components[current_component_name] = new_component
-
-		return components
+			game_object.add_component(current_component_name, current_parameters)
 
 
 	func create_object(blueprint_name: String, main_node: Node) -> GameObject:
@@ -292,10 +290,7 @@ class GameObjectFactory:
 		var blueprint: Dictionary = self.blueprints.get(blueprint_name)
 		var blueprint_components: Dictionary = blueprint.get("components")
 
-		new_game_object.components = (
-				self._create_components(blueprint_components, new_game_object)
-		)
-		new_game_object.component_priority = blueprint.get("component_priority")
+		self._add_components_from_blueprint(blueprint_components, new_game_object)
 
 		return new_game_object
 
