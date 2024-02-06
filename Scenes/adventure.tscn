@@ -26,5 +26,4 @@ position = Vector2(320, 320)
 
 [node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
 
-[connection signal="SCORE_CHANGED" from="Main" to="GameUI" method="_on_main_score_changed"]
 [connection signal="timeout" from="Timer" to="Main" method="_on_timer_timeout"]

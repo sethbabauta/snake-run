@@ -3,8 +3,6 @@ class_name Main extends Node
 @export var query_area: Area2D
 @export var gamemode_node: Node
 
-signal SCORE_CHANGED
-
 const BLUEPRINTS_PATH = "res://blueprints.txt"
 const SCENES_PATH = "res://Scenes/"
 const SPRITES_PATH = "res://Sprites/"
@@ -12,7 +10,6 @@ const PHYSICS_OBJECT_PATH = "res://Scenes/physics_object.tscn"
 const TICK_THRESHOLD = 10
 const BASE_MOVE_SPEED = 32
 
-var score: int
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
 
@@ -22,8 +19,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	self.score = gamemode_node.START_LENGTH
-	SCORE_CHANGED.emit(self.score)
+	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
 	self.max_simple_size = get_viewport().get_visible_rect().size / BASE_MOVE_SPEED
 
 
@@ -44,11 +40,6 @@ func _input(event: InputEvent) -> void:
 func _on_timer_timeout() -> void:
 	var new_event:= GameEngine.Event.new("MoveForward")
 	self.game_object_factory.notify_subscribers(new_event, "movable")
-
-
-func add_to_score(amount: int) -> void:
-	self.score += amount
-	SCORE_CHANGED.emit(self.score)
 
 
 func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
