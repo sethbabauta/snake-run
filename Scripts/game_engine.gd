@@ -74,6 +74,7 @@ class GameObject:
 			component_name: String,
 			component_parameters: Dictionary,
 	) -> void:
+		print(component_parameters)
 		var components_class: Components = Components.new()
 		var new_component: Variant = (
 				components_class[component_name].new(component_name, self)

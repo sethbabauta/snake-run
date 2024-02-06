@@ -1,7 +1,7 @@
 class_name Adventure extends Node
 
-@export var main_node: Main
 @export_file("*.tscn") var adventure_death_screen
+@export var main_node: Main
 
 const START_LENGTH = 3
 

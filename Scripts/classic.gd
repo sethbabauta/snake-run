@@ -1,7 +1,7 @@
 class_name Classic extends Node
 
-@export var main_node: Main
 @export_file("*.tscn") var classic_death_screen
+@export var main_node: Main
 
 const START_LENGTH = 5
 

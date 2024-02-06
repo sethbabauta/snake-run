@@ -1,6 +1,22 @@
 class_name Components extends GameEngine
 
 
+class AIControlledSimple extends Component:
+	func fire_event(event: Event) -> Event:
+		if event.id == "MoveForward":
+			self._ponder_direction_change()
+
+		return event
+		
+		
+	func _ponder_direction_change() -> void:
+		# get current pos
+		# get closest player controlled pos
+		# determine next direction
+		# queue directoin change event
+		pass
+
+
 class Movable extends Component:
 	const VALID_DIRECTIONS: Array = ["N", "S", "E", "W"]
 	var speed: int = 0
