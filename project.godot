@@ -18,6 +18,7 @@ config/icon="res://Sprites/icon.svg"
 [autoload]
 
 ScoreKeeper="*res://Scripts/score_keeper.gd"
+Utils="*res://Scripts/utils.gd"
 
 [display]
 

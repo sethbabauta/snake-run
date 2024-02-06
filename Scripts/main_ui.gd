@@ -9,6 +9,3 @@ func _ready() -> void:
 
 func _on_score_changed(new_score: int) -> void:
 	score_label.text = "Score: %d" % new_score
-
-#func _on_main_score_changed(new_score: int) -> void:
-	#score_label.text = "Score: %d" % new_score
