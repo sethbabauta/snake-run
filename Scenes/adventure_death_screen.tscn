@@ -39,7 +39,7 @@ horizontal_alignment = 1
 
 [node name="DeathMessage" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = "LMFAOOOOOO"
+text = "LOL YOU DIED?!!?!"
 horizontal_alignment = 1
 
 [node name="PlayAgain" type="Button" parent="VBoxContainer"]

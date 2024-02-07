@@ -17,7 +17,9 @@ class AIControlledSimple extends Component:
 
 		var current_position: Vector2 = self.game_object.physics_body.global_position
 		var target_position: Vector2 = closest_object.physics_body.global_position
-		var direction: String = Utils.get_farthest_direction(current_position, target_position)
+		var direction: String = (
+				Utils.get_farthest_direction(current_position, target_position)
+		)
 
 		var new_event:= Event.new("ChangeDirection")
 		new_event.parameters["direction"] = direction
@@ -244,7 +246,6 @@ class SnakeBody extends Component:
 			next_body: GameObject,
 			prev_body: GameObject,
 	) -> void:
-
 		var next_body_snakebody: SnakeBody = next_body.components.get("SnakeBody")
 		var prev_body_snakebody: SnakeBody = prev_body.components.get("SnakeBody")
 		if next_body_snakebody and prev_body_snakebody:

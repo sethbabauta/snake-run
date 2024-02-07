@@ -8,7 +8,7 @@ class Component:
 	"""
 	var name: String
 	var game_object: GameObject
-	var priority: int
+	var priority: int = 100
 
 	func _init(name: String, game_object: GameObject = null) -> void:
 		self.name = name
@@ -74,7 +74,6 @@ class GameObject:
 			component_name: String,
 			component_parameters: Dictionary,
 	) -> void:
-		print(component_parameters)
 		var components_class: Components = Components.new()
 		var new_component: Variant = (
 				components_class[component_name].new(component_name, self)
@@ -84,7 +83,6 @@ class GameObject:
 
 		self.components[component_name] = new_component
 
-		# add to component_priority
 		self._insert_component_priority(new_component)
 
 
@@ -98,7 +96,6 @@ class GameObject:
 
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
-#		print("event: ", event.id, " ", event.parameters)
 		# higher priority number first
 		for component in self.component_priority:
 			event = self.components[component.name].fire_event(event)
@@ -148,7 +145,6 @@ class GameObjectFactory:
 
 	func _init() -> void:
 		self.blueprints = self.load_blueprints()
-#        print(self.blueprints)
 
 
 	func _get_blueprint_parameters(parser: XMLParser) -> Dictionary:
