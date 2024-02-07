@@ -21,19 +21,19 @@ class Component:
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
 		return event
-		
-		
+
+
 	func set_parameters(component_parameters: Dictionary) -> void:
 		for parameter_name in component_parameters.keys():
 			if parameter_name == "texture":
 				component_parameters[parameter_name] = (
-						Main.SPRITES_PATH + component_parameters[parameter_name]
+						Settings.SPRITES_PATH + component_parameters[parameter_name]
 				)
 
 			if parameter_name in self:
 				self[parameter_name] = component_parameters[parameter_name]
-				
-				
+
+
 	func _to_string() -> String:
 		return "%d, priority: %d" % [self.name, self.priority]
 
@@ -69,7 +69,7 @@ class GameObject:
 		self.components = components
 		self.physics_body = physics_body
 
-	
+
 	func add_component(
 			component_name: String,
 			component_parameters: Dictionary,
@@ -86,8 +86,8 @@ class GameObject:
 
 		# add to component_priority
 		self._insert_component_priority(new_component)
-	
-	
+
+
 	func delete_self() -> void:
 		var subscribed_copy = self.subscribed_to.duplicate(true)
 		for list_name in subscribed_copy:
@@ -118,29 +118,29 @@ class GameObject:
 	func queue_event_job(target: GameObject, new_event: Event) -> void:
 		var event_job: Array = [target, new_event]
 		self.fire_event_complete.append(event_job)
-		
-		
+
+
 	func remove_component(component_name: String) -> void:
 		if component_name in self.components:
 			self.component_priority.erase(component_name)
 			self.components.erase(component_name)
-			
-			
+
+
 	func _component_priority_bsearch_function(
 			current_component: Component,
 			new_component: Component,
 	) -> bool:
 		# descending
 		return current_component.priority > new_component.priority
-	
-	
+
+
 	func _insert_component_priority(new_component: Component) -> void:
 		var insert_index: int = self.component_priority.bsearch_custom(
 				new_component,
 				self._component_priority_bsearch_function,
 		)
 		self.component_priority.insert(insert_index, new_component)
-		
+
 
 class GameObjectFactory:
 	var blueprints: Dictionary = {}
@@ -248,7 +248,7 @@ class GameObjectFactory:
 		"""
 		var blueprints: Dictionary = {}
 		var parser: XMLParser = XMLParser.new()
-		parser.open(Main.BLUEPRINTS_PATH)
+		parser.open(Settings.BLUEPRINTS_PATH)
 
 		while parser.read() != ERR_FILE_EOF:
 			var node_name: String = parser.get_node_name()

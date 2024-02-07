@@ -6,7 +6,7 @@ class_name Classic extends Node
 const START_LENGTH = 5
 
 func _ready():
-	var start_position: Vector2 = main_node.convert_simple_to_world_coordinates(Vector2(9, 9))
+	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, self.START_LENGTH)
 	main_node._spawn_start_barriers()
 

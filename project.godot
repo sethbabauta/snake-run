@@ -19,6 +19,7 @@ config/icon="res://Sprites/icon.svg"
 
 ScoreKeeper="*res://Scripts/score_keeper.gd"
 Utils="*res://Scripts/utils.gd"
+Settings="*res://Scripts/settings.gd"
 
 [display]
 

@@ -7,14 +7,21 @@ class AIControlledSimple extends Component:
 			self._ponder_direction_change()
 
 		return event
-		
-		
+
+
 	func _ponder_direction_change() -> void:
-		# get current pos
-		# get closest player controlled pos
-		# determine next direction
-		# queue directoin change event
-		pass
+		var closest_object: GameEngine.GameObject = (
+				self.game_object.main_node
+				.get_closest_player_controlled(self.game_object)
+		)
+
+		var current_position: Vector2 = self.game_object.physics_body.global_position
+		var target_position: Vector2 = closest_object.physics_body.global_position
+		var direction: String = Utils.get_farthest_direction(current_position, target_position)
+
+		var new_event:= Event.new("ChangeDirection")
+		new_event.parameters["direction"] = direction
+		self.game_object.queue_event_job(self.game_object, new_event)
 
 
 class Movable extends Component:
@@ -47,19 +54,19 @@ class Movable extends Component:
 		match self.direction:
 			"N":
 				self.game_object.physics_body.global_translate(
-						Vector2.UP * Main.BASE_MOVE_SPEED
+						Vector2.UP * Settings.BASE_MOVE_SPEED
 				)
 			"S":
 				self.game_object.physics_body.global_translate(
-						Vector2.DOWN * Main.BASE_MOVE_SPEED
+						Vector2.DOWN * Settings.BASE_MOVE_SPEED
 				)
 			"E":
 				self.game_object.physics_body.global_translate(
-						Vector2.RIGHT * Main.BASE_MOVE_SPEED
+						Vector2.RIGHT * Settings.BASE_MOVE_SPEED
 				)
 			"W":
 				self.game_object.physics_body.global_translate(
-						Vector2.LEFT * Main.BASE_MOVE_SPEED
+						Vector2.LEFT * Settings.BASE_MOVE_SPEED
 				)
 
 		var new_event:= Event.new("MovedForward", {"direction": self.direction})
@@ -93,7 +100,7 @@ class Nutritious extends Component:
 
 
 class PhysicsBody extends Component:
-	var physics_body_scene: PackedScene = load(Main.PHYSICS_OBJECT_PATH)
+	var physics_body_scene: PackedScene = load(Settings.PHYSICS_OBJECT_PATH)
 	var physics_body_node: PhysicsObject
 
 
