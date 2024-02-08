@@ -41,10 +41,22 @@ class Component:
 class Event:
 	var id: String
 	var parameters: Dictionary
+	var unique_id: int
 
 	func _init(id: String = "NoID", parameters: Dictionary = {}) -> void:
 		self.id = id
 		self.parameters = parameters
+		self.parameters["after_effects"] = []
+		self.unique_id = Utils.rng.randi_range(1, 10000)
+
+
+class EventJob:
+	var target: GameObject
+	var event: Event
+
+	func _init(target: GameObject, event: Event) -> void:
+		self.target = target
+		self.event = event
 
 
 class GameObject:
@@ -54,7 +66,6 @@ class GameObject:
 	var physics_body: Area2D
 	var factory_from: GameObjectFactory
 	var component_priority: Array
-	var fire_event_complete: Array = []
 	var subscribed_to: Array = []
 
 
@@ -94,27 +105,42 @@ class GameObject:
 		self.physics_body.queue_free()
 
 
+	func dequeue_after_effect(event: Event, event_id_to_dequeue: String) -> void:
+		var event_job_to_dequeue: EventJob
+		for job in event.parameters["after_effects"]:
+			if job.event.id == event_id_to_dequeue:
+				event_id_to_dequeue = job
+				break
+
+		if event_id_to_dequeue:
+			event.parameters["after_effects"].erase(event_job_to_dequeue)
+
+
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
 		# higher priority number first
 		for component in self.component_priority:
 			event = self.components[component.name].fire_event(event)
 
-		if self.fire_event_complete:
-			var event_job_queue: Array = self.fire_event_complete.duplicate(true)
+		if event.parameters["after_effects"]:
+			var event_job_queue: Array = event.parameters["after_effects"].duplicate(true)
 
 			for event_job in event_job_queue:
-				var event_target: GameObject = event_job[0]
-				var next_event: Event = event_job[1]
-				self.fire_event_complete.erase(event_job)
+				var event_target: GameObject = event_job.target
+				var next_event: Event = event_job.event
+				event.parameters["after_effects"].erase(event_job)
 				event_target.fire_event(next_event)
 
 		return event
 
 
-	func queue_event_job(target: GameObject, new_event: Event) -> void:
-		var event_job: Array = [target, new_event]
-		self.fire_event_complete.append(event_job)
+	func queue_after_effect(
+			target: GameObject,
+			new_event: Event,
+			event: Event,
+	) -> void:
+		var event_job:= EventJob.new(target, new_event)
+		event.parameters["after_effects"].append(event_job)
 
 
 	func remove_component(component_name: String) -> void:
@@ -312,4 +338,5 @@ class GameObjectFactory:
 		var subscribers = self.subscribe_lists.get(list_name)
 		if subscribers:
 			for game_object in subscribers:
-				game_object.fire_event(event)
+				var event_copy: Event = Event.new(event.id, event.parameters.duplicate(true))
+				game_object.fire_event(event_copy)
