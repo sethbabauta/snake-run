@@ -15,7 +15,7 @@ func _ready():
 
 	await get_tree().create_timer(0.1).timeout
 
-	self.poison_apple = main_node.spawn_poison_apple()
+	self.poison_apple = main_node.spawn_and_place_object("PoisonApple")
 	self.update_label()
 
 
@@ -24,13 +24,14 @@ func end_game() -> void:
 
 
 func update_label() -> void:
-	var display_components: String = "poison apple components: "
-	for component_name in self.poison_apple.components:
-		display_components += (component_name + ", ")
+	if str(self.poison_apple.physics_body) != "<Freed Object>":
+		var display_components: String = "poison apple components: "
+		for component_name in self.poison_apple.components:
+			display_components += (component_name + ", ")
 
-	demo_label.text = display_components
+		demo_label.text = display_components
 
-	self.player = main_node.get_closest_player_controlled(poison_apple)
+		self.player = main_node.get_closest_player_controlled(poison_apple)
 
 
 func _on_button_pressed():

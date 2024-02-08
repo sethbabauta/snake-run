@@ -2,6 +2,8 @@ class_name Components extends GameEngine
 
 
 class AIControlledSimple extends Component:
+
+
 	func fire_event(event: Event) -> Event:
 		if event.id == "MoveForward":
 			self._ponder_direction_change(event)
@@ -26,10 +28,26 @@ class AIControlledSimple extends Component:
 		self.game_object.queue_after_effect(self.game_object, new_event, event)
 
 
+class DeathSpawner extends Component:
+	var name_of_object: String
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "KillSelf":
+			self._spawn_object()
+
+		return event
+
+
+	func _spawn_object() -> void:
+		self.game_object.main_node.spawn_and_place_object(name_of_object)
+
+
 class Movable extends Component:
 	const VALID_DIRECTIONS: Array = ["N", "S", "E", "W"]
 	var speed: int = 0
 	var direction: String = "N"
+
 
 	func _init(name: String, game_object: GameObject = null) -> void:
 		super(name, game_object)
@@ -83,22 +101,19 @@ class Movable extends Component:
 
 class Nutritious extends Component:
 
+
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._eat_nutritious(event)
+			self._feed_nutrition(event)
 
 		return event
 
 
-	func _eat_nutritious(event: Event) -> void:
-		ScoreKeeper.add_to_score(1)
+	func _feed_nutrition(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		if eater:
 			var new_event:= Event.new("Grow", {"amount": 1})
 			eater.fire_event(new_event)
-
-		self.game_object.main_node.spawn_apple()
-		self.game_object.delete_self()
 
 
 class PhysicsBody extends Component:
@@ -114,8 +129,12 @@ class PhysicsBody extends Component:
 	func fire_event(event: Event) -> Event:
 		if event.id == "MovedForward":
 			self._check_eat()
-		if event.id == "Grow":
-			self._grow()
+		if event.id == "Eat":
+			self._get_eaten(event)
+		if event.id == "KillSelf":
+			self._kill_self()
+		if event.id == "IngestPoison":
+			self._ingest_poison(event)
 
 		return event
 
@@ -135,12 +154,23 @@ class PhysicsBody extends Component:
 				area.game_object.fire_event(new_event)
 
 
-	func _grow() -> void:
-		self.game_object.main_node.spawn_player_body(self.game_object, Vector2.ZERO)
+	func _get_eaten(event: Event) -> void:
+		var kill_self_event:= Event.new("KillSelf")
+		self.game_object.queue_after_effect(self.game_object, kill_self_event, event)
+
+
+	func _ingest_poison(event: Event):
+		var kill_self_event:= Event.new("KillSelf")
+		self.game_object.queue_after_effect(self.game_object, kill_self_event, event)
+
+
+	func _kill_self() -> void:
+		self.game_object.delete_self()
 
 
 class PlayerControlled extends Component:
 	var last_direction_moved: String = "0"
+
 
 	func _init(name: String, game_object: GameObject = null) -> void:
 		super(name, game_object)
@@ -154,6 +184,12 @@ class PlayerControlled extends Component:
 			self._change_direction(event)
 		if event.id == "MovedForward":
 			self._save_direction(event)
+		if event.id == "Grow":
+			self._grow_score()
+		if event.id == "KillSelf":
+			self._queue_death(event)
+		if event.id == "Die":
+			self._end_game()
 
 		return event
 
@@ -179,11 +215,18 @@ class PlayerControlled extends Component:
 			event.parameters["direction"] = "0"
 
 
+	func _end_game() -> void:
+		self.game_object.main_node.gamemode_node.end_game()
+
+
+	func _grow_score() -> void:
+		ScoreKeeper.add_to_score(1)
+
+
 	func _is_opposite_direction(
 			current_direction: String,
 			new_direction: String,
 	) -> bool:
-
 		if current_direction == "N" and new_direction == "S":
 			return true
 		if current_direction == "S" and new_direction == "N":
@@ -195,23 +238,41 @@ class PlayerControlled extends Component:
 		return false
 
 
+	func _queue_death(event: Event) -> void:
+		var die_event:= Event.new("Die")
+		self.game_object.queue_after_effect(self.game_object, die_event, event)
+
+
 	func _save_direction(event: Event) -> void:
 		self.last_direction_moved = event.parameters.get("direction")
 
 
 class Poisonous extends Component:
+	var poison_level: int = 1000
+
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self.game_object.main_node.gamemode_node.end_game()
+			self._send_poison(event)
 
 		return event
+
+
+	func _send_poison(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		if eater:
+			var new_event:= Event.new(
+					"IngestPoison",
+					{"poison_level": poison_level},
+			)
+			eater.fire_event(new_event)
 
 
 class Render extends Component:
 	var texture: String = ""
 	var sprite_node: Sprite2D
 	var z_idx: int
+
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "SetPosition":
@@ -233,11 +294,16 @@ class SnakeBody extends Component:
 	var prev_body: GameObject = null
 	var prev_location: Vector2
 
+
 	func fire_event(event: Event) -> Event:
 		if event.id == "FollowNextBody":
 			self._follow_next_body(event)
 		if event.id == "MoveForward":
 			self._move_forward(event)
+		if event.id == "Grow":
+			self._grow()
+		if event.id == "KillSelf":
+			self._disconnect_bodies()
 
 		return event
 
@@ -258,7 +324,17 @@ class SnakeBody extends Component:
 			return self.game_object
 
 		var prev_snake_body: SnakeBody = self.prev_body.components.get("SnakeBody")
+
 		return prev_snake_body.get_tail_game_object()
+
+
+	func _disconnect_bodies() -> void:
+		if self.next_body:
+			var next_body_snakebody: SnakeBody = self.next_body.components.get("SnakeBody")
+			next_body_snakebody.prev_body = null
+		if self.prev_body:
+			var prev_body_snakebody: SnakeBody = self.prev_body.components.get("SnakeBody")
+			prev_body_snakebody.next_body = null
 
 
 	func _follow_next_body(event: Event) -> void:
@@ -273,6 +349,10 @@ class SnakeBody extends Component:
 					Event.new("FollowNextBody"),
 					event,
 			)
+
+
+	func _grow() -> void:
+		self.game_object.main_node.spawn_snake_segment(self.game_object, Vector2.ZERO)
 
 
 	func _move_forward(event: Event) -> void:

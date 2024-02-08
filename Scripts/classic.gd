@@ -11,7 +11,7 @@ func _ready():
 	main_node._spawn_start_barriers()
 
 	await get_tree().create_timer(0.1).timeout
-	main_node.spawn_apple()
+	main_node.spawn_and_place_object("Apple")
 
 
 func end_game() -> void:
