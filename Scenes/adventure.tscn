@@ -7,8 +7,8 @@
 
 [node name="Adventure" type="Node" node_paths=PackedStringArray("main_node")]
 script = ExtResource("1_h5vo3")
+adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
 main_node = NodePath("Main")
-menu_scene = "res://Scenes/menu.tscn"
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
 script = ExtResource("2_qgmaq")
@@ -26,5 +26,4 @@ position = Vector2(320, 320)
 
 [node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
 
-[connection signal="SCORE_CHANGED" from="Main" to="GameUI" method="_on_main_score_changed"]
 [connection signal="timeout" from="Timer" to="Main" method="_on_timer_timeout"]

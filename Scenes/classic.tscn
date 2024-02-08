@@ -7,8 +7,8 @@
 
 [node name="Classic" type="Node" node_paths=PackedStringArray("main_node")]
 script = ExtResource("1_rch0c")
+classic_death_screen = "res://Scenes/classic_death_screen.tscn"
 main_node = NodePath("Main")
-menu_scene = "res://Scenes/menu.tscn"
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
 script = ExtResource("1_uov1u")
@@ -26,5 +26,4 @@ position = Vector2(320, 320)
 
 [node name="GameUI" parent="." instance=ExtResource("3_t4vht")]
 
-[connection signal="SCORE_CHANGED" from="Main" to="GameUI" method="_on_main_score_changed"]
 [connection signal="timeout" from="Timer" to="Main" method="_on_timer_timeout"]

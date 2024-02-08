@@ -1,19 +1,44 @@
 class_name Components extends GameEngine
 
 
+class AIControlledSimple extends Component:
+	func fire_event(event: Event) -> Event:
+		if event.id == "MoveForward":
+			self._ponder_direction_change(event)
+
+		return event
+
+
+	func _ponder_direction_change(event: Event) -> void:
+		var closest_object: GameEngine.GameObject = (
+				self.game_object.main_node
+				.get_closest_player_controlled(self.game_object)
+		)
+
+		var current_position: Vector2 = self.game_object.physics_body.global_position
+		var target_position: Vector2 = closest_object.physics_body.global_position
+		var direction: String = (
+				Utils.get_farthest_direction(current_position, target_position)
+		)
+
+		var new_event:= Event.new("ChangeDirection")
+		new_event.parameters["direction"] = direction
+		self.game_object.queue_after_effect(self.game_object, new_event, event)
+
+
 class Movable extends Component:
 	const VALID_DIRECTIONS: Array = ["N", "S", "E", "W"]
 	var speed: int = 0
 	var direction: String = "N"
 
-	func _init(game_object: GameObject = null) -> void:
-		super(game_object)
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
 		self.game_object.factory_from.subscribe(game_object, "movable")
 
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "MoveForward":
-			self._move_forward()
+			self._move_forward(event)
 		if event.id == "ChangeDirection":
 			self._change_direction(event)
 		if event.id == "TryChangeDirection":
@@ -27,33 +52,33 @@ class Movable extends Component:
 			self.direction = event.parameters.get("direction")
 
 
-	func _move_forward() -> void:
+	func _move_forward(event: Event) -> void:
 		match self.direction:
 			"N":
 				self.game_object.physics_body.global_translate(
-						Vector2.UP * Main.BASE_MOVE_SPEED
+						Vector2.UP * Settings.BASE_MOVE_SPEED
 				)
 			"S":
 				self.game_object.physics_body.global_translate(
-						Vector2.DOWN * Main.BASE_MOVE_SPEED
+						Vector2.DOWN * Settings.BASE_MOVE_SPEED
 				)
 			"E":
 				self.game_object.physics_body.global_translate(
-						Vector2.RIGHT * Main.BASE_MOVE_SPEED
+						Vector2.RIGHT * Settings.BASE_MOVE_SPEED
 				)
 			"W":
 				self.game_object.physics_body.global_translate(
-						Vector2.LEFT * Main.BASE_MOVE_SPEED
+						Vector2.LEFT * Settings.BASE_MOVE_SPEED
 				)
 
 		var new_event:= Event.new("MovedForward", {"direction": self.direction})
-		self.game_object.queue_event_job(self.game_object, new_event)
+		self.game_object.queue_after_effect(self.game_object, new_event, event)
 
 
 	func _try_change_direction(event: Event) -> void:
 		var new_event:= Event.new("ChangeDirection", event.parameters.duplicate(true))
 		new_event.parameters["current_direction"] = self.direction
-		self.game_object.queue_event_job(self.game_object, new_event)
+		self.game_object.queue_after_effect(self.game_object, new_event, event)
 
 
 class Nutritious extends Component:
@@ -66,7 +91,7 @@ class Nutritious extends Component:
 
 
 	func _eat_nutritious(event: Event) -> void:
-		self.game_object.main_node.add_to_score(1)
+		ScoreKeeper.add_to_score(1)
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		if eater:
 			var new_event:= Event.new("Grow", {"amount": 1})
@@ -77,12 +102,12 @@ class Nutritious extends Component:
 
 
 class PhysicsBody extends Component:
-	var physics_body_scene: PackedScene = load(Main.PHYSICS_OBJECT_PATH)
+	var physics_body_scene: PackedScene = load(Settings.PHYSICS_OBJECT_PATH)
 	var physics_body_node: PhysicsObject
 
 
-	func _init(game_object: GameObject = null) -> void:
-		super(game_object)
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
 		self.physics_body_node = self.physics_body_scene.instantiate()
 
 
@@ -117,8 +142,8 @@ class PhysicsBody extends Component:
 class PlayerControlled extends Component:
 	var last_direction_moved: String = "0"
 
-	func _init(game_object: GameObject = null) -> void:
-		super(game_object)
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
 		self.game_object.factory_from.subscribe(
 				game_object, "player_controlled"
 		)
@@ -210,9 +235,9 @@ class SnakeBody extends Component:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "FollowNextBody":
-			self._follow_next_body()
+			self._follow_next_body(event)
 		if event.id == "MoveForward":
-			self._move_forward()
+			self._move_forward(event)
 
 		return event
 
@@ -221,7 +246,6 @@ class SnakeBody extends Component:
 			next_body: GameObject,
 			prev_body: GameObject,
 	) -> void:
-
 		var next_body_snakebody: SnakeBody = next_body.components.get("SnakeBody")
 		var prev_body_snakebody: SnakeBody = prev_body.components.get("SnakeBody")
 		if next_body_snakebody and prev_body_snakebody:
@@ -237,21 +261,22 @@ class SnakeBody extends Component:
 		return prev_snake_body.get_tail_game_object()
 
 
-	func _follow_next_body() -> void:
+	func _follow_next_body(event: Event) -> void:
 		if self.next_body:
 			var next_snake_body: SnakeBody = self.next_body.components.get("SnakeBody")
 			self.prev_location = self.game_object.physics_body.global_position
 			self.game_object.physics_body.global_position = next_snake_body.prev_location
 
 		if self.prev_body:
-			self.game_object.queue_event_job(
+			self.game_object.queue_after_effect(
 					self.prev_body,
 					Event.new("FollowNextBody"),
+					event,
 			)
 
 
-	func _move_forward() -> void:
+	func _move_forward(event: Event) -> void:
 		self.prev_location = self.game_object.physics_body.global_position
 
 		if self.prev_body:
-			self.game_object.queue_event_job(prev_body, Event.new("FollowNextBody"))
+			self.game_object.queue_after_effect(prev_body, Event.new("FollowNextBody"), event)

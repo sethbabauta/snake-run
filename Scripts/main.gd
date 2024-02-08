@@ -3,16 +3,6 @@ class_name Main extends Node
 @export var query_area: Area2D
 @export var gamemode_node: Node
 
-signal SCORE_CHANGED
-
-const BLUEPRINTS_PATH = "res://blueprints.txt"
-const SCENES_PATH = "res://Scenes/"
-const SPRITES_PATH = "res://Sprites/"
-const PHYSICS_OBJECT_PATH = "res://Scenes/physics_object.tscn"
-const TICK_THRESHOLD = 10
-const BASE_MOVE_SPEED = 32
-
-var score: int
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
 
@@ -22,9 +12,10 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	self.score = gamemode_node.START_LENGTH
-	SCORE_CHANGED.emit(self.score)
-	self.max_simple_size = get_viewport().get_visible_rect().size / BASE_MOVE_SPEED
+	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
+	self.max_simple_size = (
+			get_viewport().get_visible_rect().size / Settings.BASE_MOVE_SPEED
+	)
 
 
 func _input(event: InputEvent) -> void:
@@ -46,38 +37,7 @@ func _on_timer_timeout() -> void:
 	self.game_object_factory.notify_subscribers(new_event, "movable")
 
 
-func add_to_score(amount: int) -> void:
-	self.score += amount
-	SCORE_CHANGED.emit(self.score)
-
-
-func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
-	var new_coordinates:= (
-			(coordinates.round() * self.BASE_MOVE_SPEED)
-			+ (Vector2.ONE * (self.BASE_MOVE_SPEED / 2))
-	)
-	return new_coordinates
-
-
-func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
-	var new_coordinates:= (
-			(coordinates.round() - (Vector2.ONE * (self.BASE_MOVE_SPEED / 2)))
-			.snapped(Vector2.ONE * self.BASE_MOVE_SPEED) / self.BASE_MOVE_SPEED
-	)
-	return new_coordinates
-
-
 func spawn_apple() -> void:
-	#var rng:= RandomNumberGenerator.new()
-	#var roll: int = rng.randi_range(1, 20)
-	#if self.score > 5 and roll > 15:
-		#var poison_apple:= self.game_object_factory.create_object("PoisonApple", self)
-		#var set_position_event:= GameEngine.Event.new(
-			#"SetPosition",
-			#{"position": self.get_random_valid_world_position()}
-		#)
-		#poison_apple.fire_event(set_position_event)
-
 	var apple:= self.game_object_factory.create_object("Apple", self)
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
@@ -86,20 +46,36 @@ func spawn_apple() -> void:
 	apple.fire_event(set_position_event)
 
 
+func spawn_poison_apple() -> GameEngine.GameObject:
+	var poison_apple:= self.game_object_factory.create_object("PoisonApple", self)
+	var set_position_event:= GameEngine.Event.new(
+		"SetPosition",
+		{"position": self.get_random_valid_world_position()}
+	)
+	poison_apple.fire_event(set_position_event)
+
+	return poison_apple
+
+
 func spawn_player_body(
 		player_game_object: GameEngine.GameObject,
 		spawn_direction: Vector2 = Vector2.DOWN,
 ) -> void:
 
-	var player_snake_body: Components.SnakeBody = player_game_object.components.get("SnakeBody")
+	var player_snake_body: Components.SnakeBody = (
+			player_game_object.components.get("SnakeBody")
+	)
 	var new_snake_body_obj:= self.game_object_factory.create_object("SnakeBody", self)
 	var tail: GameEngine.GameObject = player_snake_body.get_tail_game_object()
 
 	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
 	var set_position_event:= GameEngine.Event.new(
-		"SetPosition",
-		{"position": tail.physics_body.global_position + (spawn_direction * self.BASE_MOVE_SPEED)}
+			"SetPosition",
+			{"position": (
+					tail.physics_body.global_position
+					+ (spawn_direction * Settings.BASE_MOVE_SPEED)
+			)},
 	)
 	new_snake_body_obj.fire_event(set_position_event)
 
@@ -114,6 +90,34 @@ func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
 
 	for snake_body_idx in range(snake_length-1):
 		self.spawn_player_body(snake_head)
+
+
+func get_closest_player_controlled(
+		object_to_compare: GameEngine.GameObject,
+) -> GameEngine.GameObject:
+	var player_positions: Array = (
+			object_to_compare.factory_from.subscribe_lists["player_controlled"]
+	)
+	var position_to_compare: Vector2 = object_to_compare.physics_body.global_position
+	var closest_object: GameEngine.GameObject
+	var shortest_distance: float
+
+	for current_game_object in player_positions:
+		var current_distance: float = (
+				current_game_object.physics_body.global_position
+				.distance_to(position_to_compare)
+		)
+
+		if not shortest_distance:
+			shortest_distance = current_distance
+			closest_object = current_game_object
+			continue
+
+		if shortest_distance > current_distance:
+			shortest_distance = current_distance
+			closest_object = current_game_object
+
+	return closest_object
 
 
 func get_random_valid_world_position() -> Vector2:
@@ -139,18 +143,22 @@ func get_random_world_position() -> Vector2:
 			rng.randi_range(0, self.max_simple_size.x-1),
 			rng.randi_range(0, self.max_simple_size.y-1),
 	)
-	position = self.convert_simple_to_world_coordinates(position)
+	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
 
 
 func _fire_change_direction_event(input_name: String) -> void:
-	var new_event:= GameEngine.Event.new("TryChangeDirection", {"input": input_name})
+	var new_event:= GameEngine.Event.new(
+			"TryChangeDirection", {"input": input_name}
+	)
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
 func _spawn_barrier(position: Vector2) -> void:
-	var world_position: Vector2 = convert_simple_to_world_coordinates(position)
+	var world_position: Vector2 = (
+			Utils.convert_simple_to_world_coordinates(position)
+	)
 	var barrier:= self.game_object_factory.create_object("Barrier", self)
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
@@ -163,7 +171,9 @@ func _spawn_start_barriers() -> void:
 	self._spawn_barrier(Vector2(0, 0))
 	self._spawn_barrier(Vector2(self.max_simple_size.x-1, 0))
 	self._spawn_barrier(Vector2(0, self.max_simple_size.y-1))
-	self._spawn_barrier(Vector2(self.max_simple_size.x-1, self.max_simple_size.y-1))
+	self._spawn_barrier(
+			Vector2(self.max_simple_size.x-1, self.max_simple_size.y-1)
+	)
 
 	for coordinate in range(1, self.max_simple_size.x-1):
 		self._spawn_barrier(Vector2(coordinate, 0))
