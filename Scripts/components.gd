@@ -160,8 +160,9 @@ class PhysicsBody extends Component:
 
 
 	func _ingest_poison(event: Event):
-		var kill_self_event:= Event.new("KillSelf")
-		self.game_object.queue_after_effect(self.game_object, kill_self_event, event)
+		if event.parameters["poison_level"] > 0:
+			var kill_self_event:= Event.new("KillSelf")
+			self.game_object.queue_after_effect(self.game_object, kill_self_event, event)
 
 
 	func _kill_self() -> void:
@@ -304,6 +305,8 @@ class SnakeBody extends Component:
 			self._grow()
 		if event.id == "KillSelf":
 			self._disconnect_bodies()
+		if event.id == "IngestPoison":
+			self._pass_poison(event)
 
 		return event
 
@@ -360,3 +363,25 @@ class SnakeBody extends Component:
 
 		if self.prev_body:
 			self.game_object.queue_after_effect(prev_body, Event.new("FollowNextBody"), event)
+
+
+	func _pass_poison(event: Event) -> void:
+		var poison_level: int = event.parameters["poison_level"]
+
+		# pass poison event to tail
+		if self.prev_body:
+			self.game_object.dequeue_after_effect(event, "KillSelf")
+			var new_event:= Event.new(
+					"IngestPoison",
+					{"poison_level": poison_level},
+			)
+			self.game_object.queue_after_effect(self.prev_body, new_event, event)
+			return
+
+		if poison_level > 0 and self.next_body:
+			var new_event:= Event.new(
+					"IngestPoison",
+					{"poison_level": poison_level-1},
+			)
+			self.game_object.queue_after_effect(self.next_body, new_event, event)
+

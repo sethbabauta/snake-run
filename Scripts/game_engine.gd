@@ -112,7 +112,7 @@ class GameObject:
 		var event_job_to_dequeue: EventJob
 		for job in event.parameters["after_effects"]:
 			if job.event.id == event_id_to_dequeue:
-				event_id_to_dequeue = job
+				event_job_to_dequeue = job
 				break
 
 		if event_id_to_dequeue:

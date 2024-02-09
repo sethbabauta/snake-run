@@ -27,5 +27,5 @@
 
 <Blueprint Name="PoisonApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="poison_apple.png"/>
-	<Component Name="Poisonous"/>
+	<Component Name="Poisonous" poison_level="1"/>
 </Blueprint>
