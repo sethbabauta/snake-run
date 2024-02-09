@@ -37,59 +37,46 @@ func _on_timer_timeout() -> void:
 	self.game_object_factory.notify_subscribers(new_event, "movable")
 
 
-func spawn_apple() -> void:
-	var apple:= self.game_object_factory.create_object("Apple", self)
+func spawn_and_place_object(
+		object_name: String,
+		position: Vector2 = self.get_random_valid_world_position(),
+) -> GameEngine.GameObject:
+	var new_object:= self.game_object_factory.create_object(object_name, self)
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
-		{"position": self.get_random_valid_world_position()}
+		{"position": position}
 	)
-	apple.fire_event(set_position_event)
+	new_object.fire_event(set_position_event)
+
+	return new_object
 
 
-func spawn_poison_apple() -> GameEngine.GameObject:
-	var poison_apple:= self.game_object_factory.create_object("PoisonApple", self)
-	var set_position_event:= GameEngine.Event.new(
-		"SetPosition",
-		{"position": self.get_random_valid_world_position()}
-	)
-	poison_apple.fire_event(set_position_event)
-
-	return poison_apple
-
-
-func spawn_player_body(
-		player_game_object: GameEngine.GameObject,
+func spawn_snake_segment(
+		head_game_object: GameEngine.GameObject,
 		spawn_direction: Vector2 = Vector2.DOWN,
 ) -> void:
 
-	var player_snake_body: Components.SnakeBody = (
-			player_game_object.components.get("SnakeBody")
+	var head_snake_body: Components.SnakeBody = (
+			head_game_object.components.get("SnakeBody")
 	)
-	var new_snake_body_obj:= self.game_object_factory.create_object("SnakeBody", self)
-	var tail: GameEngine.GameObject = player_snake_body.get_tail_game_object()
+	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
+
+	var spawn_position: Vector2 = (
+			tail.physics_body.global_position
+			+ (spawn_direction * Settings.BASE_MOVE_SPEED)
+	)
+	var new_snake_body_obj: GameEngine.GameObject = (
+			self.spawn_and_place_object("SnakeBody", spawn_position)
+	)
 
 	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
-	var set_position_event:= GameEngine.Event.new(
-			"SetPosition",
-			{"position": (
-					tail.physics_body.global_position
-					+ (spawn_direction * Settings.BASE_MOVE_SPEED)
-			)},
-	)
-	new_snake_body_obj.fire_event(set_position_event)
-
 
 func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
-	var snake_head:= self.game_object_factory.create_object("PlayerSnakeHead", self)
-	var set_position_event:= GameEngine.Event.new(
-		"SetPosition",
-		{"position": start_position}
-	)
-	snake_head.fire_event(set_position_event)
+	var snake_head:= self.spawn_and_place_object("PlayerSnakeHead", start_position)
 
 	for snake_body_idx in range(snake_length-1):
-		self.spawn_player_body(snake_head)
+		self.spawn_snake_segment(snake_head)
 
 
 func get_closest_player_controlled(

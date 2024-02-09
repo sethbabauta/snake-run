@@ -10,6 +10,7 @@ class Component:
 	var game_object: GameObject
 	var priority: int = 100
 
+
 	func _init(name: String, game_object: GameObject = null) -> void:
 		self.name = name
 		self.game_object = game_object
@@ -43,6 +44,7 @@ class Event:
 	var parameters: Dictionary
 	var unique_id: int
 
+
 	func _init(id: String = "NoID", parameters: Dictionary = {}) -> void:
 		self.id = id
 		self.parameters = parameters
@@ -53,6 +55,7 @@ class Event:
 class EventJob:
 	var target: GameObject
 	var event: Event
+
 
 	func _init(target: GameObject, event: Event) -> void:
 		self.target = target
@@ -109,7 +112,7 @@ class GameObject:
 		var event_job_to_dequeue: EventJob
 		for job in event.parameters["after_effects"]:
 			if job.event.id == event_id_to_dequeue:
-				event_id_to_dequeue = job
+				event_job_to_dequeue = job
 				break
 
 		if event_id_to_dequeue:
@@ -118,6 +121,7 @@ class GameObject:
 
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
+		#print(self.name, " received event: ", event.id, ".", event.unique_id)
 		# higher priority number first
 		for component in self.component_priority:
 			event = self.components[component.name].fire_event(event)

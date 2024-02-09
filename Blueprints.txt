@@ -22,9 +22,10 @@
 <Blueprint Name="Apple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="apple.png"/>
 	<Component Name="Nutritious"/>
+	<Component Name="DeathSpawner" name_of_object="Apple"/>
 </Blueprint>
 
 <Blueprint Name="PoisonApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="poison_apple.png"/>
-	<Component Name="Poisonous"/>
+	<Component Name="Poisonous" poison_level="1"/>
 </Blueprint>
