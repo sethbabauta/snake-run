@@ -80,12 +80,11 @@ func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
 
 
 func get_closest_player_controlled(
-		object_to_compare: GameEngine.GameObject,
+		position_to_compare: Vector2,
 ) -> GameEngine.GameObject:
 	var player_positions: Array = (
-			object_to_compare.factory_from.subscribe_lists["player_controlled"]
+			self.game_object_factory.subscribe_lists["player_controlled"]
 	)
-	var position_to_compare: Vector2 = object_to_compare.physics_body.global_position
 	var closest_object: GameEngine.GameObject
 	var shortest_distance: float
 

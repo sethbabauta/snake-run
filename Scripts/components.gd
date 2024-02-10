@@ -13,8 +13,9 @@ class AIControlledSimple extends Component:
 
 	func _ponder_direction_change(event: Event) -> void:
 		var closest_object: GameEngine.GameObject = (
-				self.game_object.main_node
-				.get_closest_player_controlled(self.game_object)
+				self.game_object.main_node.get_closest_player_controlled(
+						self.game_object.physics_body.global_position
+				)
 		)
 
 		var current_position: Vector2 = self.game_object.physics_body.global_position

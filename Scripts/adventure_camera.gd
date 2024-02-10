@@ -1,11 +1,16 @@
 extends Camera2D
 
+@export var main_node: Main
+@export var gamemode_node: Node
+var player_head: GameEngine.GameObject
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	gamemode_node.GAME_START.connect(_on_game_start)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func _on_game_start() -> void:
+	player_head = main_node.get_closest_player_controlled(Vector2(0, 0))
+
+
+func _on_timer_timeout() -> void:
+	self.global_position = player_head.physics_body.global_position
