@@ -1,5 +1,7 @@
 class_name Demo extends Node
 
+signal GAME_START
+
 @export_file("*.tscn") var adventure_death_screen
 @export var main_node: Main
 @export var demo_label: Label
@@ -19,6 +21,7 @@ func _ready():
 		self.poison_apples.append(main_node.spawn_and_place_object("PoisonApple"))
 
 	self.update_label()
+	GAME_START.emit()
 
 
 func end_game() -> void:

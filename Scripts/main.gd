@@ -1,17 +1,18 @@
 class_name Main extends Node
 
-@export var query_area: Area2D
+@export var follow_camera: Camera2D
 @export var gamemode_node: Node
 
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
-
+var query_area: Area2D
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
 
 
 func _ready() -> void:
+	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
 	self.max_simple_size = (
 			get_viewport().get_visible_rect().size / Settings.BASE_MOVE_SPEED
@@ -80,12 +81,11 @@ func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
 
 
 func get_closest_player_controlled(
-		object_to_compare: GameEngine.GameObject,
+		position_to_compare: Vector2,
 ) -> GameEngine.GameObject:
 	var player_positions: Array = (
-			object_to_compare.factory_from.subscribe_lists["player_controlled"]
+			self.game_object_factory.subscribe_lists["player_controlled"]
 	)
-	var position_to_compare: Vector2 = object_to_compare.physics_body.global_position
 	var closest_object: GameEngine.GameObject
 	var shortest_distance: float
 

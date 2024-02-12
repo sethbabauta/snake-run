@@ -10,9 +10,8 @@ script = ExtResource("1_h5vo3")
 adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
 main_node = NodePath("Main")
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
+[node name="Main" type="Node" parent="." node_paths=PackedStringArray("gamemode_node")]
 script = ExtResource("2_qgmaq")
-query_area = NodePath("../Camera2D/CollisionQuery")
 gamemode_node = NodePath("..")
 
 [node name="Timer" type="Timer" parent="."]
