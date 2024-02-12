@@ -1,17 +1,18 @@
 class_name Main extends Node
 
-@export var query_area: Area2D
+@export var follow_camera: Camera2D
 @export var gamemode_node: Node
 
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
-
+var query_area: Area2D
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
 
 
 func _ready() -> void:
+	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
 	self.max_simple_size = (
 			get_viewport().get_visible_rect().size / Settings.BASE_MOVE_SPEED

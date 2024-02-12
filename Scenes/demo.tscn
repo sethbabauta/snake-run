@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://4bsu0cbbp4e1"]
+[gd_scene load_steps=4 format=3 uid="uid://4bsu0cbbp4e1"]
 
 [ext_resource type="Script" path="res://Scripts/demo.gd" id="1_p3bi1"]
 [ext_resource type="Script" path="res://Scripts/main.gd" id="2_0sktt"]
-[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="3_8feav"]
-[ext_resource type="Script" path="res://Scripts/adventure_camera.gd" id="3_xs6il"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="4_rj712"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="3_hgows"]
 
 [node name="Demo" type="Node" node_paths=PackedStringArray("main_node", "demo_label")]
 script = ExtResource("1_p3bi1")
@@ -12,26 +10,18 @@ adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
 main_node = NodePath("Main")
 demo_label = NodePath("VBoxContainer/Label")
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("query_area", "gamemode_node")]
+[node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
 script = ExtResource("2_0sktt")
-query_area = NodePath("../Camera2D/CollisionQuery")
+follow_camera = NodePath("../FollowCamera")
 gamemode_node = NodePath("..")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.15
 autostart = true
 
-[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("main_node", "gamemode_node")]
-position = Vector2(320, 320)
-script = ExtResource("3_xs6il")
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("3_hgows")]
 main_node = NodePath("../Main")
 gamemode_node = NodePath("..")
-
-[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("3_8feav")]
-
-[node name="GameUI" parent="." instance=ExtResource("4_rj712")]
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_right = 365.0
@@ -48,5 +38,5 @@ text = "add movable component"
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Timer" to="Main" method="_on_timer_timeout"]
-[connection signal="timeout" from="Timer" to="Camera2D" method="_on_timer_timeout"]
+[connection signal="timeout" from="Timer" to="FollowCamera" method="_on_timer_timeout"]
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
