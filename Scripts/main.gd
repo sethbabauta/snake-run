@@ -7,6 +7,7 @@ var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
 var query_area: Area2D
 
+
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
 
@@ -31,11 +32,6 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("turn_right"):
 		_fire_change_direction_event("turn_right")
-
-
-func _on_timer_timeout() -> void:
-	var new_event:= GameEngine.Event.new("MoveForward")
-	self.game_object_factory.notify_subscribers(new_event, "movable")
 
 
 func spawn_and_place_object(
@@ -140,6 +136,31 @@ func _fire_change_direction_event(input_name: String) -> void:
 			"TryChangeDirection", {"input": input_name}
 	)
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _on_move_timer_speed_1() -> void:
+	var new_event:= GameEngine.Event.new("MoveForward")
+	self.game_object_factory.notify_subscribers(new_event, "movable1")
+
+
+func _on_move_timer_speed_2() -> void:
+	var new_event:= GameEngine.Event.new("MoveForward")
+	self.game_object_factory.notify_subscribers(new_event, "movable2")
+
+
+func _on_move_timer_speed_3() -> void:
+	var new_event:= GameEngine.Event.new("MoveForward")
+	self.game_object_factory.notify_subscribers(new_event, "movable3")
+
+
+func _on_move_timer_speed_4() -> void:
+	var new_event:= GameEngine.Event.new("MoveForward")
+	self.game_object_factory.notify_subscribers(new_event, "movable4")
+
+
+func _on_move_timer_speed_5() -> void:
+	var new_event:= GameEngine.Event.new("MoveForward")
+	self.game_object_factory.notify_subscribers(new_event, "movable5")
 
 
 func _spawn_barrier(position: Vector2) -> void:

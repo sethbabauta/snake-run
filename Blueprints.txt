@@ -11,7 +11,7 @@
 
 <Blueprint Name="PlayerSnakeHead" Inherits="SnakeBody">
 	<Component Name="PlayerControlled" priority="101"/>
-	<Component Name="Movable" speed="1" direction="N" priority="99"/>
+	<Component Name="Movable" speed="3" direction="N" priority="99"/>
 </Blueprint>
 
 <Blueprint Name="Barrier" Inherits="PhysicalObject">
