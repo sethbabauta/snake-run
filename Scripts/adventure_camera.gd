@@ -13,6 +13,6 @@ func _on_game_start() -> void:
 	player_head = main_node.get_closest_player_controlled(Vector2(0, 0))
 
 
-func _on_timer_timeout() -> void:
+func _on_move_timer_timeout() -> void:
 	pass
 	#self.global_position = player_head.physics_body.global_position

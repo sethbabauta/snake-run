@@ -46,13 +46,8 @@ class DeathSpawner extends Component:
 
 class Movable extends Component:
 	const VALID_DIRECTIONS: Array = ["N", "S", "E", "W"]
-	var speed: int = 0
+	var speed: int = 3
 	var direction: String = "N"
-
-
-	func _init(name: String, game_object: GameObject = null) -> void:
-		super(name, game_object)
-		self.game_object.factory_from.subscribe(game_object, "movable")
 
 
 	func fire_event(event: Event) -> Event:
@@ -62,6 +57,8 @@ class Movable extends Component:
 			self._change_direction(event)
 		if event.id == "TryChangeDirection":
 			self._try_change_direction(event)
+		if event.id == "ChangeSpeed":
+			self._change_speed(event)
 
 		return event
 
@@ -69,6 +66,23 @@ class Movable extends Component:
 	func _change_direction(event: Event) -> void:
 		if event.parameters.get("direction") in self.VALID_DIRECTIONS:
 			self.direction = event.parameters.get("direction")
+
+
+	func _change_speed(event: Event) -> void:
+		var subscribe_list_name: String = "movable%d" % self.speed
+		self.game_object.factory_from.unsubscribe(self.game_object, subscribe_list_name)
+
+		var speed: int = event.parameters.get("speed")
+		if speed >= 1 and speed <= 5:
+			self.speed = speed
+
+		subscribe_list_name = "movable%d" % self.speed
+		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
+
+
+	func first_time_setup() -> void:
+		var subscribe_list_name: String = "movable%d" % self.speed
+		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
 
 
 	func _move_forward(event: Event) -> void:
