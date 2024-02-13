@@ -11,6 +11,7 @@ const START_LENGTH = 5
 const APPLE_AMOUNT = 3
 
 var poison_apples: Array = []
+var player: GameEngine.GameObject
 
 
 func _ready():
@@ -23,6 +24,7 @@ func _ready():
 		self.poison_apples.append(main_node.spawn_and_place_object("PoisonApple"))
 
 	self.update_label()
+	self.player = main_node.get_closest_player_controlled(self.poison_apples[0].physics_body.global_position)
 	self.GAME_START.emit()
 
 
@@ -44,9 +46,20 @@ func update_label() -> void:
 
 func _on_button_pressed():
 	for apple in self.poison_apples:
-		apple.add_component("Movable", { "speed": "1", "direction": "N", "priority": "99" })
-		apple.add_component("AIControlledSimple", { "priority": "101" })
+		if str(apple.physics_body) != "<Freed Object>":
+			apple.add_component("Movable", { "speed": "1", "direction": "N", "priority": "99" })
+			apple.add_component("AIControlledSimple", { "priority": "101" })
 
 
 func _on_move_timer_timeout() -> void:
 	self.update_label()
+
+
+func _on_button_2_pressed() -> void:
+	var new_event:= GameEngine.Event.new("ChangeSpeed", {"speed": 5})
+	self.player.fire_event(new_event)
+
+
+func _on_button_3_pressed() -> void:
+	var new_event:= GameEngine.Event.new("ChangeSpeed", {"speed": 1})
+	self.player.fire_event(new_event)

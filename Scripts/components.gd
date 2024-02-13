@@ -57,6 +57,8 @@ class Movable extends Component:
 			self._change_direction(event)
 		if event.id == "TryChangeDirection":
 			self._try_change_direction(event)
+		if event.id == "ChangeSpeed":
+			self._change_speed(event)
 
 		return event
 
@@ -66,10 +68,21 @@ class Movable extends Component:
 			self.direction = event.parameters.get("direction")
 
 
+	func _change_speed(event: Event) -> void:
+		var subscribe_list_name: String = "movable%d" % self.speed
+		self.game_object.factory_from.unsubscribe(self.game_object, subscribe_list_name)
+
+		var speed: int = event.parameters.get("speed")
+		if speed >= 1 and speed <= 5:
+			self.speed = speed
+
+		subscribe_list_name = "movable%d" % self.speed
+		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
+
+
 	func first_time_setup() -> void:
 		var subscribe_list_name: String = "movable%d" % self.speed
-		print(name, subscribe_list_name)
-		self.game_object.factory_from.subscribe(game_object, subscribe_list_name)
+		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
 
 
 	func _move_forward(event: Event) -> void:

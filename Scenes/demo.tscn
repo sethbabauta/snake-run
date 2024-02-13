@@ -36,6 +36,14 @@ autowrap_mode = 3
 layout_mode = 2
 text = "add movable component"
 
+[node name="Button2" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Set speed to 5"
+
+[node name="Button3" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Set speed to 1"
+
 [connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
 [connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
 [connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
@@ -44,3 +52,5 @@ text = "add movable component"
 [connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]
 [connection signal="timeout" from="MoveTimer" to="FollowCamera" method="_on_move_timer_timeout"]
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_button_3_pressed"]
