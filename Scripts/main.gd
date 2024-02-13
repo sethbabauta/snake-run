@@ -6,6 +6,7 @@ class_name Main extends Node
 var game_object_factory: GameEngine.GameObjectFactory
 var max_simple_size: Vector2
 var query_area: Area2D
+var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_PATH)
 
 
 func _init() -> void:
@@ -161,6 +162,23 @@ func _on_move_timer_speed_4() -> void:
 func _on_move_timer_speed_5() -> void:
 	var new_event:= GameEngine.Event.new("MoveForward")
 	self.game_object_factory.notify_subscribers(new_event, "movable5")
+
+
+func _spawn_background_tile(position: Vector2) -> void:
+	var world_position: Vector2 = (
+			Utils.convert_simple_to_world_coordinates(position)
+	)
+	var current_tile: Sprite2D = self.background_tile.instantiate()
+	current_tile.global_position = world_position
+
+
+
+func _spawn_background() -> void:
+	var maxX = self.max_simple_size.x-1
+	var maxY = self.max_simple_size.y-1
+	for x in range(maxX):
+		for y in range(maxY):
+			pass
 
 
 func _spawn_barrier(position: Vector2) -> void:
