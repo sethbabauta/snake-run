@@ -23,16 +23,22 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("turn_up"):
-		_fire_change_direction_event("turn_up")
+		self._fire_change_direction_event("turn_up")
 
 	if event.is_action_pressed("turn_left"):
-		_fire_change_direction_event("turn_left")
+		self._fire_change_direction_event("turn_left")
 
 	if event.is_action_pressed("turn_down"):
-		_fire_change_direction_event("turn_down")
+		self._fire_change_direction_event("turn_down")
 
 	if event.is_action_pressed("turn_right"):
-		_fire_change_direction_event("turn_right")
+		self._fire_change_direction_event("turn_right")
+
+	if event.is_action_pressed("drop_item"):
+		self._fire_drop_item_event()
+
+	if event.is_action_pressed("use_item"):
+		self._fire_use_item_event()
 
 
 func spawn_and_place_object(
@@ -136,6 +142,16 @@ func _fire_change_direction_event(input_name: String) -> void:
 	var new_event:= GameEngine.Event.new(
 			"TryChangeDirection", {"input": input_name}
 	)
+	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _fire_drop_item_event() -> void:
+	var new_event:= GameEngine.Event.new("DropItem")
+	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _fire_use_item_event() -> void:
+	var new_event:= GameEngine.Event.new("UseItem")
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
