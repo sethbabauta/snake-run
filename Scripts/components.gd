@@ -514,3 +514,18 @@ class SpeedIncrease extends Component:
 				{"amount": self.increase_amount},
 		)
 		self.game_object.fire_event(new_event)
+
+
+class SpeedIncreaseAbility extends Component:
+	var increase_amount: int = 1
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "UseItem":
+			self._temporarily_increase_speed()
+
+		return event
+
+
+	func _temporarily_increase_speed() -> void:
+		pass
