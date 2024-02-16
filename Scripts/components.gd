@@ -518,14 +518,52 @@ class SpeedIncrease extends Component:
 
 class SpeedIncreaseAbility extends Component:
 	var increase_amount: int = 1
+	var ability_duration: float = 1.0
+	var cooldown_duration: float = 10.0
+	var on_cooldown: bool = false
 
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "UseItem":
 			self._temporarily_increase_speed()
+		if event.id == "SpeedIncreaseAbilityCDOver":
+			self.on_cooldown = false
+		if event.id == "DecreaseSpeed":
+			self._start_cooldown(event)
 
 		return event
 
 
+	func _start_cooldown(event: Event) -> void:
+		var from_ability: String = event.parameters.get("from_ability")
+		if from_ability == "SpeedIncreaseAbility":
+			self.on_cooldown = true
+
+
 	func _temporarily_increase_speed() -> void:
-		pass
+		if not self.on_cooldown:
+			var new_event:= Event.new(
+					"IncreaseSpeed",
+					{"amount": self.increase_amount},
+			)
+			self.game_object.fire_event(new_event)
+
+			new_event = Event.new(
+					"DecreaseSpeed",
+					{
+							"amount": self.increase_amount,
+							"from_ability": "SpeedIncreaseAbility"
+					},
+			)
+			self.game_object.main_node.fire_delayed_event(
+					self.game_object,
+					new_event,
+					ability_duration,
+			)
+
+			new_event = Event.new("SpeedIncreaseAbilityCDOver")
+			self.game_object.main_node.fire_delayed_event(
+					self.game_object,
+					new_event,
+					cooldown_duration,
+			)

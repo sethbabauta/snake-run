@@ -39,3 +39,7 @@ func roll(die_count: int, sides: int) -> int:
 		result += self.rng.randi_range(1, sides)
 
 	return result
+
+
+func wait(time: float) -> void:
+	await get_tree().create_timer(time).timeout
