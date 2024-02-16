@@ -41,6 +41,17 @@ func _input(event: InputEvent) -> void:
 		self._fire_use_item_event()
 
 
+static func apply_shader_to_overlay(
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+		material_name: String,
+) -> void:
+	var shader_material_path: String = Settings.SHADERS_PATH + material_name
+	var shader_material: Material = load(shader_material_path)
+	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
+	sprite_node.material = shader_material
+
+
 func fire_delayed_event(
 		target: GameEngine.GameObject,
 		event: GameEngine.Event,
@@ -103,6 +114,35 @@ func get_random_world_position() -> Vector2:
 	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
+
+
+static func overlay_sprite_on_game_object(
+		sprite_path: String,
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+		z_idx: int = 2,
+) -> void:
+	var new_sprite:= Sprite2D.new()
+	new_sprite.texture = load(sprite_path)
+	new_sprite.z_index = z_idx
+	new_sprite.name = sprite_node_name
+	target.physics_body.add_child(new_sprite)
+
+
+static func remove_overlay_sprite_from_game_object(
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+) -> void:
+	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
+	sprite_node.queue_free()
+
+
+static func remove_shader_from_overlay(
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+) -> void:
+	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
+	sprite_node.material = null
 
 
 func spawn_and_place_object(

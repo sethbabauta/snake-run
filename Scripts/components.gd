@@ -62,6 +62,7 @@ class EquipabbleItem extends Component:
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
 			self._bequeath_components(event)
+			self._make_eater_equip_item(event)
 		if event.id == "DropItem":
 			self._relinquish_components()
 
@@ -82,16 +83,26 @@ class EquipabbleItem extends Component:
 			)
 			eater.add_component(component_name, component_parameters)
 
+
+	func _make_eater_equip_item(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		var new_event:= Event.new(
 				"EquipItem",
 				{"item_name": self.game_object.name},
 		)
 		Event.queue_after_effect(eater, new_event, event)
 
+		new_event = Event.new(
+				"SendSprite",
+				{"to": eater, "name": "EquippedItem"},
+		)
+		Event.queue_after_effect(self.game_object, new_event, event)
+
 
 	func _relinquish_components() -> void:
 		for component_name in self.components_to_inherit:
 			self.game_object.queue_remove_component(component_name)
+		Main.remove_overlay_sprite_from_game_object(self.game_object, "EquippedItem")
 
 
 class InventorySlot extends Component:
@@ -390,6 +401,8 @@ class Render extends Component:
 			self.game_object.physics_body.global_position = (
 					event.parameters.get("position")
 			)
+		if event.id == "SendSprite":
+			self._overlay_sprite_on_target(event)
 
 		return event
 
@@ -398,6 +411,12 @@ class Render extends Component:
 		self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
 		self.sprite_node.texture = load(self.texture)
 		self.sprite_node.z_index = z_idx
+
+
+	func _overlay_sprite_on_target(event: Event) -> void:
+		var target: GameEngine.GameObject = event.parameters.get("to")
+		var sprite_node_name: String = event.parameters.get("name")
+		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name)
 
 
 class SnakeBody extends Component:
@@ -527,17 +546,27 @@ class SpeedIncreaseAbility extends Component:
 		if event.id == "UseItem":
 			self._temporarily_increase_speed()
 		if event.id == "SpeedIncreaseAbilityCDOver":
-			self.on_cooldown = false
+			self._end_cooldown()
 		if event.id == "DecreaseSpeed":
 			self._start_cooldown(event)
 
 		return event
 
 
+	func _end_cooldown() -> void:
+		self.on_cooldown = false
+		Main.remove_shader_from_overlay(self.game_object, "EquippedItem")
+
+
 	func _start_cooldown(event: Event) -> void:
 		var from_ability: String = event.parameters.get("from_ability")
 		if from_ability == "SpeedIncreaseAbility":
 			self.on_cooldown = true
+		Main.apply_shader_to_overlay(
+			self.game_object,
+			"EquippedItem",
+			"gray_material.tres",
+		)
 
 
 	func _temporarily_increase_speed() -> void:
