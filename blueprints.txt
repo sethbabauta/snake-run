@@ -40,5 +40,5 @@
 <Blueprint Name="SpeedUpAbilityItem" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder.png"/>
 	<Component Name="EquipabbleItem" components_as_string="SpeedIncreaseAbility"/>
-	<Component Name="SpeedIncreaseAbility" increase_amount="2"/>
+	<Component Name="SpeedIncreaseAbility" increase_amount="2" cooldown_duration="3"/>
 </Blueprint>
