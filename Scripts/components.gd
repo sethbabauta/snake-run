@@ -390,6 +390,26 @@ class Poisonous extends Component:
 			eater.fire_event(new_event)
 
 
+class PoisonResistance extends Component:
+	var resist_amount: int = 1
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "IngestPoison":
+			self._resist_poison(event)
+
+		return event
+
+
+	func _resist_poison(event: Event) -> void:
+		var poison_level: int = event.parameters.get("poison_level")
+		poison_level -= resist_amount
+		if poison_level < 0:
+			poison_level = 0
+
+		event.parameters["poison_level"] = poison_level
+
+
 class Render extends Component:
 	var texture: String = ""
 	var sprite_node: Sprite2D
@@ -495,7 +515,7 @@ class SnakeBody extends Component:
 
 
 	func _pass_poison(event: Event) -> void:
-		var poison_level: int = event.parameters["poison_level"]
+		var poison_level: int = event.parameters.get("poison_level")
 
 		# pass poison event to tail
 		if self.prev_body:
