@@ -644,7 +644,16 @@ class SpeedIncreaseAbility extends Component:
 		)
 
 
+	func _on_ability_finished():
+		print("TESTING")
+
+
 	func _temporarily_increase_speed() -> void:
+		var test_ability = Utils.AbilityTimer.new(3.0, 5.0)
+		test_ability.ABILITY_FINISHED.connect(_on_ability_finished)
+		test_ability.cooldown()
+
+
 		if not self.on_cooldown:
 			var new_event:= Event.new(
 					"IncreaseSpeed",

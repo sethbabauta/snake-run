@@ -9,6 +9,7 @@ func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
 			(coordinates.round() * Settings.BASE_MOVE_SPEED)
 			+ (Vector2.ONE * (Settings.BASE_MOVE_SPEED / 2))
 	)
+
 	return new_coordinates
 
 
@@ -17,6 +18,7 @@ func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
 			(coordinates.round() - (Vector2.ONE * (Settings.BASE_MOVE_SPEED / 2)))
 			.snapped(Vector2.ONE * Settings.BASE_MOVE_SPEED) / Settings.BASE_MOVE_SPEED
 	)
+
 	return new_coordinates
 
 
@@ -43,3 +45,27 @@ func roll(die_count: int, sides: int) -> int:
 
 func wait(time: float) -> void:
 	await get_tree().create_timer(time).timeout
+
+
+class AbilityTimer:
+	signal ABILITY_FINISHED
+	signal COOLDOWN_FINISHED
+	var ability_duration: float
+	var cooldown_duration: float
+
+
+	func _init(
+			p_ability_duration: float = 0.0,
+			p_cooldown_duration: float = 0.0,
+	) -> void:
+		self.ability_duration = p_ability_duration
+		self.cooldown_duration = p_cooldown_duration
+
+
+	func cooldown() -> void:
+		print("test1")
+		await Utils.wait(ability_duration)
+		ABILITY_FINISHED.emit()
+
+		await Utils.wait(cooldown_duration)
+		COOLDOWN_FINISHED.emit()
