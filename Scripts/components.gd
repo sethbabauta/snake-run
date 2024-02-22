@@ -2,8 +2,8 @@ class_name Components extends GameEngine
 
 
 class ActiveCamoAbility extends Component:
-	var ability_duration: float = 1.0
-	var cooldown_duration: float = 10.0
+	var ability_duration: float
+	var cooldown_duration: float
 	var on_cooldown: bool = false
 	var ability_active: bool = false
 
@@ -12,8 +12,10 @@ class ActiveCamoAbility extends Component:
 		if event.id == "GetPosition":
 			self._hide_position_if_active(event)
 		if event.id == "UseItem":
-			self._temporarily_activate_camo()
-		if event.id == "ActiveCamoAbilityCDOver":
+			self._activate_camo()
+		if event.id == "CooldownStart":
+			self._start_cooldown()
+		if event.id == "CooldownEnd":
 			self._end_cooldown()
 
 		return event
@@ -21,22 +23,31 @@ class ActiveCamoAbility extends Component:
 
 	func _end_cooldown() -> void:
 		self.on_cooldown = false
+		Main.remove_shader_from_overlay(self.game_object, "EquippedItem")
 
 
 	func _hide_position_if_active(event: Event) -> void:
 		if self.ability_active:
 			Event.dequeue_after_effect(event, "GivePosition")
 
-			var new_event:= Event.new("ActiveCamoAbilityCDOver")
-			self.game_object.main_node.fire_delayed_event(
-					self.game_object,
-					new_event,
-					cooldown_duration,
-			)
 
-
-	func _temporarily_activate_camo() -> void:
+	func _start_cooldown() -> void:
+		self.ability_active = false
 		self.on_cooldown = true
+		Main.apply_shader_to_overlay(
+			self.game_object,
+			"EquippedItem",
+			"gray_material.tres",
+		)
+
+
+	func _activate_camo() -> void: # TODO: apply shader to indicate invisible
+		self.ability_active = true
+		self.game_object.main_node.cooldown(
+				self.ability_duration,
+				self.cooldown_duration,
+				self.game_object,
+		)
 
 
 class AIControlledSimple extends Component:
@@ -619,11 +630,11 @@ class SpeedIncreaseAbility extends Component:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "UseItem":
-			self._temporarily_increase_speed()
-		if event.id == "SpeedIncreaseAbilityCDOver":
-			self._end_cooldown()
-		if event.id == "DecreaseSpeed":
+			self._increase_speed(event)
+		if event.id == "CooldownStart":
 			self._start_cooldown(event)
+		if event.id == "CooldownEnd":
+			self._end_cooldown()
 
 		return event
 
@@ -634,49 +645,29 @@ class SpeedIncreaseAbility extends Component:
 
 
 	func _start_cooldown(event: Event) -> void:
-		var from_ability: String = event.parameters.get("from_ability")
-		if from_ability == "SpeedIncreaseAbility":
-			self.on_cooldown = true
+		self.on_cooldown = true
 		Main.apply_shader_to_overlay(
 			self.game_object,
 			"EquippedItem",
 			"gray_material.tres",
 		)
 
-
-	func _on_ability_finished():
-		print("TESTING")
-
-
-	func _temporarily_increase_speed() -> void:
-		var test_ability = Utils.AbilityTimer.new(3.0, 5.0)
-		test_ability.ABILITY_FINISHED.connect(_on_ability_finished)
-		test_ability.cooldown()
+		var new_event:= Event.new(
+				"DecreaseSpeed",
+				{"amount": self.increase_amount},
+		)
+		event.queue_after_effect(self.game_object, new_event, event)
 
 
+	func _increase_speed(event: Event) -> void:
 		if not self.on_cooldown:
 			var new_event:= Event.new(
 					"IncreaseSpeed",
 					{"amount": self.increase_amount},
 			)
-			self.game_object.fire_event(new_event)
-
-			new_event = Event.new(
-					"DecreaseSpeed",
-					{
-							"amount": self.increase_amount,
-							"from_ability": "SpeedIncreaseAbility"
-					},
-			)
-			self.game_object.main_node.fire_delayed_event(
+			event.queue_after_effect(self.game_object, new_event, event)
+			self.game_object.main_node.cooldown(
+					self.ability_duration,
+					self.cooldown_duration,
 					self.game_object,
-					new_event,
-					ability_duration,
-			)
-
-			new_event = Event.new("SpeedIncreaseAbilityCDOver")
-			self.game_object.main_node.fire_delayed_event(
-					self.game_object,
-					new_event,
-					cooldown_duration,
 			)

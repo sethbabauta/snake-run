@@ -52,6 +52,20 @@ static func apply_shader_to_overlay(
 	sprite_node.material = shader_material
 
 
+func cooldown(
+		ability_duration: float,
+		cooldown_duration: float,
+		ability_user: GameEngine.GameObject,
+) -> void:
+	await get_tree().create_timer(ability_duration).timeout
+	var new_event:= GameEngine.Event.new("CooldownStart")
+	ability_user.fire_event(new_event)
+
+	await get_tree().create_timer(cooldown_duration).timeout
+	new_event = GameEngine.Event.new("CooldownEnd")
+	ability_user.fire_event(new_event)
+
+
 func fire_delayed_event(
 		target: GameEngine.GameObject,
 		event: GameEngine.Event,

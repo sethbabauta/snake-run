@@ -41,31 +41,3 @@ func roll(die_count: int, sides: int) -> int:
 		result += self.rng.randi_range(1, sides)
 
 	return result
-
-
-func wait(time: float) -> void:
-	await get_tree().create_timer(time).timeout
-
-
-class AbilityTimer:
-	signal ABILITY_FINISHED
-	signal COOLDOWN_FINISHED
-	var ability_duration: float
-	var cooldown_duration: float
-
-
-	func _init(
-			p_ability_duration: float = 0.0,
-			p_cooldown_duration: float = 0.0,
-	) -> void:
-		self.ability_duration = p_ability_duration
-		self.cooldown_duration = p_cooldown_duration
-
-
-	func cooldown() -> void:
-		print("test1")
-		await Utils.wait(ability_duration)
-		ABILITY_FINISHED.emit()
-
-		await Utils.wait(cooldown_duration)
-		COOLDOWN_FINISHED.emit()

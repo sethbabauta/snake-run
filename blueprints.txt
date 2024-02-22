@@ -52,5 +52,5 @@
 <Blueprint Name="ActiveCamoItem" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder2.png"/>
 	<Component Name="EquipabbleItem" components_as_string="ActiveCamoAbility"/>
-	<Component Name="ActiveCamoAbility" cooldown_duration="5"/>
+	<Component Name="ActiveCamoAbility" cooldown_duration="7" ability_duration="3"/>
 </Blueprint>
