@@ -98,6 +98,7 @@ class EventJob:
 
 class GameObject:
 	var name: String
+	var unique_id: int
 	var main_node: Main
 	var components: Dictionary
 	var physics_body: Area2D
@@ -117,6 +118,12 @@ class GameObject:
 		self.main_node = main_node
 		self.components = components
 		self.physics_body = physics_body
+		self.unique_id = Utils.rng.randi_range(1, 10000)
+
+
+	func _to_string() -> String:
+		var as_string: String = "%s.%s" % [self.name, str(self.unique_id)]
+		return  as_string
 
 
 	func add_component(

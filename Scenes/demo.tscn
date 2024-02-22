@@ -34,6 +34,7 @@ autowrap_mode = 3
 
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 text = "add movable component"
 
 [node name="Button2" type="Button" parent="VBoxContainer"]

@@ -1,32 +1,77 @@
 class_name Components extends GameEngine
 
 
+class ActiveCamoAbility extends Component:
+	var ability_duration: float = 1.0
+	var cooldown_duration: float = 10.0
+	var on_cooldown: bool = false
+	var ability_active: bool = false
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "GetPosition":
+			self._hide_position_if_active(event)
+		if event.id == "UseItem":
+			self._temporarily_activate_camo()
+		if event.id == "ActiveCamoAbilityCDOver":
+			self._end_cooldown()
+
+		return event
+
+
+	func _end_cooldown() -> void:
+		self.on_cooldown = false
+
+
+	func _hide_position_if_active(event: Event) -> void:
+		if self.ability_active:
+			Event.dequeue_after_effect(event, "GivePosition")
+
+			var new_event:= Event.new("ActiveCamoAbilityCDOver")
+			self.game_object.main_node.fire_delayed_event(
+					self.game_object,
+					new_event,
+					cooldown_duration,
+			)
+
+
+	func _temporarily_activate_camo() -> void:
+		self.on_cooldown = true
+
+
 class AIControlledSimple extends Component:
 
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "MoveForward":
+			self._ask_for_position(event)
+		if event.id == "GivePosition":
 			self._ponder_direction_change(event)
 
 		return event
 
 
-	func _ponder_direction_change(event: Event) -> void:
+	func _ask_for_position(event: Event) -> void:
 		var closest_object: GameEngine.GameObject = (
 				self.game_object.main_node.get_closest_player_controlled(
 						self.game_object.physics_body.global_position
 				)
 		)
+		var new_event:= Event.new("GetPosition", {"asker": self.game_object})
+		Event.queue_after_effect(closest_object, new_event, event)
 
-		var current_position: Vector2 = self.game_object.physics_body.global_position
-		var target_position: Vector2 = closest_object.physics_body.global_position
-		var direction: String = (
-				Utils.get_farthest_direction(current_position, target_position)
-		)
 
-		var new_event:= Event.new("ChangeDirection")
-		new_event.parameters["direction"] = direction
-		Event.queue_after_effect(self.game_object, new_event, event)
+	func _ponder_direction_change(event: Event) -> void:
+		var target_position: Vector2 = event.parameters.get("position")
+
+		if target_position:
+			var current_position: Vector2 = self.game_object.physics_body.global_position
+			var direction: String = (
+					Utils.get_farthest_direction(current_position, target_position)
+			)
+
+			var new_event:= Event.new("ChangeDirection", {"direction": direction})
+			Event.queue_after_effect(self.game_object, new_event, event)
 
 
 class DeathSpawner extends Component:
@@ -256,6 +301,8 @@ class PhysicsBody extends Component:
 			self._kill_self()
 		if event.id == "IngestPoison":
 			self._ingest_poison(event)
+		if event.id == "GetPosition":
+			self._give_position(event)
 
 		return event
 
@@ -278,6 +325,14 @@ class PhysicsBody extends Component:
 	func _get_eaten(event: Event) -> void:
 		var kill_self_event:= Event.new("KillSelf")
 		Event.queue_after_effect(self.game_object, kill_self_event, event)
+
+
+	func _give_position(event: Event) -> void:
+		var asker: GameEngine.GameObject = event.parameters.get("asker")
+		var new_event:= Event.new("GivePosition", {
+				"position": self.game_object.physics_body.global_position,
+		})
+		Event.queue_after_effect(asker, new_event, event)
 
 
 	func _ingest_poison(event: Event):

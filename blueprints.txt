@@ -48,3 +48,9 @@
 	<Component Name="EquipabbleItem" components_as_string="PoisonResistance"/>
 	<Component Name="PoisonResistance" priority="101"/>
 </Blueprint>
+
+<Blueprint Name="ActiveCamoItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder2.png"/>
+	<Component Name="EquipabbleItem" components_as_string="ActiveCamoAbility"/>
+	<Component Name="ActiveCamoAbility" cooldown_duration="5"/>
+</Blueprint>
