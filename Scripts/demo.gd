@@ -26,7 +26,7 @@ func _ready():
 	for idx in range(APPLE_AMOUNT):
 		self.poison_apples.append(main_node.spawn_and_place_object("PoisonApple"))
 
-	self.speed_item = main_node.spawn_and_place_object("ActiveCamoItem")
+	self.speed_item = main_node.spawn_and_place_object("SpeedUpAbilityItem")
 
 	self.player = main_node.get_closest_player_controlled(self.poison_apples[0].physics_body.global_position)
 	self.update_label()

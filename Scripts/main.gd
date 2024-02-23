@@ -41,7 +41,7 @@ func _input(event: InputEvent) -> void:
 		self._fire_use_item_event()
 
 
-static func apply_shader_to_overlay(
+static func apply_shader_to_physics_body(
 		target: GameEngine.GameObject,
 		sprite_node_name: String,
 		material_name: String,
@@ -50,6 +50,25 @@ static func apply_shader_to_overlay(
 	var shader_material: Material = load(shader_material_path)
 	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
 	sprite_node.material = shader_material
+
+
+static func apply_shader_to_snake(
+		target_head: GameEngine.GameObject,
+		material_name: String,
+) -> void:
+	Main.apply_shader_to_physics_body(target_head, "EquippedItem", material_name)
+
+	var current_snakebody: Components.SnakeBody = target_head.components.get("SnakeBody")
+	while current_snakebody != null:
+		Main.apply_shader_to_physics_body(
+				current_snakebody.game_object,
+				"PhysicsObjectSprite",
+				material_name,
+		)
+		var prev_body: GameEngine.GameObject = current_snakebody.prev_body
+		if not prev_body:
+			break
+		current_snakebody = prev_body.components.get("SnakeBody")
 
 
 func cooldown(
@@ -143,20 +162,39 @@ static func overlay_sprite_on_game_object(
 	target.physics_body.add_child(new_sprite)
 
 
-static func remove_overlay_sprite_from_game_object(
+static func remove_overlay_sprite_from_physics_body(
 		target: GameEngine.GameObject,
 		sprite_node_name: String,
 ) -> void:
-	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
-	sprite_node.queue_free()
+	var sprite_node: Sprite2D = target.physics_body.get_node_or_null(sprite_node_name)
+	if sprite_node:
+		sprite_node.queue_free()
 
 
-static func remove_shader_from_overlay(
+static func remove_shader_from_physics_body(
 		target: GameEngine.GameObject,
 		sprite_node_name: String,
 ) -> void:
-	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
-	sprite_node.material = null
+	var sprite_node: Sprite2D = target.physics_body.get_node_or_null(sprite_node_name)
+	if sprite_node:
+		sprite_node.material = null
+
+
+static func remove_shader_from_snake(
+		target_head: GameEngine.GameObject,
+) -> void:
+	Main.remove_shader_from_physics_body(target_head, "EquippedItem")
+
+	var current_snakebody: Components.SnakeBody = target_head.components.get("SnakeBody")
+	while current_snakebody != null:
+		Main.remove_shader_from_physics_body(
+				current_snakebody.game_object,
+				"PhysicsObjectSprite",
+		)
+		var prev_body: GameEngine.GameObject = current_snakebody.prev_body
+		if not prev_body:
+			break
+		current_snakebody = prev_body.components.get("SnakeBody")
 
 
 func spawn_and_place_object(

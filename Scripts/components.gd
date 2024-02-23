@@ -17,13 +17,15 @@ class ActiveCamoAbility extends Component:
 			self._start_cooldown()
 		if event.id == "CooldownEnd":
 			self._end_cooldown()
+		if event.id == "DropItem":
+			self._remove_effects()
 
 		return event
 
 
 	func _end_cooldown() -> void:
 		self.on_cooldown = false
-		Main.remove_shader_from_overlay(self.game_object, "EquippedItem")
+		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
 
 
 	func _hide_position_if_active(event: Event) -> void:
@@ -31,23 +33,34 @@ class ActiveCamoAbility extends Component:
 			Event.dequeue_after_effect(event, "GivePosition")
 
 
+	func _remove_effects() -> void:
+		if self.ability_active:
+			Main.remove_shader_from_snake(self.game_object)
+
+
 	func _start_cooldown() -> void:
 		self.ability_active = false
 		self.on_cooldown = true
-		Main.apply_shader_to_overlay(
+		Main.remove_shader_from_snake(self.game_object)
+		Main.apply_shader_to_physics_body(
 			self.game_object,
 			"EquippedItem",
 			"gray_material.tres",
 		)
 
 
-	func _activate_camo() -> void: # TODO: apply shader to indicate invisible
-		self.ability_active = true
-		self.game_object.main_node.cooldown(
-				self.ability_duration,
-				self.cooldown_duration,
+	func _activate_camo() -> void:
+		if not self.on_cooldown:
+			self.ability_active = true
+			self.game_object.main_node.cooldown(
+					self.ability_duration,
+					self.cooldown_duration,
+					self.game_object,
+			)
+			Main.apply_shader_to_snake(
 				self.game_object,
-		)
+				"transparent_material.tres",
+			)
 
 
 class AIControlledSimple extends Component:
@@ -142,7 +155,11 @@ class EquipabbleItem extends Component:
 
 	func _make_eater_equip_item(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
-		var new_event:= Event.new(
+
+		var new_event:= GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+		new_event = Event.new(
 				"EquipItem",
 				{"item_name": self.game_object.name},
 		)
@@ -158,7 +175,7 @@ class EquipabbleItem extends Component:
 	func _relinquish_components() -> void:
 		for component_name in self.components_to_inherit:
 			self.game_object.queue_remove_component(component_name)
-		Main.remove_overlay_sprite_from_game_object(self.game_object, "EquippedItem")
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
 
 
 class InventorySlot extends Component:
@@ -176,12 +193,19 @@ class InventorySlot extends Component:
 
 	func _drop_item() -> void:
 		if self.item_name:
-			self.game_object.main_node.spawn_and_place_object(item_name)
+			var drop_position: Vector2 = self._get_drop_position()
+			self.game_object.main_node.spawn_and_place_object(item_name, drop_position)
 			self.item_name = ""
 
 
 	func _equip_item(event: Event) -> void:
 		self.item_name = event.parameters.get("item_name")
+
+
+	func _get_drop_position() -> Vector2:
+		var snake_body: Components.SnakeBody = self.game_object.components.get("SnakeBody")
+		var tail: GameEngine.GameObject = snake_body.get_tail_game_object()
+		return tail.physics_body.global_position
 
 
 class Movable extends Component:
@@ -626,6 +650,7 @@ class SpeedIncreaseAbility extends Component:
 	var ability_duration: float = 1.0
 	var cooldown_duration: float = 10.0
 	var on_cooldown: bool = false
+	var ability_active: bool = false
 
 
 	func fire_event(event: Event) -> Event:
@@ -635,18 +660,30 @@ class SpeedIncreaseAbility extends Component:
 			self._start_cooldown(event)
 		if event.id == "CooldownEnd":
 			self._end_cooldown()
+		if event.id == "DropItem":
+			self._remove_effects(event)
 
 		return event
 
 
 	func _end_cooldown() -> void:
 		self.on_cooldown = false
-		Main.remove_shader_from_overlay(self.game_object, "EquippedItem")
+		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+
+
+	func _remove_effects(event: Event) -> void:
+		if self.ability_active:
+			var new_event:= Event.new(
+					"DecreaseSpeed",
+					{"amount": self.increase_amount},
+			)
+			event.queue_after_effect(self.game_object, new_event, event)
 
 
 	func _start_cooldown(event: Event) -> void:
 		self.on_cooldown = true
-		Main.apply_shader_to_overlay(
+		self.ability_active = false
+		Main.apply_shader_to_physics_body(
 			self.game_object,
 			"EquippedItem",
 			"gray_material.tres",
@@ -661,6 +698,7 @@ class SpeedIncreaseAbility extends Component:
 
 	func _increase_speed(event: Event) -> void:
 		if not self.on_cooldown:
+			self.ability_active = true
 			var new_event:= Event.new(
 					"IncreaseSpeed",
 					{"amount": self.increase_amount},
