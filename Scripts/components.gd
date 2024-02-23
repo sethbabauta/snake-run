@@ -1,32 +1,101 @@
 class_name Components extends GameEngine
 
 
+class ActiveCamoAbility extends Component:
+	var ability_duration: float
+	var cooldown_duration: float
+	var on_cooldown: bool = false
+	var ability_active: bool = false
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "GetPosition":
+			self._hide_position_if_active(event)
+		if event.id == "UseItem":
+			self._activate_camo()
+		if event.id == "CooldownStart":
+			self._start_cooldown()
+		if event.id == "CooldownEnd":
+			self._end_cooldown()
+		if event.id == "DropItem":
+			self._remove_effects()
+
+		return event
+
+
+	func _end_cooldown() -> void:
+		self.on_cooldown = false
+		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+
+
+	func _hide_position_if_active(event: Event) -> void:
+		if self.ability_active:
+			Event.dequeue_after_effect(event, "GivePosition")
+
+
+	func _remove_effects() -> void:
+		if self.ability_active:
+			Main.remove_shader_from_snake(self.game_object)
+
+
+	func _start_cooldown() -> void:
+		self.ability_active = false
+		self.on_cooldown = true
+		Main.remove_shader_from_snake(self.game_object)
+		Main.apply_shader_to_physics_body(
+			self.game_object,
+			"EquippedItem",
+			"gray_material.tres",
+		)
+
+
+	func _activate_camo() -> void:
+		if not self.on_cooldown:
+			self.ability_active = true
+			self.game_object.main_node.cooldown(
+					self.ability_duration,
+					self.cooldown_duration,
+					self.game_object,
+			)
+			Main.apply_shader_to_snake(
+				self.game_object,
+				"transparent_material.tres",
+			)
+
+
 class AIControlledSimple extends Component:
 
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "MoveForward":
+			self._ask_for_position(event)
+		if event.id == "GivePosition":
 			self._ponder_direction_change(event)
 
 		return event
 
 
-	func _ponder_direction_change(event: Event) -> void:
+	func _ask_for_position(event: Event) -> void:
 		var closest_object: GameEngine.GameObject = (
 				self.game_object.main_node.get_closest_player_controlled(
 						self.game_object.physics_body.global_position
 				)
 		)
+		var new_event:= Event.new("GetPosition", {"asker": self.game_object})
+		Event.queue_after_effect(closest_object, new_event, event)
 
-		var current_position: Vector2 = self.game_object.physics_body.global_position
-		var target_position: Vector2 = closest_object.physics_body.global_position
-		var direction: String = (
-				Utils.get_farthest_direction(current_position, target_position)
-		)
 
-		var new_event:= Event.new("ChangeDirection")
-		new_event.parameters["direction"] = direction
-		self.game_object.queue_after_effect(self.game_object, new_event, event)
+	func _ponder_direction_change(event: Event) -> void:
+		var target_position: Vector2 = event.parameters.get("position")
+
+		if target_position:
+			var current_position: Vector2 = self.game_object.physics_body.global_position
+			var direction: String = (
+					Utils.get_farthest_direction(current_position, target_position)
+			)
+
+			var new_event:= Event.new("ChangeDirection", {"direction": direction})
+			Event.queue_after_effect(self.game_object, new_event, event)
 
 
 class DeathSpawner extends Component:
@@ -44,6 +113,101 @@ class DeathSpawner extends Component:
 		self.game_object.main_node.spawn_and_place_object(name_of_object)
 
 
+class Debugger extends Component:
+
+
+	func fire_event(event: Event) -> Event:
+		var to_print: String = "Debugger Component"
+		#print(to_print)
+
+		return event
+
+
+class EquipabbleItem extends Component:
+	var components_as_string: String = ""
+	var components_to_inherit: PackedStringArray = []
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			self._bequeath_components(event)
+			self._make_eater_equip_item(event)
+		if event.id == "DropItem":
+			self._relinquish_components()
+
+		return event
+
+
+	func first_time_setup() -> void:
+		components_to_inherit = components_as_string.split(",")
+		components_to_inherit.append("EquipabbleItem")
+
+
+	func _bequeath_components(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		for component_name in self.components_to_inherit:
+			var component_parameters: Dictionary = (
+					self.game_object.components[component_name]
+					.initial_parameters
+			)
+			eater.add_component(component_name, component_parameters)
+
+
+	func _make_eater_equip_item(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+
+		var new_event:= GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+		new_event = Event.new(
+				"EquipItem",
+				{"item_name": self.game_object.name},
+		)
+		Event.queue_after_effect(eater, new_event, event)
+
+		new_event = Event.new(
+				"SendSprite",
+				{"to": eater, "name": "EquippedItem"},
+		)
+		Event.queue_after_effect(self.game_object, new_event, event)
+
+
+	func _relinquish_components() -> void:
+		for component_name in self.components_to_inherit:
+			self.game_object.queue_remove_component(component_name)
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+
+
+class InventorySlot extends Component:
+	var item_name: String = ""
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "EquipItem":
+			self._equip_item(event)
+		if event.id == "DropItem":
+			self._drop_item()
+
+		return event
+
+
+	func _drop_item() -> void:
+		if self.item_name:
+			var drop_position: Vector2 = self._get_drop_position()
+			self.game_object.main_node.spawn_and_place_object(item_name, drop_position)
+			self.item_name = ""
+
+
+	func _equip_item(event: Event) -> void:
+		self.item_name = event.parameters.get("item_name")
+
+
+	func _get_drop_position() -> Vector2:
+		var snake_body: Components.SnakeBody = self.game_object.components.get("SnakeBody")
+		var tail: GameEngine.GameObject = snake_body.get_tail_game_object()
+		return tail.physics_body.global_position
+
+
 class Movable extends Component:
 	const VALID_DIRECTIONS: Array = ["N", "S", "E", "W"]
 	var speed: int = 3
@@ -58,9 +222,19 @@ class Movable extends Component:
 		if event.id == "TryChangeDirection":
 			self._try_change_direction(event)
 		if event.id == "ChangeSpeed":
-			self._change_speed(event)
+			var new_speed: int = event.parameters.get("speed")
+			self._set_speed(new_speed)
+		if event.id == "IncreaseSpeed":
+			self._increase_speed(event)
+		if event.id == "DecreaseSpeed":
+			self._decrease_speed(event)
 
 		return event
+
+
+	func first_time_setup() -> void:
+		var subscribe_list_name: String = "movable%d" % self.speed
+		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
 
 
 	func _change_direction(event: Event) -> void:
@@ -68,20 +242,32 @@ class Movable extends Component:
 			self.direction = event.parameters.get("direction")
 
 
-	func _change_speed(event: Event) -> void:
+	func _decrease_speed(event: Event) -> void:
+		var amount: int = event.parameters.get("amount")
+		if amount:
+			self._set_speed(self.speed - amount)
+
+
+	func _increase_speed(event: Event) -> void:
+		var amount: int = event.parameters.get("amount")
+		if amount:
+			self._set_speed(self.speed + amount)
+
+
+	func _set_speed(new_speed: int) -> void:
 		var subscribe_list_name: String = "movable%d" % self.speed
 		self.game_object.factory_from.unsubscribe(self.game_object, subscribe_list_name)
 
-		var speed: int = event.parameters.get("speed")
-		if speed >= 1 and speed <= 5:
-			self.speed = speed
+		if new_speed > 5:
+			new_speed = 5
+
+		if new_speed < 1:
+			new_speed = 1
+
+		if new_speed >= 1:
+			self.speed = new_speed
 
 		subscribe_list_name = "movable%d" % self.speed
-		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
-
-
-	func first_time_setup() -> void:
-		var subscribe_list_name: String = "movable%d" % self.speed
 		self.game_object.factory_from.subscribe(self.game_object, subscribe_list_name)
 
 
@@ -105,13 +291,13 @@ class Movable extends Component:
 				)
 
 		var new_event:= Event.new("MovedForward", {"direction": self.direction})
-		self.game_object.queue_after_effect(self.game_object, new_event, event)
+		Event.queue_after_effect(self.game_object, new_event, event)
 
 
 	func _try_change_direction(event: Event) -> void:
 		var new_event:= Event.new("ChangeDirection", event.parameters.duplicate(true))
 		new_event.parameters["current_direction"] = self.direction
-		self.game_object.queue_after_effect(self.game_object, new_event, event)
+		Event.queue_after_effect(self.game_object, new_event, event)
 
 
 class Nutritious extends Component:
@@ -150,6 +336,8 @@ class PhysicsBody extends Component:
 			self._kill_self()
 		if event.id == "IngestPoison":
 			self._ingest_poison(event)
+		if event.id == "GetPosition":
+			self._give_position(event)
 
 		return event
 
@@ -171,13 +359,21 @@ class PhysicsBody extends Component:
 
 	func _get_eaten(event: Event) -> void:
 		var kill_self_event:= Event.new("KillSelf")
-		self.game_object.queue_after_effect(self.game_object, kill_self_event, event)
+		Event.queue_after_effect(self.game_object, kill_self_event, event)
+
+
+	func _give_position(event: Event) -> void:
+		var asker: GameEngine.GameObject = event.parameters.get("asker")
+		var new_event:= Event.new("GivePosition", {
+				"position": self.game_object.physics_body.global_position,
+		})
+		Event.queue_after_effect(asker, new_event, event)
 
 
 	func _ingest_poison(event: Event):
 		if event.parameters["poison_level"] > 0:
 			var kill_self_event:= Event.new("KillSelf")
-			self.game_object.queue_after_effect(self.game_object, kill_self_event, event)
+			Event.queue_after_effect(self.game_object, kill_self_event, event)
 
 
 	func _kill_self() -> void:
@@ -256,7 +452,7 @@ class PlayerControlled extends Component:
 
 	func _queue_death(event: Event) -> void:
 		var die_event:= Event.new("Die")
-		self.game_object.queue_after_effect(self.game_object, die_event, event)
+		Event.queue_after_effect(self.game_object, die_event, event)
 
 
 	func _save_direction(event: Event) -> void:
@@ -284,6 +480,26 @@ class Poisonous extends Component:
 			eater.fire_event(new_event)
 
 
+class PoisonResistance extends Component:
+	var resist_amount: int = 1
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "IngestPoison":
+			self._resist_poison(event)
+
+		return event
+
+
+	func _resist_poison(event: Event) -> void:
+		var poison_level: int = event.parameters.get("poison_level")
+		poison_level -= resist_amount
+		if poison_level < 0:
+			poison_level = 0
+
+		event.parameters["poison_level"] = poison_level
+
+
 class Render extends Component:
 	var texture: String = ""
 	var sprite_node: Sprite2D
@@ -295,6 +511,8 @@ class Render extends Component:
 			self.game_object.physics_body.global_position = (
 					event.parameters.get("position")
 			)
+		if event.id == "SendSprite":
+			self._overlay_sprite_on_target(event)
 
 		return event
 
@@ -303,6 +521,12 @@ class Render extends Component:
 		self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
 		self.sprite_node.texture = load(self.texture)
 		self.sprite_node.z_index = z_idx
+
+
+	func _overlay_sprite_on_target(event: Event) -> void:
+		var target: GameEngine.GameObject = event.parameters.get("to")
+		var sprite_node_name: String = event.parameters.get("name")
+		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name)
 
 
 class SnakeBody extends Component:
@@ -362,7 +586,7 @@ class SnakeBody extends Component:
 			self.game_object.physics_body.global_position = next_snake_body.prev_location
 
 		if self.prev_body:
-			self.game_object.queue_after_effect(
+			Event.queue_after_effect(
 					self.prev_body,
 					Event.new("FollowNextBody"),
 					event,
@@ -377,20 +601,20 @@ class SnakeBody extends Component:
 		self.prev_location = self.game_object.physics_body.global_position
 
 		if self.prev_body:
-			self.game_object.queue_after_effect(prev_body, Event.new("FollowNextBody"), event)
+			Event.queue_after_effect(prev_body, Event.new("FollowNextBody"), event)
 
 
 	func _pass_poison(event: Event) -> void:
-		var poison_level: int = event.parameters["poison_level"]
+		var poison_level: int = event.parameters.get("poison_level")
 
 		# pass poison event to tail
 		if self.prev_body:
-			self.game_object.dequeue_after_effect(event, "KillSelf")
+			Event.dequeue_after_effect(event, "KillSelf")
 			var new_event:= Event.new(
 					"IngestPoison",
 					{"poison_level": poison_level},
 			)
-			self.game_object.queue_after_effect(self.prev_body, new_event, event)
+			Event.queue_after_effect(self.prev_body, new_event, event)
 			return
 
 		if poison_level > 0 and self.next_body:
@@ -398,5 +622,90 @@ class SnakeBody extends Component:
 					"IngestPoison",
 					{"poison_level": poison_level-1},
 			)
-			self.game_object.queue_after_effect(self.next_body, new_event, event)
+			Event.queue_after_effect(self.next_body, new_event, event)
 
+
+class SpeedIncrease extends Component:
+	var increase_amount: int = 1
+
+
+	func on_add():
+		var new_event:= Event.new(
+				"IncreaseSpeed",
+				{"amount": self.increase_amount},
+		)
+		self.game_object.fire_event(new_event)
+
+
+	func on_remove():
+		var new_event:= Event.new(
+				"DecreaseSpeed",
+				{"amount": self.increase_amount},
+		)
+		self.game_object.fire_event(new_event)
+
+
+class SpeedIncreaseAbility extends Component:
+	var increase_amount: int = 1
+	var ability_duration: float = 1.0
+	var cooldown_duration: float = 10.0
+	var on_cooldown: bool = false
+	var ability_active: bool = false
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "UseItem":
+			self._increase_speed(event)
+		if event.id == "CooldownStart":
+			self._start_cooldown(event)
+		if event.id == "CooldownEnd":
+			self._end_cooldown()
+		if event.id == "DropItem":
+			self._remove_effects(event)
+
+		return event
+
+
+	func _end_cooldown() -> void:
+		self.on_cooldown = false
+		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+
+
+	func _remove_effects(event: Event) -> void:
+		if self.ability_active:
+			var new_event:= Event.new(
+					"DecreaseSpeed",
+					{"amount": self.increase_amount},
+			)
+			event.queue_after_effect(self.game_object, new_event, event)
+
+
+	func _start_cooldown(event: Event) -> void:
+		self.on_cooldown = true
+		self.ability_active = false
+		Main.apply_shader_to_physics_body(
+			self.game_object,
+			"EquippedItem",
+			"gray_material.tres",
+		)
+
+		var new_event:= Event.new(
+				"DecreaseSpeed",
+				{"amount": self.increase_amount},
+		)
+		event.queue_after_effect(self.game_object, new_event, event)
+
+
+	func _increase_speed(event: Event) -> void:
+		if not self.on_cooldown:
+			self.ability_active = true
+			var new_event:= Event.new(
+					"IncreaseSpeed",
+					{"amount": self.increase_amount},
+			)
+			event.queue_after_effect(self.game_object, new_event, event)
+			self.game_object.main_node.cooldown(
+					self.ability_duration,
+					self.cooldown_duration,
+					self.game_object,
+			)

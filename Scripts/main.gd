@@ -23,58 +23,75 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("turn_up"):
-		_fire_change_direction_event("turn_up")
+		self._fire_change_direction_event("turn_up")
 
 	if event.is_action_pressed("turn_left"):
-		_fire_change_direction_event("turn_left")
+		self._fire_change_direction_event("turn_left")
 
 	if event.is_action_pressed("turn_down"):
-		_fire_change_direction_event("turn_down")
+		self._fire_change_direction_event("turn_down")
 
 	if event.is_action_pressed("turn_right"):
-		_fire_change_direction_event("turn_right")
+		self._fire_change_direction_event("turn_right")
+
+	if event.is_action_pressed("drop_item"):
+		self._fire_drop_item_event()
+
+	if event.is_action_pressed("use_item"):
+		self._fire_use_item_event()
 
 
-func spawn_and_place_object(
-		object_name: String,
-		position: Vector2 = self.get_random_valid_world_position(),
-) -> GameEngine.GameObject:
-	var new_object:= self.game_object_factory.create_object(object_name, self)
-	var set_position_event:= GameEngine.Event.new(
-		"SetPosition",
-		{"position": position}
-	)
-	new_object.fire_event(set_position_event)
-
-	return new_object
-
-
-func spawn_snake_segment(
-		head_game_object: GameEngine.GameObject,
-		spawn_direction: Vector2 = Vector2.DOWN,
+static func apply_shader_to_physics_body(
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+		material_name: String,
 ) -> void:
-
-	var head_snake_body: Components.SnakeBody = (
-			head_game_object.components.get("SnakeBody")
-	)
-	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
-
-	var spawn_position: Vector2 = (
-			tail.physics_body.global_position
-			+ (spawn_direction * Settings.BASE_MOVE_SPEED)
-	)
-	var new_snake_body_obj: GameEngine.GameObject = (
-			self.spawn_and_place_object("SnakeBody", spawn_position)
-	)
-
-	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
+	var shader_material_path: String = Settings.SHADERS_PATH + material_name
+	var shader_material: Material = load(shader_material_path)
+	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
+	sprite_node.material = shader_material
 
 
-func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
-	var snake_head:= self.spawn_and_place_object("PlayerSnakeHead", start_position)
+static func apply_shader_to_snake(
+		target_head: GameEngine.GameObject,
+		material_name: String,
+) -> void:
+	Main.apply_shader_to_physics_body(target_head, "EquippedItem", material_name)
 
-	for snake_body_idx in range(snake_length-1):
-		self.spawn_snake_segment(snake_head)
+	var current_snakebody: Components.SnakeBody = target_head.components.get("SnakeBody")
+	while current_snakebody != null:
+		Main.apply_shader_to_physics_body(
+				current_snakebody.game_object,
+				"PhysicsObjectSprite",
+				material_name,
+		)
+		var prev_body: GameEngine.GameObject = current_snakebody.prev_body
+		if not prev_body:
+			break
+		current_snakebody = prev_body.components.get("SnakeBody")
+
+
+func cooldown(
+		ability_duration: float,
+		cooldown_duration: float,
+		ability_user: GameEngine.GameObject,
+) -> void:
+	await get_tree().create_timer(ability_duration).timeout
+	var new_event:= GameEngine.Event.new("CooldownStart")
+	ability_user.fire_event(new_event)
+
+	await get_tree().create_timer(cooldown_duration).timeout
+	new_event = GameEngine.Event.new("CooldownEnd")
+	ability_user.fire_event(new_event)
+
+
+func fire_delayed_event(
+		target: GameEngine.GameObject,
+		event: GameEngine.Event,
+		delay_seconds: float,
+) -> void:
+	await get_tree().create_timer(delay_seconds).timeout
+	target.fire_event(event)
 
 
 func get_closest_player_controlled(
@@ -132,10 +149,116 @@ func get_random_world_position() -> Vector2:
 	return position
 
 
+static func overlay_sprite_on_game_object(
+		sprite_path: String,
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+		z_idx: int = 2,
+) -> void:
+	var new_sprite:= Sprite2D.new()
+	new_sprite.texture = load(sprite_path)
+	new_sprite.z_index = z_idx
+	new_sprite.name = sprite_node_name
+	target.physics_body.add_child(new_sprite)
+
+
+static func remove_overlay_sprite_from_physics_body(
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+) -> void:
+	var sprite_node: Sprite2D = target.physics_body.get_node_or_null(sprite_node_name)
+	if sprite_node:
+		sprite_node.queue_free()
+
+
+static func remove_shader_from_physics_body(
+		target: GameEngine.GameObject,
+		sprite_node_name: String,
+) -> void:
+	var sprite_node: Sprite2D = target.physics_body.get_node_or_null(sprite_node_name)
+	if sprite_node:
+		sprite_node.material = null
+
+
+static func remove_shader_from_snake(
+		target_head: GameEngine.GameObject,
+) -> void:
+	Main.remove_shader_from_physics_body(target_head, "EquippedItem")
+
+	var current_snakebody: Components.SnakeBody = target_head.components.get("SnakeBody")
+	while current_snakebody != null:
+		Main.remove_shader_from_physics_body(
+				current_snakebody.game_object,
+				"PhysicsObjectSprite",
+		)
+		var prev_body: GameEngine.GameObject = current_snakebody.prev_body
+		if not prev_body:
+			break
+		current_snakebody = prev_body.components.get("SnakeBody")
+
+
+func spawn_and_place_object(
+		object_name: String,
+		position: Vector2 = self.get_random_valid_world_position(),
+) -> GameEngine.GameObject:
+	var new_object:= self.game_object_factory.create_object(object_name, self)
+	var set_position_event:= GameEngine.Event.new(
+		"SetPosition",
+		{"position": position}
+	)
+	new_object.fire_event(set_position_event)
+
+	return new_object
+
+
+func spawn_background() -> void:
+	for x in range(self.max_simple_size.x):
+		for y in range(self.max_simple_size.y):
+			self._spawn_background_tile(Vector2(x, y))
+
+
+func spawn_snake_segment(
+		head_game_object: GameEngine.GameObject,
+		spawn_direction: Vector2 = Vector2.DOWN,
+) -> void:
+
+	var head_snake_body: Components.SnakeBody = (
+			head_game_object.components.get("SnakeBody")
+	)
+	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
+
+	var spawn_position: Vector2 = (
+			tail.physics_body.global_position
+			+ (spawn_direction * Settings.BASE_MOVE_SPEED)
+	)
+	var new_snake_body_obj: GameEngine.GameObject = (
+			self.spawn_and_place_object("SnakeBody", spawn_position)
+	)
+
+	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
+
+
+func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
+	var snake_head:= self.spawn_and_place_object("PlayerSnakeHead", start_position)
+
+	for snake_body_idx in range(snake_length-1):
+		self.spawn_snake_segment(snake_head)
+
+
 func _fire_change_direction_event(input_name: String) -> void:
 	var new_event:= GameEngine.Event.new(
 			"TryChangeDirection", {"input": input_name}
 	)
+	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _fire_drop_item_event() -> void:
+	var new_event:= GameEngine.Event.new("DropItem")
+	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _fire_use_item_event() -> void:
+	var new_event:= GameEngine.Event.new("UseItem")
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
@@ -173,12 +296,6 @@ func _spawn_background_tile(position: Vector2) -> void:
 	current_tile.global_position = world_position
 
 
-func _spawn_background() -> void:
-	for x in range(self.max_simple_size.x):
-		for y in range(self.max_simple_size.y):
-			self._spawn_background_tile(Vector2(x, y))
-
-
 func _spawn_barrier(position: Vector2) -> void:
 	var world_position: Vector2 = (
 			Utils.convert_simple_to_world_coordinates(position)
@@ -191,7 +308,7 @@ func _spawn_barrier(position: Vector2) -> void:
 	barrier.fire_event(set_position_event)
 
 
-func _spawn_start_barriers() -> void:
+func spawn_start_barriers() -> void:
 	self._spawn_barrier(Vector2(0, 0))
 	self._spawn_barrier(Vector2(self.max_simple_size.x-1, 0))
 	self._spawn_barrier(Vector2(0, self.max_simple_size.y-1))

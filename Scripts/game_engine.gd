@@ -9,6 +9,7 @@ class Component:
 	var name: String
 	var game_object: GameObject
 	var priority: int = 100
+	var initial_parameters: Dictionary
 
 
 	func _init(name: String, game_object: GameObject = null) -> void:
@@ -24,7 +25,17 @@ class Component:
 		return event
 
 
+	func on_add() -> void:
+		pass
+
+
+	func on_remove() -> void:
+		pass
+
+
 	func set_parameters(component_parameters: Dictionary) -> void:
+		self.initial_parameters = component_parameters
+
 		for parameter_name in component_parameters.keys():
 			if parameter_name == "texture":
 				component_parameters[parameter_name] = (
@@ -52,6 +63,29 @@ class Event:
 		self.unique_id = Utils.rng.randi_range(1, 10000)
 
 
+	static func dequeue_after_effect(
+			event: Event,
+			event_id_to_dequeue: String,
+	) -> void:
+		var event_job_to_dequeue: EventJob
+		for job in event.parameters["after_effects"]:
+			if job.event.id == event_id_to_dequeue:
+				event_job_to_dequeue = job
+				break
+
+		if event_id_to_dequeue:
+			event.parameters["after_effects"].erase(event_job_to_dequeue)
+
+
+	static func queue_after_effect(
+			target: GameObject,
+			new_event: Event,
+			event: Event,
+	) -> void:
+		var event_job:= EventJob.new(target, new_event)
+		event.parameters["after_effects"].append(event_job)
+
+
 class EventJob:
 	var target: GameObject
 	var event: Event
@@ -64,12 +98,14 @@ class EventJob:
 
 class GameObject:
 	var name: String
+	var unique_id: int
 	var main_node: Main
 	var components: Dictionary
 	var physics_body: Area2D
 	var factory_from: GameObjectFactory
 	var component_priority: Array
 	var subscribed_to: Array = []
+	var remove_component_queue: Array = []
 
 
 	func _init(
@@ -82,6 +118,12 @@ class GameObject:
 		self.main_node = main_node
 		self.components = components
 		self.physics_body = physics_body
+		self.unique_id = Utils.rng.randi_range(1, 10000)
+
+
+	func _to_string() -> String:
+		var as_string: String = "%s.%s" % [self.name, str(self.unique_id)]
+		return  as_string
 
 
 	func add_component(
@@ -95,8 +137,9 @@ class GameObject:
 		new_component.set_parameters(component_parameters)
 		new_component.first_time_setup()
 
-		self.components[component_name] = new_component
+		new_component.on_add()
 
+		self.components[component_name] = new_component
 		self._insert_component_priority(new_component)
 
 
@@ -108,20 +151,9 @@ class GameObject:
 		self.physics_body.queue_free()
 
 
-	func dequeue_after_effect(event: Event, event_id_to_dequeue: String) -> void:
-		var event_job_to_dequeue: EventJob
-		for job in event.parameters["after_effects"]:
-			if job.event.id == event_id_to_dequeue:
-				event_job_to_dequeue = job
-				break
-
-		if event_id_to_dequeue:
-			event.parameters["after_effects"].erase(event_job_to_dequeue)
-
-
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
-		#print(self.name, " received event: ", event.id, ".", event.unique_id)
+		#print("\n", self.name, " received event: ", event.id, ".", event.unique_id)
 		# higher priority number first
 		for component in self.component_priority:
 			event = self.components[component.name].fire_event(event)
@@ -135,22 +167,23 @@ class GameObject:
 				event.parameters["after_effects"].erase(event_job)
 				event_target.fire_event(next_event)
 
+		if self.remove_component_queue:
+			for component_name in self.remove_component_queue:
+				self.remove_component(component_name)
+
 		return event
 
 
-	func queue_after_effect(
-			target: GameObject,
-			new_event: Event,
-			event: Event,
-	) -> void:
-		var event_job:= EventJob.new(target, new_event)
-		event.parameters["after_effects"].append(event_job)
+	func queue_remove_component(component_name: String) -> void:
+		self.remove_component_queue.append(component_name)
 
 
 	func remove_component(component_name: String) -> void:
+		self.remove_component_queue.erase(component_name)
 		if component_name in self.components:
-			self.component_priority.erase(component_name)
+			self.components[component_name].on_remove()
 			self.components.erase(component_name)
+			self._remove_from_component_priority(component_name)
 
 
 	func _component_priority_bsearch_function(
@@ -167,6 +200,12 @@ class GameObject:
 				self._component_priority_bsearch_function,
 		)
 		self.component_priority.insert(insert_index, new_component)
+
+
+	func _remove_from_component_priority(component_name: String) -> void:
+		for component in self.component_priority:
+			if component.name == component_name:
+				self.component_priority.erase(component)
 
 
 class GameObjectFactory:

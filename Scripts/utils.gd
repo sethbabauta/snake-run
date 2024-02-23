@@ -9,6 +9,7 @@ func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
 			(coordinates.round() * Settings.BASE_MOVE_SPEED)
 			+ (Vector2.ONE * (Settings.BASE_MOVE_SPEED / 2))
 	)
+
 	return new_coordinates
 
 
@@ -17,6 +18,7 @@ func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
 			(coordinates.round() - (Vector2.ONE * (Settings.BASE_MOVE_SPEED / 2)))
 			.snapped(Vector2.ONE * Settings.BASE_MOVE_SPEED) / Settings.BASE_MOVE_SPEED
 	)
+
 	return new_coordinates
 
 

@@ -12,10 +12,11 @@ const APPLE_AMOUNT = 3
 
 var poison_apples: Array = []
 var player: GameEngine.GameObject
+var speed_item: GameEngine.GameObject
 
 
 func _ready():
-	self.main_node._spawn_background()
+	self.main_node.spawn_background()
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, self.START_LENGTH)
@@ -25,8 +26,10 @@ func _ready():
 	for idx in range(APPLE_AMOUNT):
 		self.poison_apples.append(main_node.spawn_and_place_object("PoisonApple"))
 
-	self.update_label()
+	self.speed_item = main_node.spawn_and_place_object("SpeedUpAbilityItem")
+
 	self.player = main_node.get_closest_player_controlled(self.poison_apples[0].physics_body.global_position)
+	self.update_label()
 	self.GAME_START.emit()
 
 
@@ -38,9 +41,9 @@ func update_label() -> void:
 	if self.poison_apples.size() == 0:
 		return
 
-	if str(self.poison_apples[0].physics_body) != "<Freed Object>":
-		var display_components: String = "poison apple components: "
-		for component_name in self.poison_apples[0].components:
+	if str(self.player.physics_body) != "<Freed Object>":
+		var display_components: String = "player components: "
+		for component_name in self.player.components:
 			display_components += (component_name + ", ")
 
 		demo_label.text = display_components
