@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bclgqqdm2q5kf"]
+
+[ext_resource type="PackedScene" uid="uid://b7f11puwfib6s" path="res://Scenes/physics_object.tscn" id="1_2pufs"]
+[ext_resource type="Script" path="res://GameObjects/barrier.gd" id="1_p6hyf"]
+
+[node name="Barrier" type="Node2D"]
+script = ExtResource("1_p6hyf")
+
+[node name="PhysicsObject" parent="." instance=ExtResource("1_2pufs")]

@@ -4,6 +4,7 @@ class_name Main extends Node
 @export var gamemode_node: Node
 
 var game_object_factory: GameEngine.GameObjectFactory
+var level_factory: LevelFactory
 var max_simple_size: Vector2
 var query_area: Area2D
 var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
@@ -11,6 +12,7 @@ var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
+	self.level_factory = LevelFactory.new(self)
 
 
 func _ready() -> void:
@@ -147,6 +149,10 @@ func get_random_world_position() -> Vector2:
 	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
+
+
+func load_level_from_tilemap(level: TileMap) -> void:
+	pass
 
 
 static func overlay_sprite_on_game_object(

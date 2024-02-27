@@ -5,11 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="3_5ku6j"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="3_hgows"]
 
-[node name="Demo" type="Node" node_paths=PackedStringArray("main_node", "demo_label", "move_timer")]
+[node name="Demo" type="Node" node_paths=PackedStringArray("main_node", "move_timer")]
 script = ExtResource("1_p3bi1")
 adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
 main_node = NodePath("Main")
-demo_label = NodePath("VBoxContainer/Label")
 move_timer = NodePath("MoveTimer")
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
@@ -27,23 +26,10 @@ gamemode_node = NodePath("..")
 offset_right = 365.0
 offset_bottom = 58.0
 
-[node name="Label" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-text = "poison apple components: []"
-autowrap_mode = 3
-
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_mode = 0
-text = "add movable component"
-
-[node name="Button2" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Set speed to 5"
-
-[node name="Button3" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Set speed to 1"
+text = "spawn level"
 
 [connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
 [connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
@@ -53,5 +39,3 @@ text = "Set speed to 1"
 [connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]
 [connection signal="timeout" from="MoveTimer" to="FollowCamera" method="_on_move_timer_timeout"]
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_button_3_pressed"]
