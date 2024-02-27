@@ -124,17 +124,13 @@ func get_closest_player_controlled(
 
 
 func get_random_valid_world_position() -> Vector2:
-	var taken_positions: Array = []
-
-	if self.query_area.has_overlapping_areas():
-		for area in query_area.get_overlapping_areas():
-			taken_positions.append(area.global_position)
+	var taken_positions: Array = get_taken_positions()
 
 	var position:= Vector2.ONE
 
 	for try_count in range(1000):
 		position = self.get_random_world_position()
-		if position not in taken_positions:
+		if not is_position_taken(position):
 			break
 
 	return position
@@ -151,8 +147,22 @@ func get_random_world_position() -> Vector2:
 	return position
 
 
-func load_level_from_tilemap(level: TileMap) -> void:
-	pass
+func get_taken_positions() -> Array:
+	var taken_positions: Array = []
+	if self.query_area.has_overlapping_areas():
+		for area in query_area.get_overlapping_areas():
+			taken_positions.append(area.global_position)
+
+	return taken_positions
+
+
+func is_position_taken(position: Vector2) -> bool:
+	var taken_positions: Array = get_taken_positions()
+	var is_taken: bool = true
+	if position not in taken_positions:
+		is_taken = false
+
+	return is_taken
 
 
 static func overlay_sprite_on_game_object(
@@ -221,6 +231,27 @@ func spawn_background() -> void:
 	for x in range(self.max_simple_size.x):
 		for y in range(self.max_simple_size.y):
 			self._spawn_background_tile(Vector2(x, y))
+
+
+func spawn_doors() -> void:
+	var camera_coordinates: Vector2 = follow_camera.global_position
+	var simple_camera_coordinates: Vector2 = (
+			Utils.convert_world_to_simple_coordinates(camera_coordinates)
+	)
+	var door_positions: Array = [
+		simple_camera_coordinates + Vector2(9, 0),
+		simple_camera_coordinates + Vector2(9, -1),
+		simple_camera_coordinates + Vector2(0, 9),
+		simple_camera_coordinates + Vector2(-1, 9),
+		simple_camera_coordinates + Vector2(-10, 0),
+		simple_camera_coordinates + Vector2(-10, -1),
+		simple_camera_coordinates + Vector2(0, -10),
+		simple_camera_coordinates + Vector2(-1, -10),
+	]
+	for position in door_positions:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not is_position_taken(world_position):
+			spawn_and_place_object("Barrier", world_position)
 
 
 func spawn_snake_segment(

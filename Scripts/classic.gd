@@ -11,8 +11,12 @@ func _ready():
 	self.main_node.spawn_player_snake(start_position, self.START_LENGTH)
 	self.main_node.spawn_start_barriers()
 
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(1).timeout
 	self.main_node.spawn_and_place_object("Apple")
+	await get_tree().create_timer(2).timeout
+
+	var move_timer: Timer = get_node("MoveTimer")
+	move_timer.start()
 
 
 func end_game() -> void:
