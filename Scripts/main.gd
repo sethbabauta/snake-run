@@ -205,21 +205,37 @@ func get_random_world_position() -> Vector2:
 	return position
 
 
-func get_simple_door_locations() -> Array:
+func get_simple_door_locations(exclusions: Array = []) -> Array:
 	var camera_coordinates: Vector2 = follow_camera.global_position
 	var simple_camera_coordinates: Vector2 = (
 			Utils.convert_world_to_simple_coordinates(camera_coordinates)
 	)
-	var door_positions: Array = [
-		simple_camera_coordinates + Vector2(9, 0),
-		simple_camera_coordinates + Vector2(9, -1),
-		simple_camera_coordinates + Vector2(0, 9),
-		simple_camera_coordinates + Vector2(-1, 9),
-		simple_camera_coordinates + Vector2(-10, 0),
-		simple_camera_coordinates + Vector2(-10, -1),
+	var door_positions_north: Array = [
 		simple_camera_coordinates + Vector2(0, -10),
 		simple_camera_coordinates + Vector2(-1, -10),
 	]
+	var door_positions_south: Array = [
+		simple_camera_coordinates + Vector2(0, 9),
+		simple_camera_coordinates + Vector2(-1, 9),
+	]
+	var door_positions_east: Array = [
+		simple_camera_coordinates + Vector2(9, 0),
+		simple_camera_coordinates + Vector2(9, -1),
+	]
+	var door_positions_west: Array = [
+		simple_camera_coordinates + Vector2(-10, 0),
+		simple_camera_coordinates + Vector2(-10, -1),
+	]
+
+	var door_positions: Array = []
+	if "N" not in exclusions:
+		door_positions += door_positions_north
+	if "S" not in exclusions:
+		door_positions += door_positions_south
+	if "E" not in exclusions:
+		door_positions += door_positions_east
+	if "W" not in exclusions:
+		door_positions += door_positions_west
 
 	return door_positions
 
@@ -317,6 +333,28 @@ func spawn_doors() -> void:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 		if not is_position_taken(world_position):
 			spawn_and_place_object("Door", world_position)
+
+
+func spawn_start_doors() -> void:
+	var camera_coordinates: Vector2 = follow_camera.global_position
+	var simple_camera_coordinates: Vector2 = (
+			Utils.convert_world_to_simple_coordinates(camera_coordinates)
+	)
+	var door_positions_south: Array = [
+		simple_camera_coordinates + Vector2(0, 9),
+		simple_camera_coordinates + Vector2(-1, 9),
+	]
+	var door_positions: Array = get_simple_door_locations(["S"])
+
+	for position in door_positions:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not is_position_taken(world_position):
+			spawn_and_place_object("Door", world_position)
+
+	for position in door_positions_south:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not is_position_taken(world_position):
+			spawn_and_place_object("DungeonEntrance", world_position)
 
 
 func spawn_snake_segment(

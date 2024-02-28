@@ -15,7 +15,7 @@ func _ready():
 
 	await get_tree().create_timer(1).timeout
 	self.main_node.spawn_and_place_object("Apple")
-	self.main_node.spawn_doors()
+	self.main_node.spawn_start_doors()
 	await get_tree().create_timer(2).timeout
 
 	var move_timer: Timer = get_node("MoveTimer")
