@@ -12,14 +12,24 @@ func _ready():
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	self.main_node.spawn_player_snake(start_position, self.START_LENGTH)
 	setup_level()
-	self.main_node.spawn_doors()
 
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(1).timeout
 	self.main_node.spawn_and_place_object("Apple")
+	self.main_node.spawn_doors()
+	await get_tree().create_timer(2).timeout
+
+	var move_timer: Timer = get_node("MoveTimer")
+	move_timer.start()
 
 
 func end_game() -> void:
 	get_tree().change_scene_to_file(adventure_death_screen)
+
+
+func end_level() -> void:
+	self.main_node.clear_doors()
+	await get_tree().create_timer(0.05).timeout
+	self.main_node.clear_pickups()
 
 
 func setup_level() -> void:
@@ -32,4 +42,4 @@ func setup_level() -> void:
 
 func _on_score_changed(score: int) -> void:
 	if score == 5:
-		self.main_node.clear_doors()
+		end_level()

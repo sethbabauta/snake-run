@@ -17,6 +17,7 @@ follow_camera = NodePath("../Camera2D")
 gamemode_node = NodePath("..")
 
 [node name="MoveTimer" parent="." instance=ExtResource("2_1lgb7")]
+autostart = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 320)

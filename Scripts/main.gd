@@ -74,7 +74,6 @@ static func apply_shader_to_snake(
 
 
 func clear_doors() -> void:
-	print("clearing doors")
 	var door_locations: Array = get_simple_door_locations()
 	for door_location in door_locations:
 		var door_world_location: Vector2 = (
@@ -86,7 +85,26 @@ func clear_doors() -> void:
 		if not door_game_object:
 			continue
 
+		if door_game_object.name != "Door":
+			continue
+
 		door_game_object.delete_self()
+
+
+func clear_pickup(pickup_name: String) -> void:
+	var pickups: Array = get_game_objects_of_name(pickup_name)
+	for pickup in pickups:
+		pickup.delete_self()
+
+
+func clear_pickups() -> void:
+	var pickups_to_clear: Array = [
+		"Apple",
+		"PoisonApple",
+	]
+
+	for pickup_name in pickups_to_clear:
+		clear_pickup(pickup_name)
 
 
 func cooldown(
@@ -149,6 +167,18 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 			found_game_object = area.game_object
 
 	return found_game_object
+
+
+func get_game_objects_of_name(name: String) -> Array:
+	var game_objects: Array = []
+	if not self.query_area.has_overlapping_areas():
+		return game_objects
+
+	for area in query_area.get_overlapping_areas():
+		if area.game_object.name == name:
+			game_objects.append(area.game_object)
+
+	return game_objects
 
 
 func get_random_valid_world_position() -> Vector2:
@@ -286,7 +316,7 @@ func spawn_doors() -> void:
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 		if not is_position_taken(world_position):
-			spawn_and_place_object("Barrier", world_position)
+			spawn_and_place_object("Door", world_position)
 
 
 func spawn_snake_segment(

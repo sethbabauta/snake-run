@@ -20,6 +20,11 @@
 	<Component Name="Poisonous"/>
 </Blueprint>
 
+<Blueprint Name="Door" Inherits="PhysicalObject">
+	<Component Name="Render" texture="barrier.png" z_idx="2"/>
+	<Component Name="Poisonous"/>
+</Blueprint>
+
 <Blueprint Name="Apple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="apple.png"/>
 	<Component Name="Nutritious"/>
