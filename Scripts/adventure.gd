@@ -6,6 +6,8 @@ class_name Adventure extends Node
 const START_LENGTH = 3
 
 func _ready():
+	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
+
 	self.main_node.spawn_background()
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	self.main_node.spawn_player_snake(start_position, self.START_LENGTH)
@@ -26,3 +28,8 @@ func setup_level() -> void:
 	var level = scene.instantiate()
 	var tile_map: TileMap = level.get_node("SnakeWorldTileMap")
 	self.main_node.level_factory.setup_level(tile_map, Vector2(0, 0))
+
+
+func _on_score_changed(score: int) -> void:
+	if score == 5:
+		self.main_node.clear_doors()

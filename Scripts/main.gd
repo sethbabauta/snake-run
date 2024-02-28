@@ -73,6 +73,22 @@ static func apply_shader_to_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
+func clear_doors() -> void:
+	print("clearing doors")
+	var door_locations: Array = get_simple_door_locations()
+	for door_location in door_locations:
+		var door_world_location: Vector2 = (
+				Utils.convert_simple_to_world_coordinates(door_location)
+		)
+		var door_game_object: GameEngine.GameObject = (
+				get_game_object_at_position_or_null(door_world_location)
+		)
+		if not door_game_object:
+			continue
+
+		door_game_object.delete_self()
+
+
 func cooldown(
 		ability_duration: float,
 		cooldown_duration: float,
@@ -123,6 +139,18 @@ func get_closest_player_controlled(
 	return closest_object
 
 
+func get_game_object_at_position_or_null(position: Vector2) -> Variant:
+	if not self.query_area.has_overlapping_areas():
+		return null
+
+	var found_game_object: GameEngine.GameObject
+	for area in query_area.get_overlapping_areas():
+		if area.global_position.is_equal_approx(position):
+			found_game_object = area.game_object
+
+	return found_game_object
+
+
 func get_random_valid_world_position() -> Vector2:
 	var taken_positions: Array = get_taken_positions()
 
@@ -145,6 +173,25 @@ func get_random_world_position() -> Vector2:
 	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
+
+
+func get_simple_door_locations() -> Array:
+	var camera_coordinates: Vector2 = follow_camera.global_position
+	var simple_camera_coordinates: Vector2 = (
+			Utils.convert_world_to_simple_coordinates(camera_coordinates)
+	)
+	var door_positions: Array = [
+		simple_camera_coordinates + Vector2(9, 0),
+		simple_camera_coordinates + Vector2(9, -1),
+		simple_camera_coordinates + Vector2(0, 9),
+		simple_camera_coordinates + Vector2(-1, 9),
+		simple_camera_coordinates + Vector2(-10, 0),
+		simple_camera_coordinates + Vector2(-10, -1),
+		simple_camera_coordinates + Vector2(0, -10),
+		simple_camera_coordinates + Vector2(-1, -10),
+	]
+
+	return door_positions
 
 
 func get_taken_positions() -> Array:
@@ -234,20 +281,8 @@ func spawn_background() -> void:
 
 
 func spawn_doors() -> void:
-	var camera_coordinates: Vector2 = follow_camera.global_position
-	var simple_camera_coordinates: Vector2 = (
-			Utils.convert_world_to_simple_coordinates(camera_coordinates)
-	)
-	var door_positions: Array = [
-		simple_camera_coordinates + Vector2(9, 0),
-		simple_camera_coordinates + Vector2(9, -1),
-		simple_camera_coordinates + Vector2(0, 9),
-		simple_camera_coordinates + Vector2(-1, 9),
-		simple_camera_coordinates + Vector2(-10, 0),
-		simple_camera_coordinates + Vector2(-10, -1),
-		simple_camera_coordinates + Vector2(0, -10),
-		simple_camera_coordinates + Vector2(-1, -10),
-	]
+	var door_positions: Array = get_simple_door_locations()
+
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 		if not is_position_taken(world_position):
