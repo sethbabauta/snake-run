@@ -320,10 +320,10 @@ func spawn_and_place_object(
 	return new_object
 
 
-func spawn_background() -> void:
+func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
 	for x in range(self.max_simple_size.x):
 		for y in range(self.max_simple_size.y):
-			self._spawn_background_tile(Vector2(x, y))
+			self._spawn_background_tile(Vector2(x, y) + offset)
 
 
 func spawn_doors() -> void:
@@ -344,7 +344,7 @@ func spawn_start_doors() -> void:
 		simple_camera_coordinates + Vector2(0, 9),
 		simple_camera_coordinates + Vector2(-1, 9),
 	]
-	var door_positions: Array = get_simple_door_locations(["S"])
+	var door_positions: Array = get_simple_door_locations(["S", "E"])
 
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
