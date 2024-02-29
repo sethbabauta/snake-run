@@ -53,6 +53,12 @@
 	<Component Name="SpeedIncreaseAbility" increase_amount="2" cooldown_duration="3"/>
 </Blueprint>
 
+<Blueprint Name="SlowDownAbilityItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="EquipabbleItem" components_as_string="SpeedDecreaseAbility"/>
+	<Component Name="SpeedDecreaseAbility" decrease_amount="1" cooldown_duration="10" ability_duration="10"/>
+</Blueprint>
+
 <Blueprint Name="PoisonResistanceItem" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder2.png"/>
 	<Component Name="EquipabbleItem" components_as_string="PoisonResistance"/>

@@ -645,6 +645,72 @@ class SpeedIncrease extends Component:
 		self.game_object.fire_event(new_event)
 
 
+class SpeedDecreaseAbility extends Component:
+	var decrease_amount: int = 1
+	var ability_duration: float = 1.0
+	var cooldown_duration: float = 10.0
+	var on_cooldown: bool = false
+	var ability_active: bool = false
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "UseItem":
+			self._decrease_speed(event)
+		if event.id == "CooldownStart":
+			self._start_cooldown(event)
+		if event.id == "CooldownEnd":
+			self._end_cooldown()
+		if event.id == "DropItem":
+			self._remove_effects(event)
+
+		return event
+
+
+	func _decrease_speed(event: Event) -> void:
+		if not self.on_cooldown:
+			self.ability_active = true
+			var new_event:= Event.new(
+					"DecreaseSpeed",
+					{"amount": self.decrease_amount},
+			)
+			event.queue_after_effect(self.game_object, new_event, event)
+			self.game_object.main_node.cooldown(
+					self.ability_duration,
+					self.cooldown_duration,
+					self.game_object,
+			)
+
+
+	func _end_cooldown() -> void:
+		self.on_cooldown = false
+		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+
+
+	func _remove_effects(event: Event) -> void:
+		if self.ability_active:
+			var new_event:= Event.new(
+					"IncreaseSpeed",
+					{"amount": self.decrease_amount},
+			)
+			event.queue_after_effect(self.game_object, new_event, event)
+
+
+	func _start_cooldown(event: Event) -> void:
+		self.on_cooldown = true
+		self.ability_active = false
+		Main.apply_shader_to_physics_body(
+			self.game_object,
+			"EquippedItem",
+			"gray_material.tres",
+		)
+
+		var new_event:= Event.new(
+				"IncreaseSpeed",
+				{"amount": self.decrease_amount},
+		)
+		event.queue_after_effect(self.game_object, new_event, event)
+
+
 class SpeedIncreaseAbility extends Component:
 	var increase_amount: int = 1
 	var ability_duration: float = 1.0

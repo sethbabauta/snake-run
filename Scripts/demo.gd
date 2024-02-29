@@ -27,7 +27,8 @@ func end_game() -> void:
 
 
 func setup_level() -> void:
-	var level_path: String = Settings.LEVELS_PATH + "level_" + str(Utils.roll(1, 2)) + ".tscn"
+	#var level_path: String = Settings.LEVELS_PATH + "level_" + str(Utils.roll(1, 2)) + ".tscn"
+	var level_path: String = Settings.LEVELS_PATH + "level_1" + ".tscn"
 	var scene: PackedScene = load(level_path)
 	var level = scene.instantiate()
 	var tile_map: TileMap = level.get_node("TileMap")
