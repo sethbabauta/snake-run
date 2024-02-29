@@ -4,6 +4,7 @@ class_name Main extends Node
 @export var gamemode_node: Node
 
 var game_object_factory: GameEngine.GameObjectFactory
+var level_factory: LevelFactory
 var max_simple_size: Vector2
 var query_area: Area2D
 var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
@@ -11,6 +12,7 @@ var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
+	self.level_factory = LevelFactory.new(self)
 
 
 func _ready() -> void:
@@ -71,6 +73,40 @@ static func apply_shader_to_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
+func clear_doors() -> void:
+	var door_locations: Array = get_simple_door_locations()
+	for door_location in door_locations:
+		var door_world_location: Vector2 = (
+				Utils.convert_simple_to_world_coordinates(door_location)
+		)
+		var door_game_object: GameEngine.GameObject = (
+				get_game_object_at_position_or_null(door_world_location)
+		)
+		if not door_game_object:
+			continue
+
+		if door_game_object.name != "Door":
+			continue
+
+		door_game_object.delete_self()
+
+
+func clear_pickup(pickup_name: String) -> void:
+	var pickups: Array = get_game_objects_of_name(pickup_name)
+	for pickup in pickups:
+		pickup.delete_self()
+
+
+func clear_pickups() -> void:
+	var pickups_to_clear: Array = [
+		"Apple",
+		"PoisonApple",
+	]
+
+	for pickup_name in pickups_to_clear:
+		clear_pickup(pickup_name)
+
+
 func cooldown(
 		ability_duration: float,
 		cooldown_duration: float,
@@ -121,18 +157,38 @@ func get_closest_player_controlled(
 	return closest_object
 
 
-func get_random_valid_world_position() -> Vector2:
-	var taken_positions: Array = []
+func get_game_object_at_position_or_null(position: Vector2) -> Variant:
+	if not self.query_area.has_overlapping_areas():
+		return null
 
-	if self.query_area.has_overlapping_areas():
-		for area in query_area.get_overlapping_areas():
-			taken_positions.append(area.global_position)
+	var found_game_object: GameEngine.GameObject
+	for area in query_area.get_overlapping_areas():
+		if area.global_position.is_equal_approx(position):
+			found_game_object = area.game_object
+
+	return found_game_object
+
+
+func get_game_objects_of_name(name: String) -> Array:
+	var game_objects: Array = []
+	if not self.query_area.has_overlapping_areas():
+		return game_objects
+
+	for area in query_area.get_overlapping_areas():
+		if area.game_object.name == name:
+			game_objects.append(area.game_object)
+
+	return game_objects
+
+
+func get_random_valid_world_position() -> Vector2:
+	var taken_positions: Array = get_taken_positions()
 
 	var position:= Vector2.ONE
 
 	for try_count in range(1000):
 		position = self.get_random_world_position()
-		if position not in taken_positions:
+		if not is_position_taken(position):
 			break
 
 	return position
@@ -147,6 +203,59 @@ func get_random_world_position() -> Vector2:
 	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
+
+
+func get_simple_door_locations(exclusions: Array = []) -> Array:
+	var camera_coordinates: Vector2 = follow_camera.global_position
+	var simple_camera_coordinates: Vector2 = (
+			Utils.convert_world_to_simple_coordinates(camera_coordinates)
+	)
+	var door_positions_north: Array = [
+		simple_camera_coordinates + Vector2(0, -10),
+		simple_camera_coordinates + Vector2(-1, -10),
+	]
+	var door_positions_south: Array = [
+		simple_camera_coordinates + Vector2(0, 9),
+		simple_camera_coordinates + Vector2(-1, 9),
+	]
+	var door_positions_east: Array = [
+		simple_camera_coordinates + Vector2(9, 0),
+		simple_camera_coordinates + Vector2(9, -1),
+	]
+	var door_positions_west: Array = [
+		simple_camera_coordinates + Vector2(-10, 0),
+		simple_camera_coordinates + Vector2(-10, -1),
+	]
+
+	var door_positions: Array = []
+	if "N" not in exclusions:
+		door_positions += door_positions_north
+	if "S" not in exclusions:
+		door_positions += door_positions_south
+	if "E" not in exclusions:
+		door_positions += door_positions_east
+	if "W" not in exclusions:
+		door_positions += door_positions_west
+
+	return door_positions
+
+
+func get_taken_positions() -> Array:
+	var taken_positions: Array = []
+	if self.query_area.has_overlapping_areas():
+		for area in query_area.get_overlapping_areas():
+			taken_positions.append(area.global_position)
+
+	return taken_positions
+
+
+func is_position_taken(position: Vector2) -> bool:
+	var taken_positions: Array = get_taken_positions()
+	var is_taken: bool = true
+	if position not in taken_positions:
+		is_taken = false
+
+	return is_taken
 
 
 static func overlay_sprite_on_game_object(
@@ -211,10 +320,41 @@ func spawn_and_place_object(
 	return new_object
 
 
-func spawn_background() -> void:
+func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
 	for x in range(self.max_simple_size.x):
 		for y in range(self.max_simple_size.y):
-			self._spawn_background_tile(Vector2(x, y))
+			self._spawn_background_tile(Vector2(x, y) + offset)
+
+
+func spawn_doors() -> void:
+	var door_positions: Array = get_simple_door_locations()
+
+	for position in door_positions:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not is_position_taken(world_position):
+			spawn_and_place_object("Door", world_position)
+
+
+func spawn_start_doors() -> void:
+	var camera_coordinates: Vector2 = follow_camera.global_position
+	var simple_camera_coordinates: Vector2 = (
+			Utils.convert_world_to_simple_coordinates(camera_coordinates)
+	)
+	var door_positions_south: Array = [
+		simple_camera_coordinates + Vector2(0, 9),
+		simple_camera_coordinates + Vector2(-1, 9),
+	]
+	var door_positions: Array = get_simple_door_locations(["S", "E"])
+
+	for position in door_positions:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not is_position_taken(world_position):
+			spawn_and_place_object("Door", world_position)
+
+	for position in door_positions_south:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not is_position_taken(world_position):
+			spawn_and_place_object("DungeonEntrance", world_position)
 
 
 func spawn_snake_segment(

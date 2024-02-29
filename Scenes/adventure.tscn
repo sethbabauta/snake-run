@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/adventure.gd" id="1_h5vo3"]
 [ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="2_1lgb7"]
 [ext_resource type="Script" path="res://Scripts/main.gd" id="2_qgmaq"]
-[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="3_43hq6"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="4_1uxk5"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="4_gegtj"]
 
 [node name="Adventure" type="Node" node_paths=PackedStringArray("main_node")]
@@ -13,15 +13,15 @@ main_node = NodePath("Main")
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
 script = ExtResource("2_qgmaq")
-follow_camera = NodePath("../Camera2D")
+follow_camera = NodePath("../Camera2D2")
 gamemode_node = NodePath("..")
 
 [node name="MoveTimer" parent="." instance=ExtResource("2_1lgb7")]
+autostart = false
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(320, 320)
-
-[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("3_43hq6")]
+[node name="Camera2D2" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("4_1uxk5")]
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")
 
 [node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
 
@@ -30,3 +30,4 @@ position = Vector2(320, 320)
 [connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
 [connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
 [connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
+[connection signal="SPEED_5" from="MoveTimer" to="Camera2D2" method="_on_move_timer_speed_5"]

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpluroqpx65vt"]
+
+[ext_resource type="TileSet" uid="uid://d28ucsqfxhsrd" path="res://Tilesets/snake_world.tres" id="1_yvykl"]
+
+[node name="SnakeWorldTileMap" type="TileMap"]
+tile_set = ExtResource("1_yvykl")
+rendering_quadrant_size = 32
+format = 2
