@@ -121,19 +121,21 @@ class Crown extends Component:
 
 
 class DeathSpawner extends Component:
-	var name_of_object: String
+	var names_as_string: String
+	var names_of_objects: PackedStringArray = []
 
 
 	func fire_event(event: Event) -> Event:
-		print("death spawner: ", self.name_of_object, " ", self.game_object)
 		if event.id == "KillSelf":
-			self._spawn_object()
+			self._spawn_objects()
 
 		return event
 
 
-	func _spawn_object() -> void:
-		self.game_object.main_node.spawn_and_place_object(name_of_object)
+	func _spawn_objects() -> void:
+		names_of_objects = names_as_string.split(",")
+		for name in names_of_objects:
+			self.game_object.main_node.spawn_and_place_object(name)
 
 
 class Debugger extends Component:
@@ -677,6 +679,26 @@ class SpeedIncrease extends Component:
 		var new_event:= Event.new(
 				"DecreaseSpeed",
 				{"amount": self.increase_amount},
+		)
+		self.game_object.fire_event(new_event)
+
+
+class SpeedDecrease extends Component:
+	var decrease_amount: int = 1
+
+
+	func on_add():
+		var new_event:= Event.new(
+				"DecreaseSpeed",
+				{"amount": self.decrease_amount},
+		)
+		self.game_object.fire_event(new_event)
+
+
+	func on_remove():
+		var new_event:= Event.new(
+				"IncreaseSpeed",
+				{"amount": self.decrease_amount},
 		)
 		self.game_object.fire_event(new_event)
 

@@ -20,12 +20,12 @@ var level_start_points = {
 	"Room00.tscn": Vector2(0, 20)
 }
 var level_score_thresholds = {
-	"Room30.tscn": 1,
-	"Room20.tscn": 1,
-	"Room21.tscn": 1,
-	"Room31.tscn": 1,
-	"Room22.tscn": 1,
-	"Room32.tscn": 1,
+	"Room30.tscn": 3,
+	"Room20.tscn": 3,
+	"Room21.tscn": 4,
+	"Room31.tscn": 5,
+	"Room22.tscn": 3,
+	"Room32.tscn": 5,
 	"Room00.tscn": 0,
 }
 var cleared_levels: Array = []
