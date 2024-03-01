@@ -4,7 +4,6 @@ signal GAME_START
 
 @export_file("*.tscn") var adventure_death_screen
 @export var main_node: Main
-@export var demo_label: Label
 @export var move_timer: MoveTimer
 
 const START_LENGTH = 5
@@ -16,6 +15,7 @@ func _ready():
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, self.START_LENGTH)
+	self.main_node.spawn_and_place_object("CrownItem")
 
 	await get_tree().create_timer(0.1).timeout
 

@@ -98,11 +98,34 @@ class AIControlledSimple extends Component:
 			Event.queue_after_effect(self.game_object, new_event, event)
 
 
+class Crown extends Component:
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			self._gain_crown(event)
+
+		return event
+
+
+	func _gain_crown(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		var new_event:= Event.new(
+				"SendSprite",
+				{"to": eater, "name": "EquippedItem", "offset": Vector2(0, -32)},
+		)
+		Event.queue_after_effect(self.game_object, new_event, event)
+
+		new_event = Event.new("KillSelf")
+		self.game_object.factory_from.notify_subscribers(new_event, "dungeon_entrance")
+
+
 class DeathSpawner extends Component:
 	var name_of_object: String
 
 
 	func fire_event(event: Event) -> Event:
+		print("death spawner: ", self.name_of_object, " ", self.game_object)
 		if event.id == "KillSelf":
 			self._spawn_object()
 
@@ -121,6 +144,16 @@ class Debugger extends Component:
 		#print(to_print)
 
 		return event
+
+
+class DungeonEntrance extends Component:
+
+
+	func _init(name: String, game_object: GameObject = null) -> void:
+		super(name, game_object)
+		self.game_object.factory_from.subscribe(
+				game_object, "dungeon_entrance"
+		)
 
 
 class EquipabbleItem extends Component:
@@ -526,7 +559,10 @@ class Render extends Component:
 	func _overlay_sprite_on_target(event: Event) -> void:
 		var target: GameEngine.GameObject = event.parameters.get("to")
 		var sprite_node_name: String = event.parameters.get("name")
-		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name)
+		var offset:= Vector2(0, 0)
+		if event.parameters.get("offset"):
+			offset = event.parameters.get("offset")
+		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name, 2, offset)
 
 
 class SnakeBody extends Component:

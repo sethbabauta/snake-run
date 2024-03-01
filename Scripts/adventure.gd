@@ -7,14 +7,26 @@ signal GAME_START
 
 const START_LENGTH = 3
 
+var move_timer: MoveTimer
+
 # TODO: Clean this up
 var level_start_points = {
 	"Room30.tscn": Vector2(0,0),
 	"Room20.tscn": Vector2(-20, 0),
+	"Room31.tscn": Vector2(0,-20),
+	"Room21.tscn": Vector2(-20, -20),
+	"Room32.tscn": Vector2(0,-40),
+	"Room22.tscn": Vector2(-20, -40),
+	"Room00.tscn": Vector2(0, 20)
 }
 var level_score_thresholds = {
 	"Room30.tscn": 1,
-	"Room20.tscn": 5,
+	"Room20.tscn": 1,
+	"Room21.tscn": 1,
+	"Room31.tscn": 1,
+	"Room22.tscn": 1,
+	"Room32.tscn": 1,
+	"Room00.tscn": 0,
 }
 var cleared_levels: Array = []
 var current_level: String = "Room30.tscn"
@@ -26,7 +38,6 @@ func _ready():
 	self.main_node.follow_camera.LEVEL_CHANGED.connect(_on_level_changed)
 
 	for start_point in self.level_start_points.values():
-		print(start_point)
 		self.main_node.spawn_background(start_point)
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	self.main_node.spawn_player_snake(start_position, self.START_LENGTH)
@@ -37,8 +48,8 @@ func _ready():
 	self.main_node.spawn_start_doors()
 	await get_tree().create_timer(2).timeout
 
-	var move_timer: Timer = get_node("MoveTimer")
-	move_timer.start()
+	self.move_timer = get_node("MoveTimer")
+	self.move_timer.start()
 
 	self.GAME_START.emit()
 
@@ -51,6 +62,8 @@ func end_level() -> void:
 	self.main_node.clear_doors()
 	await get_tree().create_timer(0.05).timeout
 	self.main_node.clear_pickups()
+	self.current_level_score = 0
+	self.cleared_levels.append(self.current_level)
 
 
 # TODO: Clean this up
@@ -68,11 +81,22 @@ func setup_levels() -> void:
 		setup_level(self.level_start_points.keys()[level_idx], self.level_start_points.values()[level_idx])
 
 
+# TODO: Clean this up
 func _on_level_changed(level_name: String) -> void:
 	self.current_level = level_name
-	self.main_node.spawn_start_doors()
-	self.main_node.spawn_and_place_object("Apple")
+	self.move_timer.stop()
 	await get_tree().create_timer(1).timeout
+	self.move_timer.start()
+
+	if self.current_level == "Room00.tscn":
+		await get_tree().create_timer(2).timeout
+		self.main_node.spawn_doors()
+		return
+
+	if self.current_level not in self.cleared_levels:
+		await get_tree().create_timer(2).timeout
+		self.main_node.spawn_doors()
+		self.main_node.spawn_and_place_object("Apple")
 
 
 func _on_score_changed(score: int) -> void:

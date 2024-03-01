@@ -91,6 +91,10 @@ func clear_doors() -> void:
 		door_game_object.delete_self()
 
 
+func clear_entrance_doors() -> void:
+	pass
+
+
 func clear_pickup(pickup_name: String) -> void:
 	var pickups: Array = get_game_objects_of_name(pickup_name)
 	for pickup in pickups:
@@ -200,6 +204,8 @@ func get_random_world_position() -> Vector2:
 			rng.randi_range(0, self.max_simple_size.x-1),
 			rng.randi_range(0, self.max_simple_size.y-1),
 	)
+	var camera_offset: Vector2 = Utils.convert_world_to_simple_coordinates(self.follow_camera.global_position) - Vector2(10, 10)
+	position += camera_offset
 	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
@@ -263,12 +269,14 @@ static func overlay_sprite_on_game_object(
 		target: GameEngine.GameObject,
 		sprite_node_name: String,
 		z_idx: int = 2,
+		offset:= Vector2(0, 0)
 ) -> void:
 	var new_sprite:= Sprite2D.new()
 	new_sprite.texture = load(sprite_path)
 	new_sprite.z_index = z_idx
 	new_sprite.name = sprite_node_name
 	target.physics_body.add_child(new_sprite)
+	new_sprite.position += offset
 
 
 static func remove_overlay_sprite_from_physics_body(
@@ -378,8 +386,11 @@ func spawn_snake_segment(
 	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
 
-func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
-	var snake_head:= self.spawn_and_place_object("PlayerSnakeHead", start_position)
+func spawn_player_snake(start_position: Vector2, snake_length: int, slow: bool = false) -> void:
+	var snake_type: String = "PlayerSnakeHead"
+	if slow:
+		snake_type = "PlayerSnakeHeadSlow"
+	var snake_head:= self.spawn_and_place_object(snake_type, start_position)
 
 	for snake_body_idx in range(snake_length-1):
 		self.spawn_snake_segment(snake_head)

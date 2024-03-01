@@ -10,6 +10,11 @@ var player_head: GameEngine.GameObject
 var level_positions = {
 	"Room30.tscn": Vector2(320, 320),
 	"Room20.tscn": Vector2(-320, 320),
+	"Room31.tscn": Vector2(320, -320),
+	"Room21.tscn": Vector2(-320, -320),
+	"Room32.tscn": Vector2(320, -960),
+	"Room22.tscn": Vector2(-320, -960),
+	"Room00.tscn": Vector2(320, 960),
 }
 var current_level = "Room30.tscn"
 
@@ -43,6 +48,8 @@ func _on_game_start() -> void:
 # TODO: Clean this up
 func _on_move_timer_speed_5() -> void:
 	var snake_heads: Array = self.main_node.get_game_objects_of_name("PlayerSnakeHead")
+	var snake_heads_slow: Array = self.main_node.get_game_objects_of_name("PlayerSnakeHeadSlow")
+	snake_heads += snake_heads_slow
 	if not snake_heads:
 		snap_to_nearest_level()
 		LEVEL_CHANGED.emit(self.current_level)

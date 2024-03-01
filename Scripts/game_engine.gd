@@ -380,6 +380,7 @@ class GameObjectFactory:
 	func notify_subscribers(event: Event, list_name: String) -> void:
 		var subscribers = self.subscribe_lists.get(list_name)
 		if subscribers:
-			for game_object in subscribers:
+			var subscribers_copy: Array = subscribers.duplicate(true)
+			for game_object in subscribers_copy:
 				var event_copy: Event = Event.new(event.id, event.parameters.duplicate(true))
 				game_object.fire_event(event_copy)
