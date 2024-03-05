@@ -255,11 +255,26 @@ func get_taken_positions() -> Array:
 	return taken_positions
 
 
-func is_position_taken(position: Vector2) -> bool:
+func is_position_taken(position: Vector2, debug: bool = false) -> bool:
 	var taken_positions: Array = get_taken_positions()
 	var is_taken: bool = true
 	if position not in taken_positions:
 		is_taken = false
+	if debug:
+		var printworld = []
+		for i in range(20):
+			printworld.append(["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"])
+
+
+		print("\ntaken positions:\n")
+		for currposition in taken_positions:
+			var s_currpos = Utils.convert_world_to_simple_coordinates(currposition)
+			var os_s_currpos = s_currpos + Vector2(20, 0)
+			printworld[os_s_currpos.y][os_s_currpos.x] = "X"
+		for i in printworld:
+			print(i)
+		print("\nposition: ", Utils.convert_world_to_simple_coordinates(position), " is_taken: ", is_taken, "\n\n")
+		#print("\nTaken positions: ", taken_positions, "\nposition: ", position, "is_taken:", is_taken, "\n\n")
 
 	return is_taken
 
@@ -318,6 +333,7 @@ func spawn_and_place_object(
 		object_name: String,
 		position: Vector2 = self.get_random_valid_world_position(),
 ) -> GameEngine.GameObject:
+	print("spawning ", object_name, " at ", Utils.convert_world_to_simple_coordinates(position))
 	var new_object:= self.game_object_factory.create_object(object_name, self)
 	var set_position_event:= GameEngine.Event.new(
 		"SetPosition",
@@ -334,13 +350,19 @@ func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
 			self._spawn_background_tile(Vector2(x, y) + offset)
 
 
-func spawn_doors() -> void:
+func spawn_doors() -> int:
+	print("\n spawn doors call \n")
 	var door_positions: Array = get_simple_door_locations()
+	var doors_spawned: int = 0
 
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 		if not is_position_taken(world_position):
+			is_position_taken(world_position, true)
 			spawn_and_place_object("Door", world_position)
+			doors_spawned += 1
+
+	return doors_spawned
 
 
 func spawn_start_doors() -> void:

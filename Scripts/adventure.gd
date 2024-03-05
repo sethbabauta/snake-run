@@ -5,7 +5,7 @@ signal GAME_START
 @export_file("*.tscn") var adventure_death_screen
 @export var main_node: Main
 
-const START_LENGTH = 3
+const START_LENGTH = 10
 
 var move_timer: MoveTimer
 
@@ -20,7 +20,7 @@ var level_start_points = {
 	"Room00.tscn": Vector2(0, 20)
 }
 var level_score_thresholds = {
-	"Room30.tscn": 3,
+	"Room30.tscn": 1,
 	"Room20.tscn": 3,
 	"Room21.tscn": 4,
 	"Room31.tscn": 5,
@@ -31,6 +31,7 @@ var level_score_thresholds = {
 var cleared_levels: Array = []
 var current_level: String = "Room30.tscn"
 var current_level_score = 0
+var current_level_doors_spawned = 0
 
 # TODO: Clean this up
 func _ready():
@@ -83,20 +84,24 @@ func setup_levels() -> void:
 
 # TODO: Clean this up
 func _on_level_changed(level_name: String) -> void:
+	print("\nlvl changed\n")
+	current_level_doors_spawned = 0
 	self.current_level = level_name
 	self.move_timer.stop()
 	await get_tree().create_timer(1).timeout
 	self.move_timer.start()
 
-	if self.current_level == "Room00.tscn":
-		await get_tree().create_timer(2).timeout
-		self.main_node.spawn_doors()
-		return
+	await get_tree().create_timer(1).timeout
+	self.main_node.spawn_and_place_object("Apple")
+	while current_level_doors_spawned < 8:
+		if self.current_level == "Room00.tscn":
+			current_level_doors_spawned += self.main_node.spawn_doors()
+			return
 
-	if self.current_level not in self.cleared_levels:
-		await get_tree().create_timer(2).timeout
-		self.main_node.spawn_doors()
-		self.main_node.spawn_and_place_object("Apple")
+		if self.current_level not in self.cleared_levels:
+			current_level_doors_spawned += self.main_node.spawn_doors()
+
+		print("\ncurrent lvl doors spawned: ", current_level_doors_spawned)
 
 
 func _on_score_changed(score: int) -> void:
