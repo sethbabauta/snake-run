@@ -36,6 +36,7 @@ var current_level_score = 0
 func _ready():
 	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
 	self.main_node.follow_camera.LEVEL_CHANGED.connect(_on_level_changed)
+	self.main_node.follow_camera.PLAYER_FULLY_ENTERED.connect(_on_fully_entered)
 
 	for start_point in self.level_start_points.values():
 		self.main_node.spawn_background(start_point)
@@ -44,9 +45,10 @@ func _ready():
 	setup_levels()
 
 	await get_tree().create_timer(1).timeout
-	self.main_node.spawn_and_place_object("Apple")
 	self.main_node.spawn_start_doors()
-	await get_tree().create_timer(2).timeout
+	await get_tree().create_timer(1).timeout
+	self.main_node.spawn_and_place_object("Apple")
+	await get_tree().create_timer(1).timeout
 
 	self.move_timer = get_node("MoveTimer")
 	self.move_timer.start()
@@ -81,6 +83,12 @@ func setup_levels() -> void:
 		setup_level(self.level_start_points.keys()[level_idx], self.level_start_points.values()[level_idx])
 
 
+func _on_fully_entered() -> void:
+	if self.current_level not in self.cleared_levels:
+		await get_tree().create_timer(1).timeout
+		self.main_node.spawn_doors()
+
+
 # TODO: Clean this up
 func _on_level_changed(level_name: String) -> void:
 	self.current_level = level_name
@@ -94,12 +102,12 @@ func _on_level_changed(level_name: String) -> void:
 		return
 
 	if self.current_level not in self.cleared_levels:
-		await get_tree().create_timer(2).timeout
 		self.main_node.spawn_doors()
+		await get_tree().create_timer(1).timeout
 		self.main_node.spawn_and_place_object("Apple")
 
 
 func _on_score_changed(score: int) -> void:
 	self.current_level_score += 1
-	if self.current_level_score == self.level_score_thresholds[self.current_level]:
+	if self.current_level_score >= self.level_score_thresholds[self.current_level] and current_level!= "Room00.tscn":
 		end_level()

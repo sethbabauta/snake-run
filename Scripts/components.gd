@@ -583,7 +583,7 @@ class Render extends Component:
 		var offset:= Vector2(0, 0)
 		if event.parameters.get("offset"):
 			offset = event.parameters.get("offset")
-		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name, 2, offset)
+		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name, 3, offset)
 
 
 class SnakeBody extends Component:

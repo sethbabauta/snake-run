@@ -36,20 +36,10 @@ text = "Classic Snake"
 layout_mode = 2
 text = "Dungeon Mode"
 
-[node name="StartAdventure" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Adventure Mode (WIP)"
-
-[node name="Demo" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Demo"
-
 [node name="Quit" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/StartClassic" to="." method="_on_start_classic_pressed"]
 [connection signal="pressed" from="VBoxContainer/StartDungeon" to="." method="_on_start_dungeon_pressed"]
-[connection signal="pressed" from="VBoxContainer/StartAdventure" to="." method="_on_start_adventure_pressed"]
-[connection signal="pressed" from="VBoxContainer/Demo" to="." method="_on_demo_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://7jd0pqunsdlc"]
+[gd_scene load_steps=2 format=3 uid="uid://4ahjcgake4h5"]
 
 [ext_resource type="PackedScene" uid="uid://cpluroqpx65vt" path="res://Tilesets/snake_world_tile_map.tscn" id="1_ry10n"]
 
