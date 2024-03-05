@@ -417,6 +417,8 @@ class PhysicsBody extends Component:
 
 class PlayerControlled extends Component:
 	var last_direction_moved: String = "0"
+	var next_direction_queued: String = "0"
+	var has_moved: bool = true
 
 
 	func _init(name: String, game_object: GameObject = null) -> void:
@@ -453,11 +455,19 @@ class PlayerControlled extends Component:
 			"turn_right":
 				new_direction = "E"
 
+		if event.parameters.get("direction"):
+			new_direction = event.parameters.get("direction")
+
+		if not has_moved:
+			next_direction_queued = new_direction
+			return
+
 		if not _is_opposite_direction(
 				self.last_direction_moved,
 				new_direction,
 		):
 			event.parameters["direction"] = new_direction
+			has_moved = false
 		else:
 			event.parameters["direction"] = "0"
 
@@ -491,7 +501,16 @@ class PlayerControlled extends Component:
 
 
 	func _save_direction(event: Event) -> void:
-		self.last_direction_moved = event.parameters.get("direction")
+		last_direction_moved = event.parameters.get("direction")
+		has_moved = true
+
+		if next_direction_queued != "0":
+			event.queue_after_effect(
+					game_object,
+					Event.new("ChangeDirection", {"direction": next_direction_queued}),
+					event,
+			)
+			next_direction_queued = "0"
 
 
 class Poisonous extends Component:
