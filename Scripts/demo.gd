@@ -15,12 +15,7 @@ func _ready():
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, self.START_LENGTH)
-
-	var simple_test = Vector2(3, 10)
-	var world_test = Utils.convert_simple_to_world_coordinates(simple_test)
-	self.main_node.spawn_and_place_object("CrownItem", world_test)
-	if not self.main_node.is_position_taken(world_test, true):
-		self.main_node.spawn_and_place_object("Apple", world_test)
+	self.main_node.spawn_and_place_object("CrownItem")
 
 	await get_tree().create_timer(0.1).timeout
 

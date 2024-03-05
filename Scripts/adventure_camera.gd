@@ -37,7 +37,6 @@ func snap_to_nearest_level() -> void:
 			closest_level_idx = level_idx
 
 	self.global_position = closest_level_center
-	print("\ncamera location: ", Utils.convert_world_to_simple_coordinates(closest_level_center))
 	self.current_level = self.level_positions.keys()[closest_level_idx]
 
 

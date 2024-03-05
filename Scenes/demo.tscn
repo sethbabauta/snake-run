@@ -36,7 +36,6 @@ text = "spawn level"
 [connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
 [connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
 [connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
-[connection signal="SPEED_5" from="MoveTimer" to="FollowCamera" method="_on_move_timer_speed_5"]
 [connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]
 [connection signal="timeout" from="MoveTimer" to="FollowCamera" method="_on_move_timer_timeout"]
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
