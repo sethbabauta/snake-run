@@ -505,7 +505,7 @@ class PlayerControlled extends Component:
 		has_moved = true
 
 		if next_direction_queued != "0":
-			event.queue_after_effect(
+			Event.queue_after_effect(
 					game_object,
 					Event.new("ChangeDirection", {"direction": next_direction_queued}),
 					event,
@@ -750,7 +750,7 @@ class SpeedDecreaseAbility extends Component:
 					"DecreaseSpeed",
 					{"amount": self.decrease_amount},
 			)
-			event.queue_after_effect(self.game_object, new_event, event)
+			Event.queue_after_effect(self.game_object, new_event, event)
 			self.game_object.main_node.cooldown(
 					self.ability_duration,
 					self.cooldown_duration,
@@ -769,7 +769,7 @@ class SpeedDecreaseAbility extends Component:
 					"IncreaseSpeed",
 					{"amount": self.decrease_amount},
 			)
-			event.queue_after_effect(self.game_object, new_event, event)
+			Event.queue_after_effect(self.game_object, new_event, event)
 
 
 	func _start_cooldown(event: Event) -> void:
@@ -785,7 +785,7 @@ class SpeedDecreaseAbility extends Component:
 				"IncreaseSpeed",
 				{"amount": self.decrease_amount},
 		)
-		event.queue_after_effect(self.game_object, new_event, event)
+		Event.queue_after_effect(self.game_object, new_event, event)
 
 
 class SpeedIncreaseAbility extends Component:
@@ -820,7 +820,7 @@ class SpeedIncreaseAbility extends Component:
 					"DecreaseSpeed",
 					{"amount": self.increase_amount},
 			)
-			event.queue_after_effect(self.game_object, new_event, event)
+			Event.queue_after_effect(self.game_object, new_event, event)
 
 
 	func _start_cooldown(event: Event) -> void:
@@ -836,7 +836,7 @@ class SpeedIncreaseAbility extends Component:
 				"DecreaseSpeed",
 				{"amount": self.increase_amount},
 		)
-		event.queue_after_effect(self.game_object, new_event, event)
+		Event.queue_after_effect(self.game_object, new_event, event)
 
 
 	func _increase_speed(event: Event) -> void:
@@ -846,7 +846,7 @@ class SpeedIncreaseAbility extends Component:
 					"IncreaseSpeed",
 					{"amount": self.increase_amount},
 			)
-			event.queue_after_effect(self.game_object, new_event, event)
+			Event.queue_after_effect(self.game_object, new_event, event)
 			self.game_object.main_node.cooldown(
 					self.ability_duration,
 					self.cooldown_duration,
