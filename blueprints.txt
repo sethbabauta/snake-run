@@ -15,6 +15,12 @@
 	<Component Name="InventorySlot"/>
 </Blueprint>
 
+<Blueprint Name="PlayerSnakeHeadSlow" Inherits="SnakeBody">
+	<Component Name="PlayerControlled" priority="102"/>
+	<Component Name="Movable" speed="2" direction="N" priority="99"/>
+	<Component Name="InventorySlot"/>
+</Blueprint>
+
 <Blueprint Name="Barrier" Inherits="PhysicalObject">
 	<Component Name="Render" texture="barrier.png" z_idx="2"/>
 	<Component Name="Poisonous"/>
@@ -28,12 +34,19 @@
 <Blueprint Name="DungeonEntrance" Inherits="PhysicalObject">
 	<Component Name="Render" texture="barrier.png" z_idx="2"/>
 	<Component Name="Poisonous"/>
+	<Component Name="DungeonEntrance"/>
 </Blueprint>
 
 <Blueprint Name="Apple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="apple.png"/>
 	<Component Name="Nutritious"/>
-	<Component Name="DeathSpawner" name_of_object="Apple"/>
+	<Component Name="DeathSpawner" names_as_string="Apple"/>
+</Blueprint>
+
+<Blueprint Name="DangerApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="apple.png"/>
+	<Component Name="Nutritious"/>
+	<Component Name="DeathSpawner" names_as_string="DangerApple,DeadlyApple"/>
 </Blueprint>
 
 <Blueprint Name="PoisonApple" Inherits="PhysicalObject">
@@ -41,10 +54,21 @@
 	<Component Name="Poisonous" poison_level="1"/>
 </Blueprint>
 
+<Blueprint Name="DeadlyApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="5"/>
+</Blueprint>
+
 <Blueprint Name="SpeedUpItem" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder.png"/>
 	<Component Name="EquipabbleItem" components_as_string="SpeedIncrease"/>
 	<Component Name="SpeedIncrease" increase_amount="2"/>
+</Blueprint>
+
+<Blueprint Name="SlowDownItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="EquipabbleItem" components_as_string="SpeedDecrease"/>
+	<Component Name="SpeedDecrease" decrease_amount="1"/>
 </Blueprint>
 
 <Blueprint Name="SpeedUpAbilityItem" Inherits="PhysicalObject">
@@ -69,4 +93,9 @@
 	<Component Name="Render" texture="item_placeholder2.png"/>
 	<Component Name="EquipabbleItem" components_as_string="ActiveCamoAbility"/>
 	<Component Name="ActiveCamoAbility" cooldown_duration="7" ability_duration="3"/>
+</Blueprint>
+
+<Blueprint Name="CrownItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="crown2.png"/>
+	<Component Name="Crown"/>
 </Blueprint>

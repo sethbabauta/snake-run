@@ -170,15 +170,16 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 
 
 func get_game_objects_of_name(name: String) -> Array:
-	var game_objects: Array = []
-	if not self.query_area.has_overlapping_areas():
-		return game_objects
+	var visible_game_objects: Array = get_visible_game_objects()
+	var found_game_objects: Array = []
+	if not visible_game_objects:
+		return found_game_objects
 
-	for area in query_area.get_overlapping_areas():
-		if area.game_object.name == name:
-			game_objects.append(area.game_object)
+	for object in visible_game_objects:
+		if object.name == name:
+			found_game_objects.append(object)
 
-	return game_objects
+	return found_game_objects
 
 
 func get_random_valid_world_position() -> Vector2:
@@ -200,6 +201,8 @@ func get_random_world_position() -> Vector2:
 			rng.randi_range(0, self.max_simple_size.x-1),
 			rng.randi_range(0, self.max_simple_size.y-1),
 	)
+	var camera_offset: Vector2 = Utils.convert_world_to_simple_coordinates(self.follow_camera.global_position) - Vector2(10, 10)
+	position += camera_offset
 	position = Utils.convert_simple_to_world_coordinates(position)
 
 	return position
@@ -249,6 +252,27 @@ func get_taken_positions() -> Array:
 	return taken_positions
 
 
+func get_visible_game_objects() -> Array:
+	var game_objects: Array = []
+	if not self.query_area.has_overlapping_areas():
+		return game_objects
+
+	for area in query_area.get_overlapping_areas():
+		game_objects.append(area.game_object)
+
+	return game_objects
+
+
+func is_object_visible(object: GameEngine.GameObject) -> bool:
+	var visible_objects: Array = get_visible_game_objects()
+	var is_visible: bool = false
+
+	if object in visible_objects:
+		is_visible = true
+
+	return is_visible
+
+
 func is_position_taken(position: Vector2) -> bool:
 	var taken_positions: Array = get_taken_positions()
 	var is_taken: bool = true
@@ -262,13 +286,15 @@ static func overlay_sprite_on_game_object(
 		sprite_path: String,
 		target: GameEngine.GameObject,
 		sprite_node_name: String,
-		z_idx: int = 2,
+		z_idx: int = 1,
+		offset:= Vector2(0, 0)
 ) -> void:
 	var new_sprite:= Sprite2D.new()
 	new_sprite.texture = load(sprite_path)
 	new_sprite.z_index = z_idx
 	new_sprite.name = sprite_node_name
 	target.physics_body.add_child(new_sprite)
+	new_sprite.position += offset
 
 
 static func remove_overlay_sprite_from_physics_body(
@@ -378,8 +404,11 @@ func spawn_snake_segment(
 	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
 
-func spawn_player_snake(start_position: Vector2, snake_length: int) -> void:
-	var snake_head:= self.spawn_and_place_object("PlayerSnakeHead", start_position)
+func spawn_player_snake(start_position: Vector2, snake_length: int, slow: bool = false) -> void:
+	var snake_type: String = "PlayerSnakeHead"
+	if slow:
+		snake_type = "PlayerSnakeHeadSlow"
+	var snake_head:= self.spawn_and_place_object(snake_type, start_position)
 
 	for snake_body_idx in range(snake_length-1):
 		self.spawn_snake_segment(snake_head)

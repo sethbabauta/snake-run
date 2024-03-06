@@ -3,10 +3,10 @@ class_name LevelFactory extends Resource
 var tiles: Array = [
 	BlueprintToLevel.new("Barrier", Vector2i(0, 0)),
 	BlueprintToLevel.new("Apple", Vector2i(1, 0)),
-	BlueprintToLevel.new("PoisonApple", Vector2i(2, 0)),
+	BlueprintToLevel.new("DangerApple", Vector2i(2, 0)),
 	BlueprintToLevel.new("SnakeBody", Vector2i(0, 1)),
-	BlueprintToLevel.new("SlowDownAbilityItem", Vector2i(1, 1)),
-	BlueprintToLevel.new("ActiveCamoItem", Vector2i(2, 1)),
+	BlueprintToLevel.new("SlowDownItem", Vector2i(1, 1)),
+	BlueprintToLevel.new("CrownItem", Vector2i(2, 1)),
 ]
 var main_node: Main
 

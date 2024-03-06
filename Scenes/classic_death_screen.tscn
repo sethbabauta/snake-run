@@ -39,6 +39,7 @@ text = "Score: 0"
 
 [node name="EMPTY" type="Label" parent="MainButtonsContainer"]
 layout_mode = 2
+text = "Dev High Score: 80"
 
 [node name="DeathMessage" type="Label" parent="MainButtonsContainer"]
 layout_mode = 2
