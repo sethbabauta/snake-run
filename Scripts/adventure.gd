@@ -99,6 +99,12 @@ func _on_level_changed(level_name: String) -> void:
 	if self.current_level == "Room00.tscn":
 		await get_tree().create_timer(2).timeout
 		self.main_node.spawn_doors()
+		var win_label:= Label.new()
+		win_label.text = "THE END (YOU WIN)"
+		win_label.z_index = 10
+		main_node.follow_camera.add_child(win_label)
+		win_label.global_position = Utils.convert_simple_to_world_coordinates(Vector2(7, 29))
+
 		return
 
 	if self.current_level not in self.cleared_levels:
