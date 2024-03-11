@@ -98,6 +98,19 @@ class AIControlledSimple extends Component:
 			Event.queue_after_effect(self.game_object, new_event, event)
 
 
+class AppleFlipTimed extends Component:
+	var flip_seconds: int = 10
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "KillSelf":
+			_temporarily_flip_apples()
+
+		return event
+
+	func _temporarily_flip_apples() -> void:
+		game_object.main_node.flip_apples_temporary(flip_seconds)
+
+
 class Crown extends Component:
 
 

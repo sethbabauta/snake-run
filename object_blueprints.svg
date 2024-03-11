@@ -43,6 +43,11 @@
 	<Component Name="DeathSpawner" names_as_string="Apple"/>
 </Blueprint>
 
+<Blueprint Name="AppleNoRespawn" Inherits="PhysicalObject">
+	<Component Name="Render" texture="apple.png"/>
+	<Component Name="Nutritious"/>
+</Blueprint>
+
 <Blueprint Name="DangerApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="apple.png"/>
 	<Component Name="Nutritious"/>
@@ -52,6 +57,17 @@
 <Blueprint Name="PoisonApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="poison_apple.png"/>
 	<Component Name="Poisonous" poison_level="1"/>
+</Blueprint>
+
+<Blueprint Name="SlightlyPoisonousApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="2"/>
+	<Component Name="DeathSpawner" names_as_string="SlightlyPoisonousApple,SlightlyPoisonousApple"/>
+</Blueprint>
+
+<Blueprint Name="SlightlyPoisonousAppleNoRespawn" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="2"/>
 </Blueprint>
 
 <Blueprint Name="DeadlyApple" Inherits="PhysicalObject">
@@ -98,4 +114,9 @@
 <Blueprint Name="CrownItem" Inherits="PhysicalObject">
 	<Component Name="Render" texture="crown2.png"/>
 	<Component Name="Crown"/>
+</Blueprint>
+
+<Blueprint Name="TempAppleFlipper" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="AppleFlipTimed" flip_seconds="10"/>
 </Blueprint>

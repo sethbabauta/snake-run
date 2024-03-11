@@ -121,6 +121,15 @@ func cooldown(
 	ability_user.fire_event(new_event)
 
 
+func delete_and_replace(
+		object_to_delete: GameEngine.GameObject,
+		name_of_replacement: String,
+) -> void:
+	var object_position: Vector2 = object_to_delete.physics_body.global_position
+	object_to_delete.delete_self()
+	spawn_and_place_object(name_of_replacement, object_position)
+
+
 func fire_delayed_event(
 		target: GameEngine.GameObject,
 		event: GameEngine.Event,
@@ -128,6 +137,39 @@ func fire_delayed_event(
 ) -> void:
 	await get_tree().create_timer(delay_seconds).timeout
 	target.fire_event(event)
+
+
+func flip_apples() -> void:
+	var nutritious_apples: Array = get_game_objects_of_name("Apple")
+	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousApple")
+
+	for nutritious_apple in nutritious_apples:
+		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
+
+	for slightly_poisonous_apple in slightly_poisonous_apples:
+		delete_and_replace(slightly_poisonous_apple, "AppleNoRespawn")
+
+
+func flip_apples_back() -> void:
+	var nutritious_apples: Array = get_game_objects_of_name("AppleNoRespawn")
+	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousAppleNoRespawn")
+
+	for nutritious_apple in nutritious_apples:
+		delete_and_replace(nutritious_apple, "SlightlyPoisonousApple")
+
+	for slightly_poisonous_apple in slightly_poisonous_apples:
+		delete_and_replace(slightly_poisonous_apple, "Apple")
+
+
+func flip_apples_temporary(flip_seconds: int) -> void:
+	flip_apples()
+	await get_tree().create_timer(flip_seconds).timeout
+	flip_apples_back()
+
+	await get_tree().create_timer(1).timeout
+	var apples: Array = get_game_objects_of_name("Apple")
+	if not apples:
+		spawn_and_place_object("Apple")
 
 
 func get_closest_player_controlled(

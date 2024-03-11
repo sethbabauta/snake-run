@@ -32,19 +32,19 @@ grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="Score" type="Label" parent="MainButtonsContainer"]
+[node name="DeathMessage" type="Label" parent="MainButtonsContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-text = "Score: 0"
+text = "LMFAOOOOOO"
+horizontal_alignment = 1
 
 [node name="EMPTY" type="Label" parent="MainButtonsContainer"]
 layout_mode = 2
 text = "Dev High Score: 80"
 
-[node name="DeathMessage" type="Label" parent="MainButtonsContainer"]
+[node name="Score" type="Label" parent="MainButtonsContainer"]
 layout_mode = 2
-text = "LMFAOOOOOO"
-horizontal_alignment = 1
+size_flags_horizontal = 4
+text = "Your score: 0"
 
 [node name="PlayAgain" type="Button" parent="MainButtonsContainer"]
 layout_mode = 2
