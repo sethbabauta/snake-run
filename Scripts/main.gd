@@ -1,5 +1,7 @@
 class_name Main extends Node
 
+signal POWERUP_1_ACTIVATE
+
 @export var follow_camera: Camera2D
 @export var gamemode_node: Node
 
@@ -162,14 +164,7 @@ func flip_apples_back() -> void:
 
 
 func flip_apples_temporary(flip_seconds: int) -> void:
-	flip_apples()
-	await get_tree().create_timer(flip_seconds).timeout
-	flip_apples_back()
-
-	await get_tree().create_timer(1).timeout
-	var apples: Array = get_game_objects_of_name("Apple")
-	if not apples:
-		spawn_and_place_object("Apple")
+	POWERUP_1_ACTIVATE.emit(flip_seconds)
 
 
 func get_closest_player_controlled(

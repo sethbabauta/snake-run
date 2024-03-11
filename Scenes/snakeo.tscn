@@ -26,6 +26,9 @@ position = Vector2(320, 320)
 
 [node name="GameUI" parent="." instance=ExtResource("5_m1c66")]
 
+[node name="Powerup1Timer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
 [connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
 [connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
