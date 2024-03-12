@@ -280,6 +280,15 @@ func get_simple_door_locations(exclusions: Array = []) -> Array:
 	return door_positions
 
 
+func get_snake_length() -> int:
+	await get_tree().create_timer(0.05).timeout
+	var snake_head: GameEngine.GameObject = get_game_objects_of_name("PlayerSnakeHead")[0]
+	var snake_component: Components.SnakeBody = snake_head.components.get("SnakeBody")
+	var snake_length: int = snake_component.get_length_from_here()
+
+	return snake_length
+
+
 func get_taken_positions() -> Array:
 	var taken_positions: Array = []
 	if self.query_area.has_overlapping_areas():

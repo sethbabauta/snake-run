@@ -61,13 +61,13 @@
 
 <Blueprint Name="SlightlyPoisonousApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="poison_apple.png"/>
-	<Component Name="Poisonous" poison_level="2"/>
+	<Component Name="Poisonous" poison_level="3"/>
 	<Component Name="DeathSpawner" names_as_string="SlightlyPoisonousApple,SlightlyPoisonousApple"/>
 </Blueprint>
 
 <Blueprint Name="SlightlyPoisonousAppleNoRespawn" Inherits="PhysicalObject">
 	<Component Name="Render" texture="poison_apple.png"/>
-	<Component Name="Poisonous" poison_level="2"/>
+	<Component Name="Poisonous" poison_level="3"/>
 </Blueprint>
 
 <Blueprint Name="DeadlyApple" Inherits="PhysicalObject">
@@ -118,5 +118,5 @@
 
 <Blueprint Name="TempAppleFlipper" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder.png"/>
-	<Component Name="AppleFlipTimed" flip_seconds="10"/>
+	<Component Name="AppleFlipTimed" flip_seconds="5"/>
 </Blueprint>

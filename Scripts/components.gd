@@ -631,6 +631,15 @@ class SnakeBody extends Component:
 			prev_body_snakebody.next_body = next_body
 
 
+	func get_length_from_here() -> int:
+		if not prev_body:
+			return 1
+
+		var prev_snake_body: SnakeBody = self.prev_body.components.get("SnakeBody")
+
+		return 1 + prev_snake_body.get_length_from_here()
+
+
 	func get_tail_game_object() -> GameObject:
 		if not self.prev_body:
 			return self.game_object
@@ -641,6 +650,7 @@ class SnakeBody extends Component:
 
 
 	func _disconnect_bodies() -> void:
+		ScoreKeeper.add_to_score(0)
 		if self.next_body:
 			var next_body_snakebody: SnakeBody = self.next_body.components.get("SnakeBody")
 			next_body_snakebody.prev_body = null

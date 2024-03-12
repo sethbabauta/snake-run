@@ -1,12 +1,14 @@
 class_name Snakeo extends Node
 
+signal GAME_START
+
 @export_file("*.tscn") var snakeo_death_screen
 @export var main_node: Main
 @export var powerup_1_timer: Timer
 
 const START_LENGTH = 3
-const DANGER_INTERVAL = 5
-const POWERUP_1_INTERVAL = 6
+const DANGER_INTERVAL = 2
+const POWERUP_1_INTERVAL = 30
 
 var powerup_1_on: bool = false
 var game_ui: MainUI
@@ -32,6 +34,7 @@ func _ready() -> void:
 
 	var move_timer: Timer = get_node("MoveTimer")
 	move_timer.start()
+	GAME_START.emit()
 
 
 func end_game() -> void:
@@ -40,6 +43,8 @@ func end_game() -> void:
 
 func _on_score_changed(score: int) -> void:
 	if not powerup_1_timer.is_stopped():
+		return
+	if score == 0:
 		return
 
 	if score % DANGER_INTERVAL == 0:

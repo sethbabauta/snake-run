@@ -1,5 +1,7 @@
 class_name Classic extends Node
 
+signal GAME_START
+
 @export_file("*.tscn") var classic_death_screen
 @export var main_node: Main
 
@@ -17,6 +19,7 @@ func _ready():
 
 	var move_timer: Timer = get_node("MoveTimer")
 	move_timer.start()
+	GAME_START.emit()
 
 
 func end_game() -> void:
