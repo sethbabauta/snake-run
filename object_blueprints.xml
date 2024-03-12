@@ -44,7 +44,7 @@
 </Blueprint>
 
 <Blueprint Name="AppleNoRespawn" Inherits="PhysicalObject">
-	<Component Name="Render" texture="apple.png"/>
+	<Component Name="Render" texture="green_apple.png"/>
 	<Component Name="Delicious"/>
 </Blueprint>
 
