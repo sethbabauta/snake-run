@@ -1,6 +1,6 @@
 extends Node
 
-const BLUEPRINTS_PATH = "res://object_blueprints.svg"
+const BLUEPRINTS_PATH = "res://object_blueprints.xml"
 const SPRITES_PATH = "res://Sprites/"
 const SHADERS_PATH = "res://Shaders/"
 const LEVELS_PATH = "res://Levels/"

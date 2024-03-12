@@ -281,6 +281,8 @@ func get_simple_door_locations(exclusions: Array = []) -> Array:
 
 
 func get_snake_length() -> int:
+	if not get_tree():
+		return 0
 	await get_tree().create_timer(0.05).timeout
 	var snake_head: GameEngine.GameObject = get_game_objects_of_name("PlayerSnakeHead")[0]
 	var snake_component: Components.SnakeBody = snake_head.components.get("SnakeBody")

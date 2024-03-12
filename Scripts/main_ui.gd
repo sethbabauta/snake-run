@@ -30,5 +30,6 @@ func _physics_process(delta: float) -> void:
 
 func _on_score_changed(new_score: int) -> void:
 	score_label.text = "Score: %d" % new_score
+
 	var snake_length: int = await main_node.get_snake_length()
 	snake_length_label.text = "Snake Length: " + str(snake_length)

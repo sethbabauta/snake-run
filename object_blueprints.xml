@@ -118,5 +118,5 @@
 
 <Blueprint Name="TempAppleFlipper" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder.png"/>
-	<Component Name="AppleFlipTimed" flip_seconds="5"/>
+	<Component Name="AppleFlipTimed" flip_seconds="8"/>
 </Blueprint>
