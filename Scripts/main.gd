@@ -159,6 +159,10 @@ func flip_apples_back() -> void:
 	for nutritious_apple in nutritious_apples:
 		delete_and_replace(nutritious_apple, "SlightlyPoisonousApple")
 
+	if not slightly_poisonous_apples:
+		spawn_and_place_object("Apple")
+		return
+
 	for slightly_poisonous_apple in slightly_poisonous_apples:
 		delete_and_replace(slightly_poisonous_apple, "Apple")
 

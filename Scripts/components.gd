@@ -161,6 +161,20 @@ class Debugger extends Component:
 		return event
 
 
+class Delicious extends Component:
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			self._feed_delicious(event)
+
+		return event
+
+
+	func _feed_delicious(event: Event) -> void:
+		ScoreKeeper.add_to_score(1)
+
+
 class DungeonEntrance extends Component:
 
 
@@ -650,7 +664,6 @@ class SnakeBody extends Component:
 
 
 	func _disconnect_bodies() -> void:
-		ScoreKeeper.add_to_score(0)
 		if self.next_body:
 			var next_body_snakebody: SnakeBody = self.next_body.components.get("SnakeBody")
 			next_body_snakebody.prev_body = null
@@ -674,7 +687,11 @@ class SnakeBody extends Component:
 
 
 	func _grow() -> void:
-		self.game_object.main_node.spawn_snake_segment(self.game_object, Vector2.ZERO)
+		if get_length_from_here() == 1:
+			var direction: Vector2 = game_object.physics_body.global_position.direction_to(prev_location)
+			self.game_object.main_node.spawn_snake_segment(self.game_object, direction)
+		else:
+			self.game_object.main_node.spawn_snake_segment(self.game_object, Vector2.ZERO)
 
 
 	func _move_forward(event: Event) -> void:

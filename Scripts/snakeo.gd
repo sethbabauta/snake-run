@@ -7,13 +7,12 @@ signal GAME_START
 @export var powerup_1_timer: Timer
 
 const START_LENGTH = 3
-const DANGER_INTERVAL = 2
+const DANGER_INTERVAL = 1
 const POWERUP_1_INTERVAL = 30
 
 var powerup_1_on: bool = false
 var game_ui: MainUI
 var temp_apple_flipper_spawner: ScoreCheckpointSpawner
-var slightly_poisonous_apple_spawner: ScoreCheckpointSpawner
 
 
 func _ready() -> void:
@@ -28,12 +27,6 @@ func _ready() -> void:
 			POWERUP_1_INTERVAL,
 			POWERUP_1_INTERVAL,
 			"TempAppleFlipper",
-			main_node,
-	)
-	slightly_poisonous_apple_spawner = ScoreCheckpointSpawner.new(
-			DANGER_INTERVAL,
-			ScoreKeeper.score,
-			"SlightlyPoisonousApple",
 			main_node,
 	)
 
@@ -64,7 +57,8 @@ func _on_score_changed(score: int) -> void:
 
 	if not powerup_1_timer.is_stopped():
 		return
-	slightly_poisonous_apple_spawner.check_score(score)
+	if score % DANGER_INTERVAL == 0:
+		self.main_node.spawn_and_place_object("SlightlyPoisonousApple")
 
 
 func _on_powerup_1_activate(flip_seconds: int) -> void:
@@ -76,11 +70,6 @@ func _on_powerup_1_activate(flip_seconds: int) -> void:
 	await powerup_1_timer.timeout
 
 	main_node.flip_apples_back()
-
-	await get_tree().create_timer(1).timeout
-	var apples: Array = main_node.get_game_objects_of_name("Apple")
-	if not apples:
-		main_node.spawn_and_place_object("Apple")
 
 
 class ScoreCheckpointSpawner:
@@ -102,6 +91,6 @@ class ScoreCheckpointSpawner:
 
 
 	func check_score(score: int) -> void:
-		while score > checkpoint:
+		while not score < checkpoint:
 			main_node.spawn_and_place_object(item_to_spawn)
 			checkpoint += checkpoint_interval
