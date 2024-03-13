@@ -35,7 +35,7 @@ horizontal_alignment = 1
 
 [node name="EMPTY" type="Label" parent="ButtonsContainer"]
 layout_mode = 2
-text = "Dev High Score: 175"
+text = "Dev High Score: 193"
 
 [node name="Score" type="Label" parent="ButtonsContainer"]
 layout_mode = 2

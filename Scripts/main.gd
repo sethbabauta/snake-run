@@ -210,22 +210,20 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 	return found_game_object
 
 
-func get_game_objects_of_name(name: String) -> Array:
+func get_game_objects_of_name(search_name: String) -> Array:
 	var visible_game_objects: Array = get_visible_game_objects()
 	var found_game_objects: Array = []
 	if not visible_game_objects:
 		return found_game_objects
 
 	for object in visible_game_objects:
-		if object.name == name:
+		if object.name == search_name:
 			found_game_objects.append(object)
 
 	return found_game_objects
 
 
 func get_random_valid_world_position() -> Vector2:
-	var taken_positions: Array = get_taken_positions()
-
 	var position:= Vector2.ONE
 
 	for try_count in range(1000):
@@ -239,8 +237,8 @@ func get_random_valid_world_position() -> Vector2:
 func get_random_world_position() -> Vector2:
 	var rng:= RandomNumberGenerator.new()
 	var position:= Vector2(
-			rng.randi_range(0, self.max_simple_size.x-1),
-			rng.randi_range(0, self.max_simple_size.y-1),
+			rng.randi_range(0, self.max_simple_size.x - 1.0),
+			rng.randi_range(0, self.max_simple_size.y - 1.0),
 	)
 	var camera_offset: Vector2 = Utils.convert_world_to_simple_coordinates(self.follow_camera.global_position) - Vector2(10, 10)
 	position += camera_offset

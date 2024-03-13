@@ -12,9 +12,9 @@ class Component:
 	var initial_parameters: Dictionary
 
 
-	func _init(name: String, game_object: GameObject = null) -> void:
-		self.name = name
-		self.game_object = game_object
+	func _init(p_name: String, p_game_object: GameObject = null) -> void:
+		self.name = p_name
+		self.game_object = p_game_object
 
 
 	func first_time_setup() -> void:
@@ -56,9 +56,9 @@ class Event:
 	var unique_id: int
 
 
-	func _init(id: String = "NoID", parameters: Dictionary = {}) -> void:
-		self.id = id
-		self.parameters = parameters
+	func _init(p_id: String = "NoID", p_parameters: Dictionary = {}) -> void:
+		self.id = p_id
+		self.parameters = p_parameters
 		self.parameters["after_effects"] = []
 		self.unique_id = Utils.rng.randi_range(1, 10000)
 
@@ -91,9 +91,9 @@ class EventJob:
 	var event: Event
 
 
-	func _init(target: GameObject, event: Event) -> void:
-		self.target = target
-		self.event = event
+	func _init(p_target: GameObject, p_event: Event) -> void:
+		self.target = p_target
+		self.event = p_event
 
 
 class GameObject:
@@ -109,15 +109,15 @@ class GameObject:
 
 
 	func _init(
-			name: String = "NoName",
-			main_node: Node = null,
-			components: Dictionary = {},
-			physics_body = null,
+			p_name: String = "NoName",
+			p_main_node: Node = null,
+			p_components: Dictionary = {},
+			p_physics_body = null,
 	) -> void:
-		self.name = name
-		self.main_node = main_node
-		self.components = components
-		self.physics_body = physics_body
+		self.name = p_name
+		self.main_node = p_main_node
+		self.components = p_components
+		self.physics_body = p_physics_body
 		self.unique_id = Utils.rng.randi_range(1, 10000)
 
 
@@ -228,18 +228,18 @@ class GameObjectFactory:
 
 
 	func _get_inherited_components(
-			blueprint: Dictionary,
-			blueprints: Dictionary,
+			child_blueprint: Dictionary,
+			unformatted_blueprints: Dictionary,
 	) -> Dictionary:
-		var blueprint_to_inherit: String = blueprint["parameters"].get("Inherits")
+		var blueprint_to_inherit: String = child_blueprint["parameters"].get("Inherits")
 		assert(
-			blueprints.has(blueprint_to_inherit),
+			unformatted_blueprints.has(blueprint_to_inherit),
 			"Blueprint Inheritence error: Inherited blueprint not found."
 		)
 
-		var new_blueprint: Dictionary = blueprint.duplicate(true)
+		var new_blueprint: Dictionary = child_blueprint.duplicate(true)
 		new_blueprint["components"] = (
-				blueprints
+				unformatted_blueprints
 				.get(blueprint_to_inherit)
 				.get("components")
 				.duplicate(true)
@@ -248,7 +248,7 @@ class GameObjectFactory:
 		return new_blueprint
 
 
-	func _format_blueprint(parser: XMLParser, blueprints: Dictionary) -> Dictionary:
+	func _format_blueprint(parser: XMLParser, unformatted_blueprints: Dictionary) -> Dictionary:
 		const MAX_LOOPS = 1000
 
 		var blueprint: Dictionary = {
@@ -259,7 +259,7 @@ class GameObjectFactory:
 		blueprint["parameters"] = blueprint_parameters
 
 		if blueprint["parameters"].has("Inherits"):
-			blueprint = self._get_inherited_components(blueprint, blueprints)
+			blueprint = self._get_inherited_components(blueprint, unformatted_blueprints)
 
 		parser.read()
 		var node_name: String = parser.get_node_name()
@@ -311,7 +311,7 @@ class GameObjectFactory:
 			},
 		}
 		"""
-		var blueprints: Dictionary = {}
+		var loaded_blueprints: Dictionary = {}
 		var parser: XMLParser = XMLParser.new()
 		parser.open(Settings.BLUEPRINTS_PATH)
 
@@ -323,13 +323,13 @@ class GameObjectFactory:
 			)
 
 			var formatted_blueprint: Dictionary = (
-					self._format_blueprint(parser, blueprints)
+					self._format_blueprint(parser, loaded_blueprints)
 			)
 			var blueprint_name: String = formatted_blueprint["parameters"]["Name"]
 
-			blueprints[blueprint_name] = formatted_blueprint
+			loaded_blueprints[blueprint_name] = formatted_blueprint
 
-		return blueprints
+		return loaded_blueprints
 
 
 	func _add_components_from_blueprint(

@@ -47,9 +47,9 @@ class SpeedTracker:
 	var current_time_elapsed: float = 0.0
 	var speed_number: int
 
-	func _init(interval_time: float, speed_number: int) -> void:
-		self.interval_time = interval_time
-		self.speed_number = speed_number
+	func _init(p_interval_time: float, p_speed_number: int) -> void:
+		interval_time = p_interval_time
+		speed_number = p_speed_number
 
 
 	func increment_interval(delta_time: float) -> bool:

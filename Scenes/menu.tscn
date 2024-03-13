@@ -33,19 +33,19 @@ grow_vertical = 2
 layout_mode = 2
 text = "Classic Snake"
 
-[node name="StartDungeon" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Dungeon Mode"
-
 [node name="StartSnake-oMode" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Snake-o Mode"
+
+[node name="StartDungeon" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Dungeon Mode"
 
 [node name="Quit" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/StartClassic" to="." method="_on_start_classic_pressed"]
-[connection signal="pressed" from="VBoxContainer/StartDungeon" to="." method="_on_start_dungeon_pressed"]
 [connection signal="pressed" from="VBoxContainer/StartSnake-oMode" to="." method="_on_start_snakeo_pressed"]
+[connection signal="pressed" from="VBoxContainer/StartDungeon" to="." method="_on_start_dungeon_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

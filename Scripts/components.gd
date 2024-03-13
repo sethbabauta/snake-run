@@ -147,15 +147,15 @@ class DeathSpawner extends Component:
 
 	func _spawn_objects() -> void:
 		names_of_objects = names_as_string.split(",")
-		for name in names_of_objects:
-			self.game_object.main_node.spawn_and_place_object(name)
+		for names_of_object in names_of_objects:
+			self.game_object.main_node.spawn_and_place_object(names_of_object)
 
 
 class Debugger extends Component:
 
 
 	func fire_event(event: Event) -> Event:
-		var to_print: String = "Debugger Component"
+		#var to_print: String = "Debugger Component"
 		#print(to_print)
 
 		return event
@@ -166,22 +166,22 @@ class Delicious extends Component:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._feed_delicious(event)
+			self._feed_delicious()
 
 		return event
 
 
-	func _feed_delicious(event: Event) -> void:
+	func _feed_delicious() -> void:
 		ScoreKeeper.add_to_score(1)
 
 
 class DungeonEntrance extends Component:
 
 
-	func _init(name: String, game_object: GameObject = null) -> void:
-		super(name, game_object)
+	func _init(p_name: String, p_game_object: GameObject = null) -> void:
+		super(p_name, p_game_object)
 		self.game_object.factory_from.subscribe(
-				game_object, "dungeon_entrance"
+				p_game_object, "dungeon_entrance"
 		)
 
 
@@ -384,8 +384,8 @@ class PhysicsBody extends Component:
 	var physics_body_node: PhysicsObject
 
 
-	func _init(name: String, game_object: GameObject = null) -> void:
-		super(name, game_object)
+	func _init(p_name: String, p_game_object: GameObject = null) -> void:
+		super(p_name, p_game_object)
 		self.physics_body_node = self.physics_body_scene.instantiate()
 
 
@@ -448,10 +448,10 @@ class PlayerControlled extends Component:
 	var has_moved: bool = true
 
 
-	func _init(name: String, game_object: GameObject = null) -> void:
-		super(name, game_object)
+	func _init(p_name: String, p_game_object: GameObject = null) -> void:
+		super(p_name, p_game_object)
 		self.game_object.factory_from.subscribe(
-				game_object, "player_controlled"
+				p_game_object, "player_controlled"
 		)
 
 
@@ -635,14 +635,14 @@ class SnakeBody extends Component:
 
 
 	static func connect_bodies(
-			next_body: GameObject,
-			prev_body: GameObject,
+			new_next_body: GameObject,
+			new_prev_body: GameObject,
 	) -> void:
-		var next_body_snakebody: SnakeBody = next_body.components.get("SnakeBody")
-		var prev_body_snakebody: SnakeBody = prev_body.components.get("SnakeBody")
+		var next_body_snakebody: SnakeBody = new_next_body.components.get("SnakeBody")
+		var prev_body_snakebody: SnakeBody = new_prev_body.components.get("SnakeBody")
 		if next_body_snakebody and prev_body_snakebody:
-			next_body_snakebody.prev_body = prev_body
-			prev_body_snakebody.next_body = next_body
+			next_body_snakebody.prev_body = new_prev_body
+			prev_body_snakebody.next_body = new_next_body
 
 
 	func get_length_from_here() -> int:

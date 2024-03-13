@@ -19,7 +19,7 @@ func _ready() -> void:
 
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if powerup_1_timer:
 		var time_left = str(ceil(powerup_1_timer.get_time_left()))
 		if powerup_1_timer.is_stopped():
