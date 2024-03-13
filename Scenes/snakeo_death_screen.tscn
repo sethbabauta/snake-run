@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvb4k8h5376d2"]
+
+[ext_resource type="Script" path="res://Scenes/snakeo_death_screen.gd" id="1_014u3"]
+
+[node name="SnakeoDeathScreen" type="Control" node_paths=PackedStringArray("score_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_014u3")
+snakeo_scene = "res://Scenes/snakeo.tscn"
+menu_scene = "res://Scenes/menu.tscn"
+score_label = NodePath("ButtonsContainer/Score")
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.5
+offset_top = -91.0
+offset_right = 60.5
+offset_bottom = 91.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DeathMessage" type="Label" parent="ButtonsContainer"]
+layout_mode = 2
+text = "Oh no..."
+horizontal_alignment = 1
+
+[node name="EMPTY" type="Label" parent="ButtonsContainer"]
+layout_mode = 2
+text = "Dev High Score: 193"
+
+[node name="Score" type="Label" parent="ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Your score: 0"
+
+[node name="PlayAgain" type="Button" parent="ButtonsContainer"]
+layout_mode = 2
+text = "Play Again"
+
+[node name="Menu" type="Button" parent="ButtonsContainer"]
+layout_mode = 2
+text = "Menu"
+
+[node name="Quit" type="Button" parent="ButtonsContainer"]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="ButtonsContainer/PlayAgain" to="." method="_on_play_again_pressed"]
+[connection signal="pressed" from="ButtonsContainer/Menu" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="ButtonsContainer/Quit" to="." method="_on_quit_pressed"]

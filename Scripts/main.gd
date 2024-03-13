@@ -1,5 +1,7 @@
 class_name Main extends Node
 
+signal POWERUP_1_ACTIVATE
+
 @export var follow_camera: Camera2D
 @export var gamemode_node: Node
 
@@ -121,6 +123,15 @@ func cooldown(
 	ability_user.fire_event(new_event)
 
 
+func delete_and_replace(
+		object_to_delete: GameEngine.GameObject,
+		name_of_replacement: String,
+) -> void:
+	var object_position: Vector2 = object_to_delete.physics_body.global_position
+	object_to_delete.delete_self()
+	spawn_and_place_object(name_of_replacement, object_position)
+
+
 func fire_delayed_event(
 		target: GameEngine.GameObject,
 		event: GameEngine.Event,
@@ -128,6 +139,36 @@ func fire_delayed_event(
 ) -> void:
 	await get_tree().create_timer(delay_seconds).timeout
 	target.fire_event(event)
+
+
+func flip_apples() -> void:
+	var nutritious_apples: Array = get_game_objects_of_name("Apple")
+	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousApple")
+
+	for nutritious_apple in nutritious_apples:
+		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
+
+	for slightly_poisonous_apple in slightly_poisonous_apples:
+		delete_and_replace(slightly_poisonous_apple, "AppleNoRespawn")
+
+
+func flip_apples_back() -> void:
+	var nutritious_apples: Array = get_game_objects_of_name("AppleNoRespawn")
+	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousAppleNoRespawn")
+
+	for nutritious_apple in nutritious_apples:
+		delete_and_replace(nutritious_apple, "SlightlyPoisonousApple")
+
+	if not slightly_poisonous_apples:
+		spawn_and_place_object("Apple")
+		return
+
+	for slightly_poisonous_apple in slightly_poisonous_apples:
+		delete_and_replace(slightly_poisonous_apple, "Apple")
+
+
+func flip_apples_temporary(flip_seconds: int) -> void:
+	POWERUP_1_ACTIVATE.emit(flip_seconds)
 
 
 func get_closest_player_controlled(
@@ -169,22 +210,20 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 	return found_game_object
 
 
-func get_game_objects_of_name(name: String) -> Array:
+func get_game_objects_of_name(search_name: String) -> Array:
 	var visible_game_objects: Array = get_visible_game_objects()
 	var found_game_objects: Array = []
 	if not visible_game_objects:
 		return found_game_objects
 
 	for object in visible_game_objects:
-		if object.name == name:
+		if object.name == search_name:
 			found_game_objects.append(object)
 
 	return found_game_objects
 
 
 func get_random_valid_world_position() -> Vector2:
-	var taken_positions: Array = get_taken_positions()
-
 	var position:= Vector2.ONE
 
 	for try_count in range(1000):
@@ -198,8 +237,8 @@ func get_random_valid_world_position() -> Vector2:
 func get_random_world_position() -> Vector2:
 	var rng:= RandomNumberGenerator.new()
 	var position:= Vector2(
-			rng.randi_range(0, self.max_simple_size.x-1),
-			rng.randi_range(0, self.max_simple_size.y-1),
+			rng.randi_range(0, self.max_simple_size.x - 1.0),
+			rng.randi_range(0, self.max_simple_size.y - 1.0),
 	)
 	var camera_offset: Vector2 = Utils.convert_world_to_simple_coordinates(self.follow_camera.global_position) - Vector2(10, 10)
 	position += camera_offset
@@ -241,6 +280,17 @@ func get_simple_door_locations(exclusions: Array = []) -> Array:
 		door_positions += door_positions_west
 
 	return door_positions
+
+
+func get_snake_length() -> int:
+	if not get_tree():
+		return 0
+	await get_tree().create_timer(0.05).timeout
+	var snake_head: GameEngine.GameObject = get_game_objects_of_name("PlayerSnakeHead")[0]
+	var snake_component: Components.SnakeBody = snake_head.components.get("SnakeBody")
+	var snake_length: int = snake_component.get_length_from_here()
+
+	return snake_length
 
 
 func get_taken_positions() -> Array:
