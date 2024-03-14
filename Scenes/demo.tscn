@@ -17,6 +17,7 @@ follow_camera = NodePath("../FollowCamera")
 gamemode_node = NodePath("..")
 
 [node name="MoveTimer" parent="." instance=ExtResource("3_5ku6j")]
+unique_name_in_owner = true
 
 [node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("3_hgows")]
 main_node = NodePath("../Main")

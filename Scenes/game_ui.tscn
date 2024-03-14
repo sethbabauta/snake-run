@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://2esaq6uvofnq"]
+[gd_scene load_steps=3 format=3 uid="uid://2esaq6uvofnq"]
 
 [ext_resource type="Script" path="res://Scripts/main_ui.gd" id="1_2wlwj"]
+[ext_resource type="Texture2D" uid="uid://k2knm0yuhdt1" path="res://Sprites/pause.png" id="2_bqcaj"]
 
 [node name="GameUI" type="Control" node_paths=PackedStringArray("score_label", "snake_length_label", "powerup_1_label")]
 z_index = 10
@@ -58,3 +59,21 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Powerup: OFF"
+
+[node name="Pause" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bqcaj")
+stretch_mode = 2

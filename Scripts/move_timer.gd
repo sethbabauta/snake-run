@@ -10,6 +10,7 @@ var speed_trackers: Array = []
 
 
 func _init() -> void:
+	paused = false
 	self.speed_trackers.append(SpeedTracker.new(0.05, 5))
 	self.speed_trackers.append(SpeedTracker.new(0.1, 4))
 	self.speed_trackers.append(SpeedTracker.new(0.15, 3))

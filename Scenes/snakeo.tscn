@@ -17,6 +17,7 @@ follow_camera = NodePath("../Camera2D")
 gamemode_node = NodePath("..")
 
 [node name="MoveTimer" parent="." instance=ExtResource("3_sdot4")]
+unique_name_in_owner = true
 autostart = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
