@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2rxm4oown5nh"]
+
+[ext_resource type="Script" path="res://Scripts/pause_dialog.gd" id="1_prgy2"]
+
+[node name="PauseDialog" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -50.5
+offset_right = 48.0
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+script = ExtResource("1_prgy2")
+main_menu_scene = "res://Scenes/menu.tscn"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MainMenuButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Main Menu"
+
+[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Settings"
+
+[node name="QuitGameButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Quit Game"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/QuitGameButton" to="." method="_on_quit_game_button_pressed"]

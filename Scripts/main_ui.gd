@@ -1,6 +1,6 @@
 class_name MainUI extends Control
 
-@onready var pause: TextureRect = %Pause
+@onready var pause_dialog: TextureRect = %PauseDialog
 
 @export var score_label: Label
 @export var snake_length_label: Label
@@ -12,6 +12,8 @@ var main_node: Main
 
 
 func _ready() -> void:
+	pause_dialog.main_node = main_node
+
 	main_node = get_node("../Main")
 	powerup_1_timer = get_node_or_null("../Powerup1Timer")
 
@@ -32,7 +34,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _on_game_paused(is_paused: bool) -> void:
-	pause.visible = is_paused
+	pause_dialog.visible = is_paused
 
 
 func _on_score_changed(new_score: int) -> void:
