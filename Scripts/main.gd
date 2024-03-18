@@ -2,6 +2,8 @@ class_name Main extends Node
 
 signal POWERUP_1_ACTIVATE
 
+@onready var move_timer: MoveTimer = %MoveTimer
+
 @export var follow_camera: Camera2D
 @export var gamemode_node: Node
 
@@ -43,6 +45,9 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("use_item"):
 		self._fire_use_item_event()
+
+	if event.is_action_pressed("pause"):
+		pause_or_play()
 
 
 static func apply_shader_to_physics_body(
@@ -345,6 +350,11 @@ static func overlay_sprite_on_game_object(
 	new_sprite.name = sprite_node_name
 	target.physics_body.add_child(new_sprite)
 	new_sprite.position += offset
+
+
+func pause_or_play() -> void:
+	move_timer.paused = not move_timer.paused
+	EventBus.GAME_PAUSED.emit(move_timer.paused)
 
 
 static func remove_overlay_sprite_from_physics_body(
