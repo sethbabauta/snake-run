@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://c5alligti4vyt"]
+[gd_scene load_steps=3 format=3 uid="uid://b7ty05m56ksow"]
 
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_4bfl7"]
 [ext_resource type="Script" path="res://Scripts/move_timer.gd" id="2_qbs8a"]
@@ -8,8 +8,11 @@ script = ExtResource("1_4bfl7")
 
 [node name="MoveTimer" type="Timer" parent="."]
 unique_name_in_owner = true
+wait_time = 0.05
 script = ExtResource("2_qbs8a")
 
 [node name="Powerup1Timer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
+
+[connection signal="timeout" from="MoveTimer" to="MoveTimer" method="_on_timeout"]

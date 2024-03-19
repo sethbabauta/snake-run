@@ -5,7 +5,6 @@ const START_LENGTH = 5
 @export var classic_death_screen: PackedScene
 
 @onready var main_node: Main = %Main
-@onready var move_timer: MoveTimer = %MoveTimer
 
 
 func _ready():
@@ -18,7 +17,6 @@ func _ready():
 	main_node.spawn_and_place_object("Apple")
 	await get_tree().create_timer(2).timeout
 
-	move_timer.start()
 	EventBus.game_started.emit("Classic")
 
 

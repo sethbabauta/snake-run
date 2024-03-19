@@ -42,7 +42,7 @@ func snap_to_nearest_level() -> void:
 	self.current_level = self.level_positions.keys()[closest_level_idx]
 
 
-func _on_game_start() -> void:
+func _on_game_start(gamemode_name: String) -> void:
 	player_head = main_node.get_closest_player_controlled(Vector2(0, 0))
 	snake_tail = player_head.components.get("SnakeBody").get_tail_game_object()
 

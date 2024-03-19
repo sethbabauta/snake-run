@@ -4,13 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://Scenes/adventure_death_screen.tscn" id="2_2vmci"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="4_1uxk5"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="4_gegtj"]
-[ext_resource type="PackedScene" uid="uid://c5alligti4vyt" path="res://Scenes/main.tscn" id="4_uci18"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_uci18"]
 
 [node name="Adventure" type="Node"]
 script = ExtResource("1_h5vo3")
 adventure_death_screen = ExtResource("2_2vmci")
 
 [node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("4_gegtj")]
+unique_name_in_owner = true
 main_node = NodePath("../Main")
 
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_uci18")]

@@ -42,8 +42,8 @@ func _on_game_started(gamemode_name: String) -> void:
 func _on_score_changed(new_score: int) -> void:
 	score_label.text = "Score: %d" % new_score
 
-	var snake_length: int = await main_node.get_snake_length()
-	snake_length_label.text = "Snake Length: " + str(snake_length)
+	#var snake_length: int = await main_node.get_snake_length()
+	#snake_length_label.text = "Snake Length: " + str(snake_length)
 
 
 func _on_settings_toggled() -> void:

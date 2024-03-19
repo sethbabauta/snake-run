@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Scripts/snakeo.gd" id="1_by8yj"]
 [ext_resource type="PackedScene" uid="uid://bvb4k8h5376d2" path="res://Scenes/snakeo_death_screen.tscn" id="2_54pgv"]
-[ext_resource type="PackedScene" uid="uid://c5alligti4vyt" path="res://Scenes/main.tscn" id="4_csxen"]
-[ext_resource type="Script" path="res://Scripts/adventure_camera.gd" id="5_dr8pm"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_csxen"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="5_1xoox"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="5_m1c66"]
 
 [node name="Snakeo" type="Node"]
@@ -19,8 +19,7 @@ unique_name_in_owner = true
 follow_camera = NodePath("../FollowCamera")
 gamemode_node = NodePath("..")
 
-[node name="FollowCamera" type="Camera2D" parent="." node_paths=PackedStringArray("main_node", "gamemode_node")]
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("5_1xoox")]
 unique_name_in_owner = true
-script = ExtResource("5_dr8pm")
 main_node = NodePath("../Main")
 gamemode_node = NodePath("..")
