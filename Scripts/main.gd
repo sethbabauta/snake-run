@@ -18,6 +18,12 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	move_timer.speed_1.connect(_on_move_timer_speed_1)
+	move_timer.speed_2.connect(_on_move_timer_speed_2)
+	move_timer.speed_3.connect(_on_move_timer_speed_3)
+	move_timer.speed_4.connect(_on_move_timer_speed_4)
+	move_timer.speed_5.connect(_on_move_timer_speed_5)
+
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
 	self.max_simple_size = (get_viewport().get_visible_rect().size / Settings.BASE_MOVE_SPEED)

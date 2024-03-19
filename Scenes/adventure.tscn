@@ -26,10 +26,3 @@ main_node = NodePath("../Main")
 gamemode_node = NodePath("..")
 
 [node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
-
-[connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
-[connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
-[connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
-[connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
-[connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
-[connection signal="SPEED_5" from="MoveTimer" to="Camera2D2" method="_on_move_timer_speed_5"]

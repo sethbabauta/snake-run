@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cu6he2syq2bse"]
+[gd_scene load_steps=7 format=3 uid="uid://cu6he2syq2bse"]
 
 [ext_resource type="Script" path="res://Scripts/snakeo.gd" id="1_by8yj"]
+[ext_resource type="PackedScene" uid="uid://bvb4k8h5376d2" path="res://Scenes/snakeo_death_screen.tscn" id="2_54pgv"]
 [ext_resource type="Script" path="res://Scripts/main.gd" id="2_kvh2w"]
 [ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="3_sdot4"]
 [ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="4_u1v70"]
@@ -8,6 +9,7 @@
 
 [node name="Snakeo" type="Node"]
 script = ExtResource("1_by8yj")
+snakeo_death_screen = ExtResource("2_54pgv")
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
 unique_name_in_owner = true
@@ -29,9 +31,3 @@ position = Vector2(320, 320)
 [node name="Powerup1Timer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
-
-[connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
-[connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
-[connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
-[connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
-[connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
