@@ -112,7 +112,7 @@ class AppleFlipTimed:
 		return event
 
 	func _temporarily_flip_apples() -> void:
-		game_object.main_node.flip_apples_temporary(flip_seconds)
+		EventBus.powerup_1_activated.emit(flip_seconds)
 
 
 class Crown:

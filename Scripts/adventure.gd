@@ -1,10 +1,10 @@
 class_name Adventure extends Node
 
 const START_LENGTH = 3
+
 @export var adventure_death_screen: PackedScene
 
 @onready var main_node: Main = %Main
-@onready var move_timer: MoveTimer = %MoveTimer
 
 # TODO: Clean this up
 var level_start_points = {
@@ -48,9 +48,6 @@ func _ready():
 	self.main_node.spawn_and_place_object("Apple")
 	await get_tree().create_timer(1).timeout
 
-	self.move_timer = get_node("MoveTimer")
-	self.move_timer.start()
-
 	EventBus.game_started.emit("Dungeon")
 
 
@@ -92,9 +89,9 @@ func _on_fully_entered() -> void:
 # TODO: Clean this up
 func _on_level_changed(level_name: String) -> void:
 	self.current_level = level_name
-	self.move_timer.stop()
+	main_node.move_timer.stop()
 	await get_tree().create_timer(1).timeout
-	self.move_timer.start()
+	main_node.move_timer.start()
 
 	if self.current_level == "Room00.tscn":
 		await get_tree().create_timer(2).timeout

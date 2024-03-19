@@ -11,8 +11,6 @@ var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
 @onready var game_ui: GameUI = %GameUI
 @onready var main_node: Main = %Main
-@onready var move_timer: MoveTimer = %MoveTimer
-@onready var powerup_1_timer: Timer = %Powerup1Timer
 
 
 func _ready() -> void:
@@ -37,9 +35,9 @@ func _ready() -> void:
 
 	await get_tree().create_timer(1).timeout
 	main_node.spawn_and_place_object("Apple")
+	main_node.spawn_and_place_object("TempAppleFlipper")
 	await get_tree().create_timer(2).timeout
 
-	move_timer.start()
 	EventBus.game_started.emit("Snakeo")
 
 
@@ -58,7 +56,7 @@ func _on_ate_item(item_name: String, eater: String) -> void:
 	if item_name == "SlightlyPoisonousApple":
 		pass
 	if item_name == "TempAppleFlipper":
-		pass
+		ScoreKeeper.add_to_score(10)
 
 
 func _on_score_changed(new_score: int) -> void:
@@ -66,12 +64,11 @@ func _on_score_changed(new_score: int) -> void:
 
 
 func _on_powerup_1_activate(flip_seconds: int) -> void:
-	ScoreKeeper.add_to_score(10)
-	if powerup_1_timer.is_stopped():
+	if main_node.powerup_1_timer.is_stopped():
 		main_node.flip_apples()
 
-	powerup_1_timer.start(flip_seconds)
-	await powerup_1_timer.timeout
+	main_node.powerup_1_timer.start(flip_seconds)
+	await main_node.powerup_1_timer.timeout
 
 	main_node.flip_apples_back()
 

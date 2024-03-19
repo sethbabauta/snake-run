@@ -1,9 +1,9 @@
 class_name GameUI extends Control
 
-@export var main_node: Main
-@export var powerup_1_timer: Timer
+const POWERUP_1_TEXT: String = "Powerup: "
 
-var powerup_1_text: String = "Powerup: "
+@export var main_node: Main
+
 var is_settings_active: bool = false
 
 @onready var pause_dialog: PauseDialog = %PauseDialog
@@ -22,13 +22,12 @@ func _ready() -> void:
 	score_label.text = "Score: %d" % ScoreKeeper.score
 
 
-func _physics_process(_delta: float) -> void:
-	if powerup_1_timer:
-		var time_left = str(ceil(powerup_1_timer.get_time_left()))
-		if powerup_1_timer.is_stopped():
-			powerup_1_label.text = powerup_1_text + "OFF"
-		else:
-			powerup_1_label.text = powerup_1_text + time_left
+func _process(_delta: float) -> void:
+	if main_node.powerup_1_timer.is_stopped():
+		powerup_1_label.text = POWERUP_1_TEXT + "OFF"
+	else:
+		var time_left = str(ceil(main_node.powerup_1_timer.get_time_left()))
+		powerup_1_label.text = POWERUP_1_TEXT + time_left
 
 
 func _on_game_paused(is_paused: bool) -> void:

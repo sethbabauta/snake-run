@@ -1,36 +1,26 @@
-[gd_scene load_steps=7 format=3 uid="uid://cu6he2syq2bse"]
+[gd_scene load_steps=6 format=3 uid="uid://cu6he2syq2bse"]
 
 [ext_resource type="Script" path="res://Scripts/snakeo.gd" id="1_by8yj"]
 [ext_resource type="PackedScene" uid="uid://bvb4k8h5376d2" path="res://Scenes/snakeo_death_screen.tscn" id="2_54pgv"]
-[ext_resource type="Script" path="res://Scripts/main.gd" id="2_kvh2w"]
-[ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="3_sdot4"]
-[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="4_u1v70"]
+[ext_resource type="PackedScene" uid="uid://c5alligti4vyt" path="res://Scenes/main.tscn" id="4_csxen"]
+[ext_resource type="Script" path="res://Scripts/adventure_camera.gd" id="5_dr8pm"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="5_m1c66"]
 
 [node name="Snakeo" type="Node"]
 script = ExtResource("1_by8yj")
 snakeo_death_screen = ExtResource("2_54pgv")
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
-unique_name_in_owner = true
-script = ExtResource("2_kvh2w")
-follow_camera = NodePath("../Camera2D")
-gamemode_node = NodePath("..")
-
-[node name="MoveTimer" parent="." instance=ExtResource("3_sdot4")]
-unique_name_in_owner = true
-autostart = false
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(320, 320)
-
-[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("4_u1v70")]
-
-[node name="GameUI" parent="." node_paths=PackedStringArray("main_node", "powerup_1_timer") instance=ExtResource("5_m1c66")]
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("5_m1c66")]
 unique_name_in_owner = true
 main_node = NodePath("../Main")
-powerup_1_timer = NodePath("../Powerup1Timer")
 
-[node name="Powerup1Timer" type="Timer" parent="."]
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_csxen")]
 unique_name_in_owner = true
-one_shot = true
+follow_camera = NodePath("../FollowCamera")
+gamemode_node = NodePath("..")
+
+[node name="FollowCamera" type="Camera2D" parent="." node_paths=PackedStringArray("main_node", "gamemode_node")]
+unique_name_in_owner = true
+script = ExtResource("5_dr8pm")
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")

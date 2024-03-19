@@ -1,4 +1,4 @@
-extends Camera2D
+class_name FollowCamera extends Camera2D
 
 @export var main_node: Main
 @export var gamemode_node: Node

@@ -1,7 +1,5 @@
 class_name Main extends Node
 
-@onready var move_timer: MoveTimer = %MoveTimer
-
 @export var follow_camera: Camera2D
 @export var gamemode_node: Node
 
@@ -11,6 +9,8 @@ var max_simple_size: Vector2
 var query_area: Area2D
 var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
 
+@onready var move_timer: MoveTimer = %MoveTimer
+@onready var powerup_1_timer: Timer = %Powerup1Timer
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
@@ -23,6 +23,7 @@ func _ready() -> void:
 	move_timer.speed_3.connect(_on_move_timer_speed_3)
 	move_timer.speed_4.connect(_on_move_timer_speed_4)
 	move_timer.speed_5.connect(_on_move_timer_speed_5)
+	EventBus.game_started.connect(_on_game_start)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -175,10 +176,6 @@ func flip_apples_back() -> void:
 
 	for slightly_poisonous_apple in slightly_poisonous_apples:
 		delete_and_replace(slightly_poisonous_apple, "Apple")
-
-
-func flip_apples_temporary(flip_seconds: int) -> void:
-	EventBus.powerup_1_activated.emit(flip_seconds)
 
 
 func get_closest_player_controlled(
@@ -488,6 +485,10 @@ func _fire_drop_item_event() -> void:
 func _fire_use_item_event() -> void:
 	var new_event := GameEngine.Event.new("UseItem")
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
+
+
+func _on_game_start(gamemode_name: String) -> void:
+	move_timer.start()
 
 
 func _on_move_timer_speed_1() -> void:
