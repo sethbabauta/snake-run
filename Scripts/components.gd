@@ -410,6 +410,8 @@ class PhysicsBody:
 	func _get_eaten(event: Event) -> void:
 		var kill_self_event := Event.new("KillSelf")
 		Event.queue_after_effect(self.game_object, kill_self_event, event)
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		EventBus.ate_item.emit(game_object.name, eater.name)
 
 	func _give_position(event: Event) -> void:
 		var asker: GameEngine.GameObject = event.parameters.get("asker")

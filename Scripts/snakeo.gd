@@ -20,8 +20,6 @@ func _ready() -> void:
 	EventBus.powerup_1_activated.connect(_on_powerup_1_activate)
 	EventBus.ate_item.connect(_on_ate_item)
 
-	game_ui.powerup_1_label.visible = true
-
 	temp_apple_flipper_spawner = (
 		ScoreCheckpointSpawner
 		. new(
@@ -49,27 +47,22 @@ func end_game() -> void:
 	get_tree().change_scene_to_packed(snakeo_death_screen)
 
 
-func _on_ate_item(item_name: String) -> void:
+func _on_ate_item(item_name: String, eater: String) -> void:
+	if eater != "PlayerSnakeHead":
+		return
+
 	if item_name == "Apple":
-		pass
+		main_node.spawn_and_place_object("SlightlyPoisonousApple")
 	if item_name == "AppleNoRespawn":
 		pass
 	if item_name == "SlightlyPoisonousApple":
 		pass
-	if item_name == "SlightlyPoisonousAppleNoRespawn":
+	if item_name == "TempAppleFlipper":
 		pass
 
 
-func _on_score_changed(score: int) -> void:
-	if score == 0:
-		return
-
-	temp_apple_flipper_spawner.check_score(score)
-
-	if not powerup_1_timer.is_stopped():
-		return
-	if score % DANGER_INTERVAL == 0:
-		self.main_node.spawn_and_place_object("SlightlyPoisonousApple")
+func _on_score_changed(new_score: int) -> void:
+	temp_apple_flipper_spawner.check_score(new_score)
 
 
 func _on_powerup_1_activate(flip_seconds: int) -> void:

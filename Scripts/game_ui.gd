@@ -14,6 +14,7 @@ var is_settings_active: bool = false
 
 
 func _ready() -> void:
+	EventBus.game_started.connect(_on_game_started)
 	EventBus.game_paused.connect(_on_game_paused)
 	EventBus.settings_toggled.connect(_on_settings_toggled)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
@@ -32,6 +33,11 @@ func _physics_process(_delta: float) -> void:
 
 func _on_game_paused(is_paused: bool) -> void:
 	pause_dialog.visible = is_paused
+
+
+func _on_game_started(gamemode_name: String) -> void:
+	if gamemode_name == "Snakeo":
+		powerup_1_label.visible = true
 
 
 func _on_score_changed(new_score: int) -> void:
