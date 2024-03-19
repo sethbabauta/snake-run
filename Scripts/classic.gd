@@ -7,6 +7,7 @@ const START_LENGTH = 5
 @onready var main_node: Main = %Main
 @onready var move_timer: MoveTimer = %MoveTimer
 
+
 func _ready():
 	main_node.spawn_background()
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
@@ -18,7 +19,7 @@ func _ready():
 	await get_tree().create_timer(2).timeout
 
 	move_timer.start()
-	EventBus.GAME_START.emit()
+	EventBus.game_started.emit()
 
 
 func end_game() -> void:

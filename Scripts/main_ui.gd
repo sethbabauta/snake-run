@@ -19,9 +19,9 @@ func _ready() -> void:
 	main_node = get_node("../Main")
 	powerup_1_timer = get_node_or_null("../Powerup1Timer")
 
-	EventBus.GAME_PAUSED.connect(_on_game_paused)
-	EventBus.TOGGLE_SETTINGS.connect(_on_settings_toggled)
-	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
+	EventBus.game_paused.connect(_on_game_paused)
+	EventBus.settings_toggled.connect(_on_settings_toggled)
+	ScoreKeeper.score_changed.connect(_on_score_changed)
 	snake_length_label.text = "Snake Length: " + str(main_node.gamemode_node.START_LENGTH)
 	score_label.text = "Score: %d" % ScoreKeeper.score
 

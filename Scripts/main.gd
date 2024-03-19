@@ -172,7 +172,7 @@ func flip_apples_back() -> void:
 
 
 func flip_apples_temporary(flip_seconds: int) -> void:
-	EventBus.POWERUP_1_ACTIVATE.emit(flip_seconds)
+	EventBus.powerup_1_activated.emit(flip_seconds)
 
 
 func get_closest_player_controlled(
@@ -353,7 +353,7 @@ static func overlay_sprite_on_game_object(
 
 func pause_or_play() -> void:
 	move_timer.paused = not move_timer.paused
-	EventBus.GAME_PAUSED.emit(move_timer.paused)
+	EventBus.game_paused.emit(move_timer.paused)
 
 
 static func remove_overlay_sprite_from_physics_body(

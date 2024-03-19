@@ -9,7 +9,7 @@ func _on_main_menu_button_pressed() -> void:
 
 
 func _on_settings_button_pressed() -> void:
-	EventBus.TOGGLE_SETTINGS.emit()
+	EventBus.settings_toggled.emit()
 
 
 func _on_quit_game_button_pressed() -> void:

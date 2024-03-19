@@ -32,9 +32,9 @@ var current_level_score = 0
 
 # TODO: Clean this up
 func _ready():
-	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
-	EventBus.LEVEL_CHANGED.connect(_on_level_changed)
-	EventBus.PLAYER_FULLY_ENTERED.connect(_on_fully_entered)
+	ScoreKeeper.score_changed.connect(_on_score_changed)
+	EventBus.level_changed.connect(_on_level_changed)
+	EventBus.player_fully_entered.connect(_on_fully_entered)
 
 	for start_point in self.level_start_points.values():
 		self.main_node.spawn_background(start_point)
@@ -51,7 +51,7 @@ func _ready():
 	self.move_timer = get_node("MoveTimer")
 	self.move_timer.start()
 
-	EventBus.GAME_START.emit()
+	EventBus.game_started.emit()
 
 
 func end_game() -> void:

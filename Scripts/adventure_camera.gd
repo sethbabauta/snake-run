@@ -20,7 +20,7 @@ var current_level = "Room30.tscn"
 
 
 func _ready() -> void:
-	EventBus.GAME_START.connect(_on_game_start)
+	EventBus.game_started.connect(_on_game_start)
 
 
 # TODO: Clean this up
@@ -55,10 +55,10 @@ func _on_move_timer_speed_5() -> void:
 
 	snake_tail = player_head.components.get("SnakeBody").get_tail_game_object()
 	if not snake_tail_visible and main_node.is_object_visible(snake_tail):
-		EventBus.PLAYER_FULLY_ENTERED.emit()
+		EventBus.player_fully_entered.emit()
 		snake_tail_visible = true
 
 	if not snake_heads:
 		snap_to_nearest_level()
-		EventBus.LEVEL_CHANGED.emit(self.current_level)
+		EventBus.level_changed.emit(self.current_level)
 		snake_tail_visible = false

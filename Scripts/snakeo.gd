@@ -15,8 +15,8 @@ var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
 
 func _ready() -> void:
-	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
-	EventBus.POWERUP_1_ACTIVATE.connect(_on_powerup_1_activate)
+	ScoreKeeper.score_changed.connect(_on_score_changed)
+	EventBus.powerup_1_activated.connect(_on_powerup_1_activate)
 
 	game_ui = get_node("GameUI")
 	game_ui.powerup_1_label.visible = true
@@ -44,7 +44,7 @@ func _ready() -> void:
 
 	var move_timer: Timer = get_node("MoveTimer")
 	move_timer.start()
-	EventBus.GAME_START.emit()
+	EventBus.game_started.emit()
 
 
 func end_game() -> void:
