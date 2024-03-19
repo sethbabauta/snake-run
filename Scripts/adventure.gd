@@ -11,11 +11,11 @@ var move_timer: MoveTimer
 
 # TODO: Clean this up
 var level_start_points = {
-	"Room30.tscn": Vector2(0,0),
+	"Room30.tscn": Vector2(0, 0),
 	"Room20.tscn": Vector2(-20, 0),
-	"Room31.tscn": Vector2(0,-20),
+	"Room31.tscn": Vector2(0, -20),
 	"Room21.tscn": Vector2(-20, -20),
-	"Room32.tscn": Vector2(0,-40),
+	"Room32.tscn": Vector2(0, -40),
 	"Room22.tscn": Vector2(-20, -40),
 	"Room00.tscn": Vector2(0, 20)
 }
@@ -31,6 +31,7 @@ var level_score_thresholds = {
 var cleared_levels: Array = []
 var current_level: String = "Room30.tscn"
 var current_level_score = 0
+
 
 # TODO: Clean this up
 func _ready():
@@ -80,7 +81,9 @@ func setup_level(level_name: String, start_position: Vector2) -> void:
 # TODO: Clean this up
 func setup_levels() -> void:
 	for level_idx in self.level_start_points.size():
-		setup_level(self.level_start_points.keys()[level_idx], self.level_start_points.values()[level_idx])
+		setup_level(
+			self.level_start_points.keys()[level_idx], self.level_start_points.values()[level_idx]
+		)
 
 
 func _on_fully_entered() -> void:
@@ -99,7 +102,7 @@ func _on_level_changed(level_name: String) -> void:
 	if self.current_level == "Room00.tscn":
 		await get_tree().create_timer(2).timeout
 		self.main_node.spawn_doors()
-		var win_label:= Label.new()
+		var win_label := Label.new()
 		win_label.text = "THE END (YOU WIN)"
 		win_label.z_index = 10
 		main_node.follow_camera.add_child(win_label)
@@ -115,5 +118,8 @@ func _on_level_changed(level_name: String) -> void:
 
 func _on_score_changed(score: int) -> void:
 	self.current_level_score += 1
-	if self.current_level_score >= self.level_score_thresholds[self.current_level] and current_level!= "Room00.tscn":
+	if (
+		self.current_level_score >= self.level_score_thresholds[self.current_level]
+		and current_level != "Room00.tscn"
+	):
 		end_level()

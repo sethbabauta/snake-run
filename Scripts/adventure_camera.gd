@@ -28,12 +28,14 @@ func _ready() -> void:
 
 # TODO: Clean this up
 func snap_to_nearest_level() -> void:
-	var player_position: Vector2 = (player_head.physics_body.global_position)
+	var player_position: Vector2 = player_head.physics_body.global_position
 	var closest_distance: float = Vector2(320, 320).distance_squared_to(player_position)
 	var closest_level_center: Vector2 = Vector2(320, 320)
 	var closest_level_idx = 0
 	for level_idx in self.level_positions.size():
-		var current_distance = self.level_positions.values()[level_idx].distance_squared_to(player_position)
+		var current_distance = self.level_positions.values()[level_idx].distance_squared_to(
+			player_position
+		)
 		if current_distance < closest_distance:
 			closest_distance = current_distance
 			closest_level_center = self.level_positions.values()[level_idx]
@@ -41,7 +43,6 @@ func snap_to_nearest_level() -> void:
 
 	self.global_position = closest_level_center
 	self.current_level = self.level_positions.keys()[closest_level_idx]
-
 
 
 func _on_game_start() -> void:
@@ -64,5 +65,3 @@ func _on_move_timer_speed_5() -> void:
 		snap_to_nearest_level()
 		LEVEL_CHANGED.emit(self.current_level)
 		snake_tail_visible = false
-
-

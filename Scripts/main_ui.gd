@@ -26,7 +26,6 @@ func _ready() -> void:
 	score_label.text = "Score: %d" % ScoreKeeper.score
 
 
-
 func _physics_process(_delta: float) -> void:
 	if powerup_1_timer:
 		var time_left = str(ceil(powerup_1_timer.get_time_left()))

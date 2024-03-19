@@ -7,6 +7,7 @@ signal GAME_START
 
 const START_LENGTH = 5
 
+
 func _ready():
 	self.main_node.spawn_background()
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
@@ -24,4 +25,3 @@ func _ready():
 
 func end_game() -> void:
 	get_tree().change_scene_to_file(classic_death_screen)
-

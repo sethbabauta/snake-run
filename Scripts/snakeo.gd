@@ -23,11 +23,14 @@ func _ready() -> void:
 	game_ui.powerup_1_label.visible = true
 	powerup_1_timer = get_node("Powerup1Timer")
 
-	temp_apple_flipper_spawner = ScoreCheckpointSpawner.new(
+	temp_apple_flipper_spawner = (
+		ScoreCheckpointSpawner
+		. new(
 			POWERUP_1_INTERVAL,
 			POWERUP_1_INTERVAL,
 			"TempAppleFlipper",
 			main_node,
+		)
 	)
 
 	self.main_node.spawn_background()
@@ -88,7 +91,6 @@ class ScoreCheckpointSpawner:
 		checkpoint = p_checkpoint
 		item_to_spawn = p_item_to_spawn
 		main_node = p_main_node
-
 
 	func check_score(score: int) -> void:
 		while not score < checkpoint:

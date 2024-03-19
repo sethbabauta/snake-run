@@ -19,19 +19,18 @@ func _init() -> void:
 
 
 func get_speed_signal(speed_number: int) -> Signal:
-		match speed_number:
-			5:
-				return self.SPEED_5
-			4:
-				return self.SPEED_4
-			3:
-				return self.SPEED_3
-			2:
-				return self.SPEED_2
-			1:
-				return self.SPEED_1
-
-		return self.SPEED_3
+	match speed_number:
+		5:
+			return self.SPEED_5
+		4:
+			return self.SPEED_4
+		3:
+			return self.SPEED_3
+		2:
+			return self.SPEED_2
+		1:
+			return self.SPEED_1
+	return self.SPEED_3
 
 
 func _on_timeout() -> void:
@@ -51,7 +50,6 @@ class SpeedTracker:
 	func _init(p_interval_time: float, p_speed_number: int) -> void:
 		interval_time = p_interval_time
 		speed_number = p_speed_number
-
 
 	func increment_interval(delta_time: float) -> bool:
 		self.current_time_elapsed += delta_time
