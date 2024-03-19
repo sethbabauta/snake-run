@@ -6,12 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="4_u1v70"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="5_m1c66"]
 
-[node name="Snakeo" type="Node" node_paths=PackedStringArray("main_node")]
+[node name="Snakeo" type="Node"]
 script = ExtResource("1_by8yj")
-snakeo_death_screen = "res://Scenes/snakeo_death_screen.tscn"
-main_node = NodePath("Main")
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
+unique_name_in_owner = true
 script = ExtResource("2_kvh2w")
 follow_camera = NodePath("../Camera2D")
 gamemode_node = NodePath("..")
@@ -28,6 +27,7 @@ position = Vector2(320, 320)
 [node name="GameUI" parent="." instance=ExtResource("5_m1c66")]
 
 [node name="Powerup1Timer" type="Timer" parent="."]
+unique_name_in_owner = true
 one_shot = true
 
 [connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]

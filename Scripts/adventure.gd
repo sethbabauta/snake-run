@@ -1,13 +1,10 @@
 class_name Adventure extends Node
 
-signal GAME_START
-
-@export_file("*.tscn") var adventure_death_screen
-@export var main_node: Main
-
 const START_LENGTH = 3
+@export var adventure_death_screen: PackedScene
 
-var move_timer: MoveTimer
+@onready var main_node: Main = %Main
+@onready var move_timer: MoveTimer = %MoveTimer
 
 # TODO: Clean this up
 var level_start_points = {
@@ -36,8 +33,8 @@ var current_level_score = 0
 # TODO: Clean this up
 func _ready():
 	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
-	self.main_node.follow_camera.LEVEL_CHANGED.connect(_on_level_changed)
-	self.main_node.follow_camera.PLAYER_FULLY_ENTERED.connect(_on_fully_entered)
+	EventBus.LEVEL_CHANGED.connect(_on_level_changed)
+	EventBus.PLAYER_FULLY_ENTERED.connect(_on_fully_entered)
 
 	for start_point in self.level_start_points.values():
 		self.main_node.spawn_background(start_point)
@@ -54,11 +51,11 @@ func _ready():
 	self.move_timer = get_node("MoveTimer")
 	self.move_timer.start()
 
-	self.GAME_START.emit()
+	EventBus.GAME_START.emit()
 
 
 func end_game() -> void:
-	get_tree().change_scene_to_file(adventure_death_screen)
+	get_tree().change_scene_to_packed(adventure_death_screen)
 
 
 func end_level() -> void:

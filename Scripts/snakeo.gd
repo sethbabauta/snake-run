@@ -1,23 +1,22 @@
 class_name Snakeo extends Node
 
-signal GAME_START
-
-@export_file("*.tscn") var snakeo_death_screen
-@export var main_node: Main
-@export var powerup_1_timer: Timer
-
 const START_LENGTH = 3
 const DANGER_INTERVAL = 1
 const POWERUP_1_INTERVAL = 30
 
-var powerup_1_on: bool = false
+@export var snakeo_death_screen: PackedScene
+
 var game_ui: MainUI
+var powerup_1_on: bool = false
 var temp_apple_flipper_spawner: ScoreCheckpointSpawner
+
+@onready var powerup_1_timer: Timer = %Powerup1Timer
+@onready var main_node: Main = %Main
 
 
 func _ready() -> void:
 	ScoreKeeper.SCORE_CHANGED.connect(_on_score_changed)
-	main_node.POWERUP_1_ACTIVATE.connect(_on_powerup_1_activate)
+	EventBus.POWERUP_1_ACTIVATE.connect(_on_powerup_1_activate)
 
 	game_ui = get_node("GameUI")
 	game_ui.powerup_1_label.visible = true
@@ -45,11 +44,11 @@ func _ready() -> void:
 
 	var move_timer: Timer = get_node("MoveTimer")
 	move_timer.start()
-	GAME_START.emit()
+	EventBus.GAME_START.emit()
 
 
 func end_game() -> void:
-	get_tree().change_scene_to_file(snakeo_death_screen)
+	get_tree().change_scene_to_packed(snakeo_death_screen)
 
 
 func _on_score_changed(score: int) -> void:

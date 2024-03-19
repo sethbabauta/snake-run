@@ -1,7 +1,5 @@
 class_name Demo extends Node
 
-signal GAME_START
-
 @export_file("*.tscn") var adventure_death_screen
 @export var main_node: Main
 @export var move_timer: MoveTimer
@@ -19,7 +17,7 @@ func _ready():
 
 	await get_tree().create_timer(0.1).timeout
 
-	self.GAME_START.emit()
+	EventBus.GAME_START.emit()
 
 
 func end_game() -> void:

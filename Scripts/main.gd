@@ -1,7 +1,5 @@
 class_name Main extends Node
 
-signal POWERUP_1_ACTIVATE
-
 @onready var move_timer: MoveTimer = %MoveTimer
 
 @export var follow_camera: Camera2D
@@ -174,7 +172,7 @@ func flip_apples_back() -> void:
 
 
 func flip_apples_temporary(flip_seconds: int) -> void:
-	POWERUP_1_ACTIVATE.emit(flip_seconds)
+	EventBus.POWERUP_1_ACTIVATE.emit(flip_seconds)
 
 
 func get_closest_player_controlled(

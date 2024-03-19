@@ -1,17 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://bung5knnx5cud"]
+[gd_scene load_steps=7 format=3 uid="uid://bung5knnx5cud"]
 
 [ext_resource type="Script" path="res://Scripts/classic.gd" id="1_rch0c"]
 [ext_resource type="Script" path="res://Scripts/main.gd" id="1_uov1u"]
+[ext_resource type="PackedScene" uid="uid://bbgwhsfyw5xdo" path="res://Scenes/classic_death_screen.tscn" id="2_6qh41"]
 [ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="2_rragb"]
 [ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="3_p4ptm"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="3_t4vht"]
 
-[node name="Classic" type="Node" node_paths=PackedStringArray("main_node")]
+[node name="Classic" type="Node"]
 script = ExtResource("1_rch0c")
-classic_death_screen = "res://Scenes/classic_death_screen.tscn"
-main_node = NodePath("Main")
+classic_death_screen = ExtResource("2_6qh41")
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
+unique_name_in_owner = true
 script = ExtResource("1_uov1u")
 follow_camera = NodePath("../Camera2D")
 gamemode_node = NodePath("..")

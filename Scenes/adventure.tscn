@@ -1,17 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://bp7t0beqye1cy"]
+[gd_scene load_steps=7 format=3 uid="uid://bp7t0beqye1cy"]
 
 [ext_resource type="Script" path="res://Scripts/adventure.gd" id="1_h5vo3"]
 [ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="2_1lgb7"]
+[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://Scenes/adventure_death_screen.tscn" id="2_2vmci"]
 [ext_resource type="Script" path="res://Scripts/main.gd" id="2_qgmaq"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="4_1uxk5"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="4_gegtj"]
 
-[node name="Adventure" type="Node" node_paths=PackedStringArray("main_node")]
+[node name="Adventure" type="Node"]
 script = ExtResource("1_h5vo3")
-adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
-main_node = NodePath("Main")
+adventure_death_screen = ExtResource("2_2vmci")
 
 [node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
+unique_name_in_owner = true
 script = ExtResource("2_qgmaq")
 follow_camera = NodePath("../Camera2D2")
 gamemode_node = NodePath("..")
