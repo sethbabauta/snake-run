@@ -25,4 +25,5 @@ autostart = false
 main_node = NodePath("../Main")
 gamemode_node = NodePath("..")
 
-[node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("4_gegtj")]
+main_node = NodePath("../Main")

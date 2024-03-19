@@ -26,7 +26,10 @@ position = Vector2(320, 320)
 
 [node name="CollisionQuery" parent="Camera2D" instance=ExtResource("4_u1v70")]
 
-[node name="GameUI" parent="." instance=ExtResource("5_m1c66")]
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node", "powerup_1_timer") instance=ExtResource("5_m1c66")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+powerup_1_timer = NodePath("../Powerup1Timer")
 
 [node name="Powerup1Timer" type="Timer" parent="."]
 unique_name_in_owner = true

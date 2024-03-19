@@ -1,24 +1,19 @@
-class_name MainUI extends Control
+class_name GameUI extends Control
+
+@export var main_node: Main
+@export var powerup_1_timer: Timer
+
+var powerup_1_text: String = "Powerup: "
+var is_settings_active: bool = false
 
 @onready var pause_dialog: PauseDialog = %PauseDialog
 @onready var settings_dialog: Control = %SettingsDialog
-
-@export var score_label: Label
-@export var snake_length_label: Label
-@export var powerup_1_label: Label
-
-var powerup_1_timer: Timer
-var powerup_1_text: String = "Powerup: "
-var main_node: Main
-var is_settings_active: bool = false
+@onready var score_label: Label = %ScoreLabel
+@onready var snake_length_label: Label = %SnakeLengthLabel
+@onready var powerup_1_label: Label = %Powerup1Label
 
 
 func _ready() -> void:
-	pause_dialog.main_node = main_node
-
-	main_node = get_node("../Main")
-	powerup_1_timer = get_node_or_null("../Powerup1Timer")
-
 	EventBus.game_paused.connect(_on_game_paused)
 	EventBus.settings_toggled.connect(_on_settings_toggled)
 	ScoreKeeper.score_changed.connect(_on_score_changed)

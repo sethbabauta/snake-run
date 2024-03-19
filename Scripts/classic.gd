@@ -19,7 +19,7 @@ func _ready():
 	await get_tree().create_timer(2).timeout
 
 	move_timer.start()
-	EventBus.game_started.emit()
+	EventBus.game_started.emit("Classic")
 
 
 func end_game() -> void:

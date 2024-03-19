@@ -6,21 +6,21 @@ const POWERUP_1_INTERVAL = 30
 
 @export var snakeo_death_screen: PackedScene
 
-var game_ui: MainUI
 var powerup_1_on: bool = false
 var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
-@onready var powerup_1_timer: Timer = %Powerup1Timer
+@onready var game_ui: GameUI = %GameUI
 @onready var main_node: Main = %Main
+@onready var move_timer: MoveTimer = %MoveTimer
+@onready var powerup_1_timer: Timer = %Powerup1Timer
 
 
 func _ready() -> void:
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 	EventBus.powerup_1_activated.connect(_on_powerup_1_activate)
+	EventBus.ate_item.connect(_on_ate_item)
 
-	game_ui = get_node("GameUI")
 	game_ui.powerup_1_label.visible = true
-	powerup_1_timer = get_node("Powerup1Timer")
 
 	temp_apple_flipper_spawner = (
 		ScoreCheckpointSpawner
@@ -32,23 +32,32 @@ func _ready() -> void:
 		)
 	)
 
-	self.main_node.spawn_background()
+	main_node.spawn_background()
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
-	self.main_node.spawn_player_snake(start_position, self.START_LENGTH)
-	self.main_node.spawn_start_barriers()
+	main_node.spawn_player_snake(start_position, START_LENGTH)
+	main_node.spawn_start_barriers()
 
 	await get_tree().create_timer(1).timeout
-	self.main_node.spawn_and_place_object("Apple")
-
+	main_node.spawn_and_place_object("Apple")
 	await get_tree().create_timer(2).timeout
 
-	var move_timer: Timer = get_node("MoveTimer")
 	move_timer.start()
-	EventBus.game_started.emit()
+	EventBus.game_started.emit("Snakeo")
 
 
 func end_game() -> void:
 	get_tree().change_scene_to_packed(snakeo_death_screen)
+
+
+func _on_ate_item(item_name: String) -> void:
+	if item_name == "Apple":
+		pass
+	if item_name == "AppleNoRespawn":
+		pass
+	if item_name == "SlightlyPoisonousApple":
+		pass
+	if item_name == "SlightlyPoisonousAppleNoRespawn":
+		pass
 
 
 func _on_score_changed(score: int) -> void:

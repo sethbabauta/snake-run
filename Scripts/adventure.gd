@@ -51,7 +51,7 @@ func _ready():
 	self.move_timer = get_node("MoveTimer")
 	self.move_timer.start()
 
-	EventBus.game_started.emit()
+	EventBus.game_started.emit("Dungeon")
 
 
 func end_game() -> void:

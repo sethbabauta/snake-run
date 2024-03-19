@@ -26,4 +26,5 @@ position = Vector2(320, 320)
 
 [node name="CollisionQuery" parent="Camera2D" instance=ExtResource("2_rragb")]
 
-[node name="GameUI" parent="." instance=ExtResource("3_t4vht")]
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("3_t4vht")]
+main_node = NodePath("../Main")
