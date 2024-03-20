@@ -21,6 +21,7 @@ var current_level = "Room30.tscn"
 
 func _ready() -> void:
 	EventBus.game_started.connect(_on_game_start)
+	main_node.move_timer.speed_5.connect(_on_move_timer_speed_5)
 
 
 # TODO: Clean this up
@@ -59,6 +60,7 @@ func _on_move_timer_speed_5() -> void:
 		snake_tail_visible = true
 
 	if not snake_heads:
+		print("not snake heads")
 		snap_to_nearest_level()
 		EventBus.level_changed.emit(self.current_level)
 		snake_tail_visible = false

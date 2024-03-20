@@ -1,21 +1,17 @@
 class_name Snakeo extends Node
 
 const START_LENGTH = 3
-const DANGER_INTERVAL = 1
 const POWERUP_1_INTERVAL = 30
 
 @export var snakeo_death_screen: PackedScene
 
-var powerup_1_on: bool = false
 var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
-@onready var game_ui: GameUI = %GameUI
 @onready var main_node: Main = %Main
 
 
 func _ready() -> void:
 	ScoreKeeper.score_changed.connect(_on_score_changed)
-	EventBus.powerup_1_activated.connect(_on_powerup_1_activate)
 	EventBus.ate_item.connect(_on_ate_item)
 
 	temp_apple_flipper_spawner = (
@@ -51,26 +47,12 @@ func _on_ate_item(item_name: String, eater: String) -> void:
 
 	if item_name == "Apple":
 		main_node.spawn_and_place_object("SlightlyPoisonousApple")
-	if item_name == "AppleNoRespawn":
-		pass
-	if item_name == "SlightlyPoisonousApple":
-		pass
 	if item_name == "TempAppleFlipper":
 		ScoreKeeper.add_to_score(10)
 
 
 func _on_score_changed(new_score: int) -> void:
 	temp_apple_flipper_spawner.check_score(new_score)
-
-
-func _on_powerup_1_activate(flip_seconds: int) -> void:
-	if main_node.powerup_1_timer.is_stopped():
-		main_node.flip_apples()
-
-	main_node.powerup_1_timer.start(flip_seconds)
-	await main_node.powerup_1_timer.timeout
-
-	main_node.flip_apples_back()
 
 
 class ScoreCheckpointSpawner:
