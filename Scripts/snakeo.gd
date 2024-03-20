@@ -31,7 +31,6 @@ func _ready() -> void:
 
 	await get_tree().create_timer(1).timeout
 	main_node.spawn_and_place_object("Apple")
-	main_node.spawn_and_place_object("TempAppleFlipper")
 	await get_tree().create_timer(2).timeout
 
 	EventBus.game_started.emit("Snakeo")

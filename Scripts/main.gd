@@ -487,7 +487,7 @@ func _fire_use_item_event() -> void:
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
-func _on_game_start(gamemode_name: String) -> void:
+func _on_game_start(_gamemode_name: String) -> void:
 	move_timer.start()
 
 
