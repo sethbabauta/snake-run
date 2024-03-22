@@ -5,6 +5,8 @@ const START_LENGTH = 3
 @export var adventure_death_screen: PackedScene
 
 @onready var main_node: Main = %Main
+@onready var room_mapper: RoomMapper = %room_mapper
+
 
 # TODO: Clean this up
 var level_start_points = {

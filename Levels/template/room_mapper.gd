@@ -1,4 +1,4 @@
-class_name room_mapper extends Node
+class_name RoomMapper extends Node
 
 @export var rooms: ResourceGroup
 var _rooms: Array[Room]
