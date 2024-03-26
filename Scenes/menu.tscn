@@ -12,6 +12,7 @@ grow_vertical = 2
 script = ExtResource("1_a7i57")
 classic_scene = "res://Scenes/classic.tscn"
 dungeon_scene = "res://Scenes/adventure.tscn"
+legacy_dungeon_scene = "res://Scenes/adventure.tscn"
 snakeo_scene = "res://Scenes/snakeo.tscn"
 demo_scene = "res://Scenes/demo.tscn"
 
@@ -37,6 +38,10 @@ text = "Classic Snake"
 layout_mode = 2
 text = "Snake-o Mode"
 
+[node name="StartDungeonLegacy" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Dungeon Mode (LEGACY)"
+
 [node name="StartDungeon" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Dungeon Mode"
@@ -47,5 +52,6 @@ text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/StartClassic" to="." method="_on_start_classic_pressed"]
 [connection signal="pressed" from="VBoxContainer/StartSnake-oMode" to="." method="_on_start_snakeo_pressed"]
+[connection signal="pressed" from="VBoxContainer/StartDungeonLegacy" to="." method="_on_start_dungeon_legacy_pressed"]
 [connection signal="pressed" from="VBoxContainer/StartDungeon" to="." method="_on_start_dungeon_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

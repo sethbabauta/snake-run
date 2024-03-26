@@ -16,12 +16,14 @@ func _init(p_main_node: Main) -> void:
 
 
 func setup_level(
-	level: TileMap,
+	tile_map: TileMap,
 	spawn_offset_coordinates_simple: Vector2,
 ) -> void:
+	main_node.spawn_background(spawn_offset_coordinates_simple)
 	for tile in self.tiles:
-		tile.tile_coordinates = level.get_used_cells_by_id(0, 1, tile.atlas_coordinates)
+		tile.tile_coordinates = tile_map.get_used_cells_by_id(0, 1, tile.atlas_coordinates)
 		spawn_tiles(tile, spawn_offset_coordinates_simple)
+
 
 
 func spawn_tiles(

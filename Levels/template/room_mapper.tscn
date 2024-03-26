@@ -5,4 +5,4 @@
 
 [node name="room_mapper" type="Node"]
 script = ExtResource("1_at1im")
-rooms = ExtResource("2_7ws3r")
+rooms_resource_group = ExtResource("2_7ws3r")

@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://dpw256kf8oe84"]
+
+[ext_resource type="Script" path="res://Scripts/dungeon.gd" id="1_pqnat"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="2_ynyrs"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="3_waiuv"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="4_qb1ah"]
+[ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://Levels/template/room_mapper.tscn" id="5_jia6d"]
+
+[node name="Dungeon" type="Node"]
+script = ExtResource("1_pqnat")
+
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("2_ynyrs")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("3_waiuv")]
+unique_name_in_owner = true
+follow_camera = NodePath("../FollowCamera")
+gamemode_node = NodePath("..")
+
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("4_qb1ah")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")
+
+[node name="room_mapper" parent="." instance=ExtResource("5_jia6d")]
+unique_name_in_owner = true
