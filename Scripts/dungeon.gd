@@ -6,16 +6,29 @@ var current_room: Room
 var current_room_neighbors: RoomMapper.RoomNeighbors
 var loaded_rooms: Array[Room]
 
-@onready var main: Main = %Main
+@onready var main_node: Main = %Main
 @onready var room_mapper: RoomMapper = %room_mapper
 
 
 func _ready() -> void:
 	EventBus.level_changed.connect(_on_level_changed)
 
+	_setup_initial_room()
+	EventBus.level_changed.emit("Start")
+
+
+func _load_room(room: Room) -> void:
+	var tile_map: RoomTileMap = room.tile_map.instantiate()
+	room_mapper.add_child(tile_map)
+	var position_offset:= Vector2(room.layout_x * 20, room.layout_y * 20)
+	main_node.level_factory.setup_level(tile_map.room_tile_map, position_offset)
+	loaded_rooms.append(room)
+
+
+func _setup_initial_room() -> void:
 	current_room = room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
 	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-	EventBus.level_changed.emit("Start")
+	_load_room(current_room)
 
 
 func _on_level_changed(direction: String) -> void:
@@ -30,5 +43,26 @@ func _on_level_changed(direction: String) -> void:
 			current_room = current_room_neighbors.left
 
 	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-	# if room & neighbors not loaded, load rooms
+	# if room neighbors not loaded, load rooms
+	if (
+		current_room_neighbors.left not in loaded_rooms
+		and current_room_neighbors.left
+	):
+		_load_room(current_room_neighbors.left)
+	if (
+		current_room_neighbors.right not in loaded_rooms
+		and current_room_neighbors.right
+	):
+		_load_room(current_room_neighbors.right)
+	if (
+		current_room_neighbors.up not in loaded_rooms
+		and current_room_neighbors.up
+	):
+		_load_room(current_room_neighbors.up)
+	if (
+		current_room_neighbors.down not in loaded_rooms
+		and current_room_neighbors.down
+	):
+		_load_room(current_room_neighbors.down)
+
 
