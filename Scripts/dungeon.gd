@@ -2,6 +2,8 @@ class_name Dungeon extends Node
 
 const START_LENGTH = 3
 
+@export var dungeon_death_screen: PackedScene
+
 var current_room: Room
 var current_room_neighbors: RoomMapper.RoomNeighbors
 var loaded_rooms: Array[Room]
@@ -11,11 +13,48 @@ var loaded_rooms: Array[Room]
 
 
 func _ready() -> void:
+	ScoreKeeper.score_changed.connect(_on_score_changed)
 	EventBus.level_changed.connect(_on_level_changed)
-	main_node.move_timer.speed_5.connect(_on_move_timer_speed_5)
 
 	_setup_initial_room()
 	EventBus.level_changed.emit("Start")
+
+	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
+	main_node.spawn_player_snake(start_position, START_LENGTH)
+
+	await get_tree().create_timer(1).timeout
+	main_node.spawn_doors()
+	await get_tree().create_timer(1).timeout
+	main_node.spawn_and_place_object("Apple")
+	await get_tree().create_timer(1).timeout
+
+	EventBus.game_started.emit("Dungeon")
+
+
+func end_game() -> void:
+	get_tree().change_scene_to_packed(dungeon_death_screen)
+
+
+func end_level() -> void:
+	var exclusions: Array[String] = get_current_room_exclusions()
+	main_node.clear_doors(exclusions)
+	await get_tree().create_timer(0.05).timeout
+	main_node.clear_pickups()
+
+
+func get_current_room_exclusions() -> Array[String]:
+	var exclusions: Array[String] = []
+
+	if not current_room_neighbors.up:
+		exclusions.append("N")
+	if not current_room_neighbors.down:
+		exclusions.append("S")
+	if not current_room_neighbors.left:
+		exclusions.append("W")
+	if not current_room_neighbors.right:
+		exclusions.append("E")
+
+	return exclusions
 
 
 func _load_room(room: Room) -> void:
@@ -58,26 +97,21 @@ func _setup_initial_room() -> void:
 
 func _on_level_changed(direction: String) -> void:
 	match direction:
-		"North":
+		"N":
 			current_room = current_room_neighbors.up
-		"South":
+		"S":
 			current_room = current_room_neighbors.down
-		"East":
+		"E":
 			current_room = current_room_neighbors.right
-		"West":
+		"W":
 			current_room = current_room_neighbors.left
 
-	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-	_load_room_neighbors()
+	if current_room:
+		current_room_neighbors = room_mapper.get_room_neighbors(current_room)
+		_load_room_neighbors()
 
 
-
-func _on_move_timer_speed_5() -> void:
-	# check if player head is on screen
-		# no:
-		# check direction and emit level changed
-		# return
-
-	# check if player tail is on screen
-		# emit player fully entered
-	pass
+func _on_score_changed(_new_score: int, changed_by: int) -> void:
+	current_room.current_room_score += changed_by
+	if current_room.get_is_room_complete():
+		end_level()

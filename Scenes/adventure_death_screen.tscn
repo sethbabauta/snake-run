@@ -10,7 +10,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_p3dsk")
-adventure_scene = "res://Scenes/adventure.tscn"
 menu_scene = "res://Scenes/menu.tscn"
 score_label = NodePath("VBoxContainer/Score")
 

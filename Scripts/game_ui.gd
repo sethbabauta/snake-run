@@ -39,7 +39,7 @@ func _on_game_started(gamemode_name: String) -> void:
 		powerup_1_label.visible = true
 
 
-func _on_score_changed(new_score: int) -> void:
+func _on_score_changed(new_score: int, _changed_by: int) -> void:
 	score_label.text = "Score: %d" % new_score
 
 	#var snake_length: int = await main_node.get_snake_length()

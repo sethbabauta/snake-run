@@ -86,8 +86,8 @@ static func apply_shader_to_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
-func clear_doors() -> void:
-	var door_locations: Array = get_simple_door_locations()
+func clear_doors(exclusions: Array = []) -> void:
+	var door_locations: Array = get_simple_door_locations(exclusions)
 	for door_location in door_locations:
 		var door_world_location: Vector2 = Utils.convert_simple_to_world_coordinates(door_location)
 		var door_game_object: GameEngine.GameObject = get_game_object_at_position_or_null(

@@ -111,7 +111,7 @@ func _on_level_changed(level_name: String) -> void:
 		self.main_node.spawn_and_place_object("Apple")
 
 
-func _on_score_changed(score: int) -> void:
+func _on_score_changed(score: int, _changed_by: int) -> void:
 	self.current_level_score += 1
 	if (
 		self.current_level_score >= self.level_score_thresholds[legacy_current_level]

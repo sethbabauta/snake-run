@@ -50,7 +50,7 @@ func _on_ate_item(item_name: String, eater: String) -> void:
 		ScoreKeeper.add_to_score(10)
 
 
-func _on_score_changed(new_score: int) -> void:
+func _on_score_changed(new_score: int, _changed_by: int) -> void:
 	temp_apple_flipper_spawner.check_score(new_score)
 
 
