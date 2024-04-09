@@ -497,7 +497,7 @@ class PlayerControlled:
 			event.parameters["direction"] = "0"
 
 	func _end_game() -> void:
-		self.game_object.main_node.gamemode_node.end_game()
+		game_object.main_node.gamemode_node.end_game()
 
 	func _grow_score() -> void:
 		ScoreKeeper.add_to_score(1)

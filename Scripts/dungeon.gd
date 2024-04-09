@@ -32,13 +32,14 @@ func _ready() -> void:
 
 
 func end_game() -> void:
-	get_tree().change_scene_to_packed(dungeon_death_screen)
+	if get_tree():
+		get_tree().change_scene_to_packed(dungeon_death_screen)
 
 
 func end_level() -> void:
 	var exclusions: Array[String] = get_current_room_exclusions()
 	main_node.clear_doors(exclusions)
-	await get_tree().create_timer(0.05).timeout
+	await get_tree().create_timer(0.1).timeout
 	main_node.clear_pickups()
 
 
@@ -105,6 +106,10 @@ func _on_level_changed(direction: String) -> void:
 			current_room = current_room_neighbors.right
 		"W":
 			current_room = current_room_neighbors.left
+
+	await get_tree().create_timer(1).timeout
+	main_node.spawn_doors()
+	print("level changed. ", direction)
 
 	if current_room:
 		current_room_neighbors = room_mapper.get_room_neighbors(current_room)

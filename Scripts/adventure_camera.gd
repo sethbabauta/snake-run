@@ -33,8 +33,8 @@ func get_direction_from_camera() -> String:
 			return "E"
 		return "W"
 	if direction_to.y > 0:
-		return "N"
-	return "S"
+		return "S"
+	return "N"
 
 
 func snap_to_direction(cardinal_direction: String) -> void:
@@ -49,26 +49,6 @@ func snap_to_direction(cardinal_direction: String) -> void:
 			global_position.x -= ROOM_LENGTH
 
 
-
-# TODO: Clean this up
-func snap_to_nearest_level() -> void:
-	var player_position: Vector2 = player_head.physics_body.global_position
-	var closest_distance: float = Vector2(320, 320).distance_squared_to(player_position)
-	var closest_level_center: Vector2 = Vector2(320, 320)
-	var closest_level_idx = 0
-	for level_idx in self.level_positions.size():
-		var current_distance = self.level_positions.values()[level_idx].distance_squared_to(
-			player_position
-		)
-		if current_distance < closest_distance:
-			closest_distance = current_distance
-			closest_level_center = self.level_positions.values()[level_idx]
-			closest_level_idx = level_idx
-
-	self.global_position = closest_level_center
-	self.current_level = self.level_positions.keys()[closest_level_idx]
-
-
 func _on_game_start(_gamemode_name: String) -> void:
 	player_head = main_node.get_closest_player_controlled(Vector2(0, 0))
 	snake_tail = player_head.components.get("SnakeBody").get_tail_game_object()
@@ -81,11 +61,8 @@ func _on_move_timer_speed_5() -> void:
 	snake_heads += snake_heads_slow
 
 	if not snake_heads:
-		# get direction from camera
 		var cardinal_direction: String = get_direction_from_camera()
-		# move camera
 		snap_to_direction(cardinal_direction)
-		# emit level changed
 		EventBus.level_changed.emit(cardinal_direction)
 		return
 
