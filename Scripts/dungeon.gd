@@ -22,11 +22,7 @@ func _ready() -> void:
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, START_LENGTH)
 
-	await get_tree().create_timer(1).timeout
-	main_node.spawn_doors()
-	await get_tree().create_timer(1).timeout
-	main_node.spawn_and_place_object("Apple")
-	await get_tree().create_timer(1).timeout
+	await get_tree().create_timer(3).timeout
 
 	EventBus.game_started.emit("Dungeon")
 
@@ -107,9 +103,11 @@ func _on_level_changed(direction: String) -> void:
 		"W":
 			current_room = current_room_neighbors.left
 
-	await get_tree().create_timer(1).timeout
-	main_node.spawn_doors()
-	print("level changed. ", direction)
+	if not current_room.get_is_room_complete():
+		await get_tree().create_timer(1).timeout
+		main_node.spawn_doors()
+		await get_tree().create_timer(1).timeout
+		main_node.spawn_and_place_object("Apple")
 
 	if current_room:
 		current_room_neighbors = room_mapper.get_room_neighbors(current_room)

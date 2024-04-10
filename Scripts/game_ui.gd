@@ -30,20 +30,24 @@ func _process(_delta: float) -> void:
 		powerup_1_label.text = POWERUP_1_TEXT + time_left
 
 
+func update_snake_length() -> void:
+	var snake_length: int = await main_node.get_snake_length()
+	snake_length_label.text = "Snake Length: " + str(snake_length)
+
+
 func _on_game_paused(is_paused: bool) -> void:
 	pause_dialog.visible = is_paused
 
 
 func _on_game_started(gamemode_name: String) -> void:
+	update_snake_length()
 	if gamemode_name == "Snakeo":
 		powerup_1_label.visible = true
 
 
 func _on_score_changed(new_score: int, _changed_by: int) -> void:
+	update_snake_length()
 	score_label.text = "Score: %d" % new_score
-
-	#var snake_length: int = await main_node.get_snake_length()
-	#snake_length_label.text = "Snake Length: " + str(snake_length)
 
 
 func _on_settings_toggled() -> void:
