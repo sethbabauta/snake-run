@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/adventure_camera.gd" id="1_43pfi"]
 [ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="2_3jvgn"]
 
-[node name="Camera2D" type="Camera2D"]
+[node name="FollowCamera" type="Camera2D"]
 position = Vector2(320, 320)
 script = ExtResource("1_43pfi")
 

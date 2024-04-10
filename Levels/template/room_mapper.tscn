@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://gfsecx2r220q"]
+
+[ext_resource type="Script" path="res://Levels/template/room_mapper.gd" id="1_at1im"]
+[ext_resource type="Resource" uid="uid://bg4tpu124budu" path="res://Levels/template/all_rooms.tres" id="2_7ws3r"]
+
+[node name="room_mapper" type="Node"]
+script = ExtResource("1_at1im")
+rooms_resource_group = ExtResource("2_7ws3r")

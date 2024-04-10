@@ -1,34 +1,25 @@
 [gd_scene load_steps=6 format=3 uid="uid://bung5knnx5cud"]
 
 [ext_resource type="Script" path="res://Scripts/classic.gd" id="1_rch0c"]
-[ext_resource type="Script" path="res://Scripts/main.gd" id="1_uov1u"]
-[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="2_rragb"]
-[ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="3_p4ptm"]
+[ext_resource type="PackedScene" uid="uid://bbgwhsfyw5xdo" path="res://Scenes/classic_death_screen.tscn" id="2_6qh41"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="3_t4vht"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_f8r07"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="5_c87cb"]
 
-[node name="Classic" type="Node" node_paths=PackedStringArray("main_node")]
+[node name="Classic" type="Node"]
 script = ExtResource("1_rch0c")
-classic_death_screen = "res://Scenes/classic_death_screen.tscn"
-main_node = NodePath("Main")
+classic_death_screen = ExtResource("2_6qh41")
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
-script = ExtResource("1_uov1u")
-follow_camera = NodePath("../Camera2D")
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("3_t4vht")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_f8r07")]
+unique_name_in_owner = true
+follow_camera = NodePath("../FollowCamera")
 gamemode_node = NodePath("..")
 
-[node name="MoveTimer" parent="." instance=ExtResource("3_p4ptm")]
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("5_c87cb")]
 unique_name_in_owner = true
-autostart = false
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(320, 320)
-
-[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("2_rragb")]
-
-[node name="GameUI" parent="." instance=ExtResource("3_t4vht")]
-
-[connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
-[connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
-[connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
-[connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
-[connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")

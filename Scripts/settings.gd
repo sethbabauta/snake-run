@@ -1,9 +1,10 @@
 extends Node
 
-const BLUEPRINTS_PATH = "res://object_blueprints.svg"
+#const BLUEPRINTS_PATH = "res://object_blueprints.svg"
+const BLUEPRINTS_PATH = "res://object_blueprints.xml"
 const SPRITES_PATH = "res://Sprites/"
 const SHADERS_PATH = "res://Shaders/"
-const LEVELS_PATH = "res://Levels/"
+const LEVELS_PATH = "res://Levels/legacy_levels/"
 const PHYSICS_OBJECT_PATH = "res://Scenes/physics_object.tscn"
 const BASE_MOVE_SPEED = 32
 

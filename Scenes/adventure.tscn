@@ -1,34 +1,29 @@
-[gd_scene load_steps=6 format=3 uid="uid://bp7t0beqye1cy"]
+[gd_scene load_steps=7 format=3 uid="uid://bp7t0beqye1cy"]
 
 [ext_resource type="Script" path="res://Scripts/adventure.gd" id="1_h5vo3"]
-[ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="2_1lgb7"]
-[ext_resource type="Script" path="res://Scripts/main.gd" id="2_qgmaq"]
+[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://Scenes/adventure_death_screen.tscn" id="2_2vmci"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="4_1uxk5"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="4_gegtj"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_uci18"]
+[ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://Levels/template/room_mapper.tscn" id="6_wtaic"]
 
-[node name="Adventure" type="Node" node_paths=PackedStringArray("main_node")]
+[node name="Adventure" type="Node"]
 script = ExtResource("1_h5vo3")
-adventure_death_screen = "res://Scenes/adventure_death_screen.tscn"
-main_node = NodePath("Main")
+adventure_death_screen = ExtResource("2_2vmci")
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
-script = ExtResource("2_qgmaq")
-follow_camera = NodePath("../Camera2D2")
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("4_gegtj")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_uci18")]
+unique_name_in_owner = true
+follow_camera = NodePath("../FollowCamera")
 gamemode_node = NodePath("..")
 
-[node name="MoveTimer" parent="." instance=ExtResource("2_1lgb7")]
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("4_1uxk5")]
 unique_name_in_owner = true
-autostart = false
-
-[node name="Camera2D2" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("4_1uxk5")]
 main_node = NodePath("../Main")
 gamemode_node = NodePath("..")
 
-[node name="GameUI" parent="." instance=ExtResource("4_gegtj")]
-
-[connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
-[connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
-[connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
-[connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
-[connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
-[connection signal="SPEED_5" from="MoveTimer" to="Camera2D2" method="_on_move_timer_speed_5"]
+[node name="room_mapper" parent="." instance=ExtResource("6_wtaic")]
+unique_name_in_owner = true

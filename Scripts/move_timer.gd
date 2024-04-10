@@ -1,10 +1,10 @@
 class_name MoveTimer extends Timer
 
-signal SPEED_5
-signal SPEED_4
-signal SPEED_3
-signal SPEED_2
-signal SPEED_1
+signal speed_5
+signal speed_4
+signal speed_3
+signal speed_2
+signal speed_1
 
 var speed_trackers: Array = []
 
@@ -19,19 +19,18 @@ func _init() -> void:
 
 
 func get_speed_signal(speed_number: int) -> Signal:
-		match speed_number:
-			5:
-				return self.SPEED_5
-			4:
-				return self.SPEED_4
-			3:
-				return self.SPEED_3
-			2:
-				return self.SPEED_2
-			1:
-				return self.SPEED_1
-
-		return self.SPEED_3
+	match speed_number:
+		5:
+			return self.speed_5
+		4:
+			return self.speed_4
+		3:
+			return self.speed_3
+		2:
+			return self.speed_2
+		1:
+			return self.speed_1
+	return self.speed_3
 
 
 func _on_timeout() -> void:
@@ -51,7 +50,6 @@ class SpeedTracker:
 	func _init(p_interval_time: float, p_speed_number: int) -> void:
 		interval_time = p_interval_time
 		speed_number = p_speed_number
-
 
 	func increment_interval(delta_time: float) -> bool:
 		self.current_time_elapsed += delta_time

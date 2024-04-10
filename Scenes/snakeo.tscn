@@ -1,37 +1,25 @@
 [gd_scene load_steps=6 format=3 uid="uid://cu6he2syq2bse"]
 
 [ext_resource type="Script" path="res://Scripts/snakeo.gd" id="1_by8yj"]
-[ext_resource type="Script" path="res://Scripts/main.gd" id="2_kvh2w"]
-[ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://Scenes/move_timer.tscn" id="3_sdot4"]
-[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://Scenes/collision_query.tscn" id="4_u1v70"]
+[ext_resource type="PackedScene" uid="uid://bvb4k8h5376d2" path="res://Scenes/snakeo_death_screen.tscn" id="2_54pgv"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_csxen"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="5_1xoox"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="5_m1c66"]
 
-[node name="Snakeo" type="Node" node_paths=PackedStringArray("main_node")]
+[node name="Snakeo" type="Node"]
 script = ExtResource("1_by8yj")
-snakeo_death_screen = "res://Scenes/snakeo_death_screen.tscn"
-main_node = NodePath("Main")
+snakeo_death_screen = ExtResource("2_54pgv")
 
-[node name="Main" type="Node" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node")]
-script = ExtResource("2_kvh2w")
-follow_camera = NodePath("../Camera2D")
+[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("5_m1c66")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_csxen")]
+unique_name_in_owner = true
+follow_camera = NodePath("../FollowCamera")
 gamemode_node = NodePath("..")
 
-[node name="MoveTimer" parent="." instance=ExtResource("3_sdot4")]
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("5_1xoox")]
 unique_name_in_owner = true
-autostart = false
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(320, 320)
-
-[node name="CollisionQuery" parent="Camera2D" instance=ExtResource("4_u1v70")]
-
-[node name="GameUI" parent="." instance=ExtResource("5_m1c66")]
-
-[node name="Powerup1Timer" type="Timer" parent="."]
-one_shot = true
-
-[connection signal="SPEED_1" from="MoveTimer" to="Main" method="_on_move_timer_speed_1"]
-[connection signal="SPEED_2" from="MoveTimer" to="Main" method="_on_move_timer_speed_2"]
-[connection signal="SPEED_3" from="MoveTimer" to="Main" method="_on_move_timer_speed_3"]
-[connection signal="SPEED_4" from="MoveTimer" to="Main" method="_on_move_timer_speed_4"]
-[connection signal="SPEED_5" from="MoveTimer" to="Main" method="_on_move_timer_speed_5"]
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceGroup" load_steps=2 format=3 uid="uid://bg4tpu124budu"]
+
+[ext_resource type="Script" path="res://addons/godot_resource_groups/resource_group.gd" id="1_lt4ew"]
+
+[resource]
+script = ExtResource("1_lt4ew")
+base_folder = "res://Levels/room_resources"
+includes = Array[String](["*.tres"])
+excludes = Array[String]([])
+paths = Array[String](["res://Levels/room_resources/room_0.tres", "res://Levels/room_resources/room_1.tres", "res://Levels/room_resources/room_2.tres"])

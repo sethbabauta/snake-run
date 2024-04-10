@@ -16,23 +16,23 @@ func _init(p_main_node: Main) -> void:
 
 
 func setup_level(
-		level: TileMap,
-		spawn_offset_coordinates_simple: Vector2,
+	tile_map: TileMap,
+	spawn_offset_coordinates_simple: Vector2,
 ) -> void:
+	main_node.spawn_background(spawn_offset_coordinates_simple)
 	for tile in self.tiles:
-		tile.tile_coordinates = level.get_used_cells_by_id(0, 1, tile.atlas_coordinates)
+		tile.tile_coordinates = tile_map.get_used_cells_by_id(0, 1, tile.atlas_coordinates)
 		spawn_tiles(tile, spawn_offset_coordinates_simple)
 
 
+
 func spawn_tiles(
-		tile: BlueprintToLevel,
-		spawn_offset_coordinates: Vector2,
+	tile: BlueprintToLevel,
+	spawn_offset_coordinates: Vector2,
 ) -> void:
 	for coordinate in tile.tile_coordinates:
 		var simple_position: Vector2 = spawn_offset_coordinates + Vector2(coordinate)
-		var spawn_position: Vector2 = (
-				Utils.convert_simple_to_world_coordinates(simple_position)
-		)
+		var spawn_position: Vector2 = Utils.convert_simple_to_world_coordinates(simple_position)
 		self.main_node.spawn_and_place_object(tile.blueprint_name, spawn_position)
 
 
@@ -40,7 +40,6 @@ class BlueprintToLevel:
 	var blueprint_name: String
 	var atlas_coordinates: Vector2i
 	var tile_coordinates: Array
-
 
 	func _init(p_blueprint_name: String, p_atlas_coordinates: Vector2i) -> void:
 		self.blueprint_name = p_blueprint_name

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2rxm4oown5nh"]
+[gd_scene load_steps=3 format=3 uid="uid://c2rxm4oown5nh"]
 
 [ext_resource type="Script" path="res://Scripts/pause_dialog.gd" id="1_prgy2"]
+[ext_resource type="PackedScene" uid="uid://bcwkfdsotaoow" path="res://Scenes/menu.tscn" id="2_tlfog"]
 
 [node name="PauseDialog" type="PanelContainer"]
 anchors_preset = 8
@@ -16,7 +17,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
 script = ExtResource("1_prgy2")
-main_menu_scene = "res://Scenes/menu.tscn"
+main_menu_scene = ExtResource("2_tlfog")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
