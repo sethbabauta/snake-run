@@ -11,10 +11,6 @@
 script = ExtResource("1_pqnat")
 dungeon_death_screen = ExtResource("2_6by23")
 
-[node name="GameUI" parent="." node_paths=PackedStringArray("main_node") instance=ExtResource("2_ynyrs")]
-unique_name_in_owner = true
-main_node = NodePath("../Main")
-
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("3_waiuv")]
 unique_name_in_owner = true
 follow_camera = NodePath("../FollowCamera")
@@ -27,3 +23,9 @@ gamemode_node = NodePath("..")
 
 [node name="room_mapper" parent="." instance=ExtResource("5_jia6d")]
 unique_name_in_owner = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("2_ynyrs")]
+unique_name_in_owner = true
+main_node = NodePath("../../Main")
