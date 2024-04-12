@@ -58,7 +58,7 @@ func _load_room(room: Room) -> void:
 	var room_tile_map: RoomTileMap = room.tile_map.instantiate()
 	room_mapper.add_child(room_tile_map)
 	room_tile_map.visible = false
-	var position_offset:= Vector2(room.layout_x * 20, room.layout_y * 20)
+	var position_offset:= Vector2(room.layout_x * 20, room.layout_y * -20)
 	main_node.level_factory.setup_level(room_tile_map.room_tile_map, position_offset)
 	loaded_rooms.append(room)
 
