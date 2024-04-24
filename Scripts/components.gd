@@ -127,6 +127,18 @@ class AppleFlipTimed:
 class Crown:
 	extends Component
 
+
+	func _init(p_name: String, p_game_object: GameObject = null) -> void:
+		super(p_name, p_game_object)
+		Main.overlay_sprite_on_game_object(
+			Settings.SPRITES_PATH + "get_text.png",
+			game_object,
+			"getIndicator",
+			3,
+			Vector2(0, 0),
+		)
+
+
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
 			self._gain_crown(event)

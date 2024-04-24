@@ -7,5 +7,5 @@
 script = ExtResource("1_euiwk")
 score_threshold = 0
 tile_map = ExtResource("2_fba8k")
-layout_x = 3
+layout_x = -3
 layout_y = 0
