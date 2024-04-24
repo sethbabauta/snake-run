@@ -112,7 +112,7 @@
 </Blueprint>
 
 <Blueprint Name="CrownItem" Inherits="PhysicalObject">
-	<Component Name="Render" texture="crown2.png"/>
+	<Component Name="Render" texture="crown.png"/>
 	<Component Name="Crown"/>
 </Blueprint>
 
