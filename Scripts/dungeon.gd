@@ -103,15 +103,17 @@ func _on_level_changed(direction: String) -> void:
 		"W":
 			current_room = current_room_neighbors.left
 
+	if not current_room:
+		return
+
+	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
+	_load_room_neighbors()
+
 	if not current_room.get_is_room_complete():
 		await get_tree().create_timer(1).timeout
 		main_node.spawn_doors()
 		await get_tree().create_timer(1).timeout
 		main_node.spawn_and_place_object("Apple")
-
-	if current_room:
-		current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-		_load_room_neighbors()
 
 
 func _on_score_changed(_new_score: int, changed_by: int) -> void:

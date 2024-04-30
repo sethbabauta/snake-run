@@ -936,3 +936,8 @@ class SpeedIncreaseAbility:
 					self.game_object,
 				)
 			)
+
+
+class Stairs:
+	extends Component
+	# on eat, don't delete self, check if player has crown and end game if so

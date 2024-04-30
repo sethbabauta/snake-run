@@ -120,3 +120,8 @@
 	<Component Name="Render" texture="item_placeholder.png"/>
 	<Component Name="AppleFlipTimed" flip_seconds="5"/>
 </Blueprint>
+
+<Blueprint Name="DungeonExit" Inherits="PhysicalObject">
+	<Component Name="Render" texture="stairs_up.png"/>
+	<Component Name="Stairs"/>
+</Blueprint>
