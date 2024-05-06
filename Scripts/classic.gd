@@ -20,5 +20,7 @@ func _ready():
 	EventBus.game_started.emit("Classic")
 
 
-func end_game() -> void:
-	get_tree().change_scene_to_packed(classic_death_screen)
+func end_game(won: bool = false) -> void:
+	if not won:
+		get_tree().change_scene_to_packed(classic_death_screen)
+		return

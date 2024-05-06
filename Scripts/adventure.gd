@@ -44,7 +44,7 @@ func _ready():
 	setup_levels()
 
 	await get_tree().create_timer(1).timeout
-	self.main_node.spawn_start_doors()
+	#self.main_node.spawn_start_doors()
 	await get_tree().create_timer(1).timeout
 	self.main_node.spawn_and_place_object("Apple")
 	await get_tree().create_timer(1).timeout

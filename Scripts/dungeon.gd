@@ -3,6 +3,7 @@ class_name Dungeon extends Node
 const START_LENGTH = 3
 
 @export var dungeon_death_screen: PackedScene
+@export var dungeon_win_screen: PackedScene
 
 var current_room: Room
 var current_room_neighbors: RoomMapper.RoomNeighbors
@@ -21,15 +22,22 @@ func _ready() -> void:
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, START_LENGTH)
+	main_node.spawn_and_place_object(
+		"DungeonExit",
+		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
+	)
 
 	await get_tree().create_timer(3).timeout
 
 	EventBus.game_started.emit("Dungeon")
 
 
-func end_game() -> void:
-	if get_tree():
+func end_game(won: bool = false) -> void:
+	if not won:
 		get_tree().change_scene_to_packed(dungeon_death_screen)
+		return
+
+	get_tree().change_scene_to_packed(dungeon_win_screen)
 
 
 func end_level() -> void:

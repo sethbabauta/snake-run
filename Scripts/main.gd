@@ -428,28 +428,6 @@ func spawn_doors() -> void:
 			spawn_and_place_object("Door", world_position)
 
 
-func spawn_start_doors() -> void:
-	var camera_coordinates: Vector2 = follow_camera.global_position
-	var simple_camera_coordinates: Vector2 = Utils.convert_world_to_simple_coordinates(
-		camera_coordinates
-	)
-	var door_positions_south: Array = [
-		simple_camera_coordinates + Vector2(0, 9),
-		simple_camera_coordinates + Vector2(-1, 9),
-	]
-	var door_positions: Array = get_simple_door_locations(["S", "E"])
-
-	for position in door_positions:
-		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not is_position_taken(world_position):
-			spawn_and_place_object("Door", world_position)
-
-	for position in door_positions_south:
-		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not is_position_taken(world_position):
-			spawn_and_place_object("DungeonEntrance", world_position)
-
-
 func spawn_snake_segment(
 	head_game_object: GameEngine.GameObject,
 	spawn_direction: Vector2 = Vector2.DOWN,

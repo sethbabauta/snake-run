@@ -141,7 +141,7 @@ class Crown:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._gain_crown(event)
+			_gain_crown(event)
 
 		return event
 
@@ -154,10 +154,10 @@ class Crown:
 				{"to": eater, "name": "EquippedItem", "offset": Vector2(0, -32)},
 			)
 		)
-		Event.queue_after_effect(self.game_object, new_event, event)
+		Event.queue_after_effect(game_object, new_event, event)
 
+		eater.add_component("Royalty", {})
 		new_event = Event.new("KillSelf")
-		self.game_object.factory_from.notify_subscribers(new_event, "dungeon_entrance")
 
 
 class DeathSpawner:
@@ -198,14 +198,6 @@ class Delicious:
 
 	func _feed_delicious() -> void:
 		ScoreKeeper.add_to_score(1)
-
-
-class DungeonEntrance:
-	extends Component
-
-	func _init(p_name: String, p_game_object: GameObject = null) -> void:
-		super(p_name, p_game_object)
-		self.game_object.factory_from.subscribe(p_game_object, "dungeon_entrance")
 
 
 class EquipabbleItem:
@@ -618,6 +610,21 @@ class Render:
 		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name, 3, offset)
 
 
+class Royalty:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "CheckCrown":
+			_end_game()
+
+		return event
+
+
+	func _end_game() -> void:
+		game_object.main_node.gamemode_node.end_game(true)
+
+
 class SnakeBody:
 	extends Component
 	var next_body: GameObject = null
@@ -940,4 +947,17 @@ class SpeedIncreaseAbility:
 
 class Stairs:
 	extends Component
-	# on eat, don't delete self, check if player has crown and end game if so
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			_check_for_crown(event)
+
+		return event
+
+
+	func _check_for_crown(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		if eater:
+			var new_event := Event.new("CheckCrown")
+			eater.fire_event(new_event)

@@ -36,8 +36,10 @@ func _ready() -> void:
 	EventBus.game_started.emit("Snakeo")
 
 
-func end_game() -> void:
-	get_tree().change_scene_to_packed(snakeo_death_screen)
+func end_game(won: bool = false) -> void:
+	if not won:
+		get_tree().change_scene_to_packed(snakeo_death_screen)
+		return
 
 
 func _on_ate_item(item_name: String, eater: String) -> void:
