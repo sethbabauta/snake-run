@@ -957,6 +957,8 @@ class Stairs:
 
 
 	func _check_for_crown(event: Event) -> void:
+		Event.dequeue_after_effect(event, "KillSelf")
+
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		if eater:
 			var new_event := Event.new("CheckCrown")
