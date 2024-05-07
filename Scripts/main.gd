@@ -364,6 +364,17 @@ func pause_or_play() -> void:
 	EventBus.game_paused.emit(move_timer.paused)
 
 
+func play_scripted_event(
+	event_callable: Callable,
+	callable_args: Dictionary = {},
+) -> void:
+	move_timer.paused = true
+	event_callable.call(callable_args)
+	#TODO: 3 sec countdown w/ visual
+	await get_tree().create_timer(3).timeout
+	move_timer.paused = false
+
+
 static func remove_overlay_sprite_from_physics_body(
 	target: GameEngine.GameObject,
 	sprite_node_name: String,

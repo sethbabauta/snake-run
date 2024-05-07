@@ -127,7 +127,6 @@ class AppleFlipTimed:
 class Crown:
 	extends Component
 
-
 	func _init(p_name: String, p_game_object: GameObject = null) -> void:
 		super(p_name, p_game_object)
 		Main.overlay_sprite_on_game_object(
@@ -158,6 +157,7 @@ class Crown:
 
 		eater.add_component("Royalty", {})
 		new_event = Event.new("KillSelf")
+		EventBus.crown_collected.emit()
 
 
 class DeathSpawner:

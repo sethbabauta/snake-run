@@ -9,6 +9,7 @@ var current_room: Room
 var current_room_neighbors: RoomMapper.RoomNeighbors
 var loaded_rooms: Array[Room]
 
+@onready var follow_camera: FollowCamera = %FollowCamera
 @onready var main_node: Main = %Main
 @onready var room_mapper: RoomMapper = %room_mapper
 
@@ -16,6 +17,7 @@ var loaded_rooms: Array[Room]
 func _ready() -> void:
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 	EventBus.level_changed.connect(_on_level_changed)
+	EventBus.crown_collected.connect(_on_crown_pickup)
 
 	_setup_initial_room()
 	EventBus.level_changed.emit("Start")
@@ -62,6 +64,10 @@ func get_current_room_exclusions() -> Array[String]:
 	return exclusions
 
 
+func _crown_scripted_event(args: Dictionary) -> void:
+	follow_camera.shake_with_noise()
+
+
 func _load_room(room: Room) -> void:
 	var room_tile_map: RoomTileMap = room.tile_map.instantiate()
 	room_mapper.add_child(room_tile_map)
@@ -94,10 +100,8 @@ func _load_room_neighbors() -> void:
 		_load_room(current_room_neighbors.down)
 
 
-func _setup_initial_room() -> void:
-	current_room = room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
-	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-	_load_room(current_room)
+func _on_crown_pickup() -> void:
+	main_node.play_scripted_event(_crown_scripted_event)
 
 
 func _on_level_changed(direction: String) -> void:
@@ -128,3 +132,9 @@ func _on_score_changed(_new_score: int, changed_by: int) -> void:
 	current_room.current_room_score += changed_by
 	if current_room.get_is_room_complete():
 		end_level()
+
+
+func _setup_initial_room() -> void:
+	current_room = room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
+	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
+	_load_room(current_room)

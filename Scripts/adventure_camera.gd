@@ -1,16 +1,44 @@
 class_name FollowCamera extends Camera2D
 
+const NOISE_PERIOD = 2
 const ROOM_LENGTH = 640
+const SHAKE_DECAY_RATE = 4.0
+const SHAKE_SPEED = 5.0
+const SHAKE_STRENGTH = 150.0
 
 @export var main_node: Main
 @export var gamemode_node: Node
 
 var player_head: GameEngine.GameObject
+var noise_idx: float = 0.0
+var shake_strength: float = 0.0
+
+@onready var noise = FastNoiseLite.new()
+@onready var rng = RandomNumberGenerator.new()
+
+
+"""
+Screen shake code comes from theshaggydev on Github:
+https://github.com/theshaggydev/the-shaggy-dev-projects/tree/main/projects/godot-3/screen-shake
+"""
 
 
 func _ready() -> void:
 	EventBus.game_started.connect(_on_game_start)
 	main_node.move_timer.speed_5.connect(_on_move_timer_speed_5)
+
+	rng.randomize()
+	noise.seed = rng.randi()
+	noise.frequency = NOISE_PERIOD
+
+
+func _process(delta: float) -> void:
+	if shake_strength <= 0:
+		return
+
+	shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
+	var shake_offset: Vector2
+	offset = _get_shake_offset(delta, SHAKE_SPEED, shake_strength)
 
 
 func get_direction_from_camera() -> String:
@@ -25,6 +53,10 @@ func get_direction_from_camera() -> String:
 	return "N"
 
 
+func shake_with_noise() -> void:
+	shake_strength = SHAKE_STRENGTH
+
+
 func snap_to_direction(cardinal_direction: String) -> void:
 	match cardinal_direction:
 		"N":
@@ -35,6 +67,14 @@ func snap_to_direction(cardinal_direction: String) -> void:
 			global_position.x += ROOM_LENGTH
 		"W":
 			global_position.x -= ROOM_LENGTH
+
+
+func _get_shake_offset(delta: float, speed: float, strength: float) -> Vector2:
+	noise_idx += delta * speed
+	return Vector2(
+		noise.get_noise_2d(1, noise_idx) * strength,
+		noise.get_noise_2d(100, noise_idx) * strength,
+	)
 
 
 func _on_game_start(_gamemode_name: String) -> void:
