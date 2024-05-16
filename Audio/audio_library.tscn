@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bk3fu16h5e36m"]
+
+[ext_resource type="Script" path="res://Audio/audio_library.gd" id="1_gadbd"]
+[ext_resource type="AudioStream" uid="uid://xpre5dvclwxs" path="res://Audio/earthquake1.wav" id="1_u480s"]
+
+[node name="AudioLibrary" type="Node2D"]
+script = ExtResource("1_gadbd")
+
+[node name="earthquake" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_u480s")

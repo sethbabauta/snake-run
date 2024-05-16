@@ -12,6 +12,7 @@ var loaded_rooms: Array[Room]
 @onready var follow_camera: FollowCamera = %FollowCamera
 @onready var main_node: Main = %Main
 @onready var room_mapper: RoomMapper = %room_mapper
+@onready var game_announcer: GameAnnouncer = %GameAnnouncer
 
 
 func _ready() -> void:
@@ -64,8 +65,13 @@ func get_current_room_exclusions() -> Array[String]:
 	return exclusions
 
 
-func _crown_scripted_event(args: Dictionary) -> void:
+func _crown_scripted_event(_args: Dictionary) -> void:
+	main_node.audio_library.play_sound("earthquake")
 	follow_camera.shake_with_noise()
+	await EventBus.shake_completed
+	game_announcer.announce_message("VIDEO GAME")
+	await EventBus.announcement_completed
+	EventBus.scripted_event_completed.emit()
 
 
 func _load_room(room: Room) -> void:

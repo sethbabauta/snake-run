@@ -11,6 +11,8 @@ var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
+@onready var audio_library: Node2D = %AudioLibrary
+
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
@@ -370,8 +372,7 @@ func play_scripted_event(
 ) -> void:
 	move_timer.paused = true
 	event_callable.call(callable_args)
-	#TODO: 3 sec countdown w/ visual
-	await get_tree().create_timer(3).timeout
+	await EventBus.scripted_event_completed
 	move_timer.paused = false
 
 

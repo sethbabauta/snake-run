@@ -12,6 +12,7 @@ const SHAKE_STRENGTH = 100.0
 var player_head: GameEngine.GameObject
 var noise_idx: float = 0.0
 var shake_strength: float = 0.0
+var old_shake_strength: float = 0.0
 
 @onready var noise = FastNoiseLite.new()
 @onready var rng = RandomNumberGenerator.new()
@@ -36,8 +37,11 @@ func _process(delta: float) -> void:
 	if shake_strength <= 0:
 		return
 
-	shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
-	var shake_offset: Vector2
+	old_shake_strength = shake_strength
+	shake_strength = Utils.decay_to_zero(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
+	if shake_strength == 0.0 and old_shake_strength != 0.0:
+		EventBus.shake_completed.emit()
+
 	offset = _get_shake_offset(delta, SHAKE_SPEED, shake_strength)
 
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dpw256kf8oe84"]
+[gd_scene load_steps=9 format=3 uid="uid://dpw256kf8oe84"]
 
 [ext_resource type="Script" path="res://Scripts/dungeon.gd" id="1_pqnat"]
 [ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://Scenes/adventure_death_screen.tscn" id="2_6by23"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="3_waiuv"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="4_qb1ah"]
 [ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://Levels/template/room_mapper.tscn" id="5_jia6d"]
+[ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://UI/game_announcer.tscn" id="8_hmc5f"]
 
 [node name="Dungeon" type="Node"]
 script = ExtResource("1_pqnat")
@@ -31,3 +32,8 @@ unique_name_in_owner = true
 [node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("2_ynyrs")]
 unique_name_in_owner = true
 main_node = NodePath("../../Main")
+
+[node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("8_hmc5f")]
+unique_name_in_owner = true
+
+[editable path="CanvasLayer/GameAnnouncer"]
