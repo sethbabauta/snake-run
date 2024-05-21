@@ -30,6 +30,7 @@ func _ready() -> void:
 		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
 	)
 
+	game_announcer.announce_message("3 2 1 GO!", 1.05)
 	await get_tree().create_timer(3).timeout
 
 	EventBus.game_started.emit("Dungeon")
@@ -69,7 +70,7 @@ func _crown_scripted_event(_args: Dictionary) -> void:
 	main_node.audio_library.play_sound("earthquake")
 	follow_camera.shake_with_noise()
 	await EventBus.shake_completed
-	game_announcer.announce_message("VIDEO GAME")
+	game_announcer.announce_message("ESCAPE WITH YOUR LIFE")
 	await EventBus.announcement_completed
 	EventBus.scripted_event_completed.emit()
 
