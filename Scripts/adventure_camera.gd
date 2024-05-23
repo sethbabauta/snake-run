@@ -4,7 +4,7 @@ const NOISE_PERIOD = 2
 const ROOM_LENGTH = 640
 const SHAKE_DECAY_RATE = 2.0
 const SHAKE_SPEED = 5.0
-const SHAKE_STRENGTH = 100.0
+const INITIAL_SHAKE_STRENGTH = 100.0
 
 @export var main_node: Main
 @export var gamemode_node: Node
@@ -58,7 +58,7 @@ func get_direction_from_camera() -> String:
 
 
 func shake_with_noise() -> void:
-	shake_strength = SHAKE_STRENGTH
+	shake_strength = INITIAL_SHAKE_STRENGTH
 
 
 func snap_to_direction(cardinal_direction: String) -> void:
