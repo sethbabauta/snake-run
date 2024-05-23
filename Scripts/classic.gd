@@ -5,6 +5,7 @@ const START_LENGTH = 5
 @export var classic_death_screen: PackedScene
 
 @onready var main_node: Main = %Main
+@onready var game_announcer: GameAnnouncer = %GameAnnouncer
 
 
 func _ready():
@@ -13,6 +14,7 @@ func _ready():
 	main_node.spawn_player_snake(start_position, START_LENGTH)
 	main_node.spawn_start_barriers()
 
+	game_announcer.announce_message("3 2 1 GO!", 1.05)
 	await get_tree().create_timer(1).timeout
 	main_node.spawn_and_place_object("Apple")
 	await get_tree().create_timer(2).timeout
