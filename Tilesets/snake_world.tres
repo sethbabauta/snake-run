@@ -1,9 +1,9 @@
 [gd_resource type="TileSet" load_steps=3 format=3 uid="uid://d28ucsqfxhsrd"]
 
-[ext_resource type="Texture2D" uid="uid://cbxi8pel6qged" path="res://Tilesets/snakerun_tileset_1.png" id="1_wgguh"]
+[ext_resource type="Texture2D" uid="uid://dh4q6jyoj4ko8" path="res://Tilesets/snakerun_ts_2.png" id="1_77bvh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnhrb"]
-texture = ExtResource("1_wgguh")
+texture = ExtResource("1_77bvh")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 1:0/0 = 0
@@ -11,6 +11,8 @@ texture_region_size = Vector2i(32, 32)
 0:1/0 = 0
 1:1/0 = 0
 2:1/0 = 0
+3:0/0 = 0
+3:1/0 = 0
 
 [resource]
 tile_size = Vector2i(32, 32)
