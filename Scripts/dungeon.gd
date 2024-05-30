@@ -30,8 +30,8 @@ func _ready() -> void:
 		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
 	)
 
-	game_announcer.announce_message("3 2 1 GO!", 1.05)
-	await get_tree().create_timer(3).timeout
+	#game_announcer.announce_message("3 2 1 GO!", 1.05)
+	await get_tree().create_timer(2).timeout
 
 	EventBus.game_started.emit("Dungeon")
 
@@ -72,6 +72,12 @@ func _crown_scripted_event(_args: Dictionary) -> void:
 	await EventBus.shake_completed
 	game_announcer.announce_message("ESCAPE WITH YOUR LIFE")
 	await EventBus.announcement_completed
+	EventBus.scripted_event_completed.emit()
+
+
+func _level_change_pause(_args: Dictionary) -> void:
+	game_announcer.announce_message("3 2 1 GO")
+	await get_tree().create_timer(2).timeout
 	EventBus.scripted_event_completed.emit()
 
 
@@ -128,8 +134,9 @@ func _on_level_changed(direction: String) -> void:
 	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
 	_load_room_neighbors()
 
+
+	main_node.play_scripted_event(_level_change_pause)
 	if not current_room.get_is_room_complete():
-		await get_tree().create_timer(1).timeout
 		main_node.spawn_doors()
 		await get_tree().create_timer(1).timeout
 		main_node.spawn_and_place_object("Apple")

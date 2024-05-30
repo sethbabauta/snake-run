@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Room" load_steps=3 format=3 uid="uid://0cmil1h8meui"]
+
+[ext_resource type="Script" path="res://Levels/template/room.gd" id="1_khorh"]
+[ext_resource type="PackedScene" uid="uid://ckefsm8cvucs8" path="res://Levels/room_tilemaps/r42.tscn" id="2_lxkui"]
+
+[resource]
+script = ExtResource("1_khorh")
+score_threshold = 0
+tile_map = ExtResource("2_lxkui")
+layout_x = 2
+layout_y = -2

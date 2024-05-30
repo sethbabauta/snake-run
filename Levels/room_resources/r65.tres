@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Room" load_steps=3 format=3 uid="uid://uonx3hryw5tu"]
+
+[ext_resource type="Script" path="res://Levels/template/room.gd" id="1_1n512"]
+[ext_resource type="PackedScene" uid="uid://crmej0rlo58dr" path="res://Levels/room_tilemaps/r65_apple_flipper.tscn" id="2_ovoy6"]
+
+[resource]
+script = ExtResource("1_1n512")
+score_threshold = 0
+tile_map = ExtResource("2_ovoy6")
+layout_x = 0
+layout_y = -5
