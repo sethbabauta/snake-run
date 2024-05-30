@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Room" load_steps=3 format=3 uid="uid://cjxk7xfqyjdm4"]
+
+[ext_resource type="Script" path="res://Levels/template/room.gd" id="1_ujvfs"]
+[ext_resource type="PackedScene" uid="uid://bujs18f23j2mr" path="res://Levels/room_tilemaps/r1_poison_resist.tscn" id="2_h682f"]
+
+[resource]
+script = ExtResource("1_ujvfs")
+score_threshold = 0
+tile_map = ExtResource("2_h682f")
+layout_x = -15
+layout_y = 0

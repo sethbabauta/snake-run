@@ -7,4 +7,4 @@ script = ExtResource("1_lt4ew")
 base_folder = "res://Levels/room_resources"
 includes = Array[String](["*.tres"])
 excludes = Array[String]([])
-paths = Array[String](["res://Levels/room_resources/room_0.tres", "res://Levels/room_resources/room_1.tres", "res://Levels/room_resources/room_2.tres", "res://Levels/room_resources/room_3.tres", "res://Levels/room_resources/room_4.tres", "res://Levels/room_resources/room_5.tres", "res://Levels/room_resources/room_6.tres", "res://Levels/room_resources/room_7.tres", "res://Levels/room_resources/room_crown.tres"])
+paths = Array[String](["res://Levels/room_resources/r1.tres", "res://Levels/room_resources/r15.tres", "res://Levels/room_resources/r2.tres", "res://Levels/room_resources/r22.tres", "res://Levels/room_resources/r23.tres", "res://Levels/room_resources/r24.tres", "res://Levels/room_resources/r3.tres", "res://Levels/room_resources/r30.tres", "res://Levels/room_resources/r4.tres", "res://Levels/room_resources/r5.tres", "res://Levels/room_resources/r6.tres", "res://Levels/room_resources/r7.tres", "res://Levels/room_resources/r8.tres", "res://Levels/room_resources/r9.tres"])
