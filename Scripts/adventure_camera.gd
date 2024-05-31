@@ -1,10 +1,11 @@
 class_name FollowCamera extends Camera2D
 
+const INITIAL_SHAKE_STRENGTH = 100.0
 const NOISE_PERIOD = 2
 const ROOM_LENGTH = 640
+const RESPAWN_POINT = Vector2(320, 320)
 const SHAKE_DECAY_RATE = 2.0
 const SHAKE_SPEED = 5.0
-const INITIAL_SHAKE_STRENGTH = 100.0
 
 @export var main_node: Main
 @export var gamemode_node: Node
@@ -26,6 +27,7 @@ https://github.com/theshaggydev/the-shaggy-dev-projects/tree/main/projects/godot
 
 func _ready() -> void:
 	EventBus.game_started.connect(_on_game_start)
+	EventBus.player_respawned.connect(_on_respawn)
 	main_node.move_timer.speed_5.connect(_on_move_timer_speed_5)
 
 	rng.randomize()
@@ -82,7 +84,7 @@ func _get_shake_offset(delta: float, speed: float, strength: float) -> Vector2:
 
 
 func _on_game_start(_gamemode_name: String) -> void:
-	player_head = main_node.get_closest_player_controlled(Vector2(0, 0))
+	player_head = main_node.get_closest_player_controlled(Vector2.ZERO)
 
 
 func _on_move_timer_speed_5() -> void:
@@ -94,3 +96,9 @@ func _on_move_timer_speed_5() -> void:
 		var cardinal_direction: String = get_direction_from_camera()
 		snap_to_direction(cardinal_direction)
 		EventBus.level_changed.emit(cardinal_direction)
+
+
+func _on_respawn() -> void:
+	player_head = main_node.get_closest_player_controlled(Vector2.ZERO)
+	global_position = RESPAWN_POINT
+	EventBus.level_changed.emit("Start")

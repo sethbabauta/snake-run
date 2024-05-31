@@ -156,7 +156,6 @@ class Crown:
 		Event.queue_after_effect(game_object, new_event, event)
 
 		eater.add_component("Royalty", {})
-		new_event = Event.new("KillSelf")
 		EventBus.crown_collected.emit()
 
 
@@ -254,6 +253,42 @@ class EquipabbleItem:
 		for component_name in self.components_to_inherit:
 			self.game_object.queue_remove_component(component_name)
 		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+
+
+class ExtraLife:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Die":
+			_spawn_new_player(event)
+
+		return event
+
+
+	func _spawn_new_player(event: Event) -> void:
+		var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(
+			Vector2(9, 9)
+		)
+		var start_length: int = game_object.main_node.gamemode_node.START_LENGTH
+		game_object.main_node.spawn_player_snake(start_position, start_length)
+		game_object.remove_component("ExtraLife")
+
+
+class ExtraLifeItem:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			_gain_extra_life(event)
+
+		return event
+
+
+	func _gain_extra_life(event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		eater.add_component("ExtraLife", {})
 
 
 class InventorySlot:
@@ -501,7 +536,7 @@ class PlayerControlled:
 			event.parameters["direction"] = "0"
 
 	func _end_game() -> void:
-		game_object.main_node.gamemode_node.end_game()
+		game_object.main_node.end_game_soon()
 
 	func _grow_score() -> void:
 		ScoreKeeper.add_to_score(1)

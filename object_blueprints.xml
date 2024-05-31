@@ -125,3 +125,8 @@
 	<Component Name="Render" texture="stairs_up.png"/>
 	<Component Name="Stairs"/>
 </Blueprint>
+
+<Blueprint Name="ExtraLifeItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="ExtraLifeItem"/>
+</Blueprint>

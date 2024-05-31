@@ -88,6 +88,15 @@ static func apply_shader_to_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
+func check_is_player_alive() -> bool:
+	var player_positions: Array = game_object_factory.subscribe_lists["player_controlled"]
+	var is_player_alive: bool = false
+	if player_positions.size() > 0:
+		is_player_alive = true
+
+	return is_player_alive
+
+
 func clear_doors(exclusions: Array = []) -> void:
 	var door_locations: Array = get_simple_door_locations(exclusions)
 	for door_location in door_locations:
@@ -141,6 +150,17 @@ func delete_and_replace(
 	var object_position: Vector2 = object_to_delete.physics_body.global_position
 	object_to_delete.delete_self()
 	spawn_and_place_object(name_of_replacement, object_position)
+
+
+func end_game_soon() -> void:
+	move_timer.paused = true
+	await get_tree().create_timer(3).timeout
+
+	if not check_is_player_alive():
+		gamemode_node.end_game()
+		return
+
+	EventBus.player_respawned.emit()
 
 
 func fire_delayed_event(
