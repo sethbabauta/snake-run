@@ -74,3 +74,5 @@ offset_bottom = 106.5
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
+
+[editable path="PauseDialog"]

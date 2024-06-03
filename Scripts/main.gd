@@ -172,19 +172,28 @@ func fire_delayed_event(
 	target.fire_event(event)
 
 
-func flip_apples() -> void:
+func flip_apples(nutritious: bool = false) -> void:
+	print("flipping mate")
 	var nutritious_apples: Array = get_game_objects_of_name("Apple")
 	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousApple")
 
 	for nutritious_apple in nutritious_apples:
 		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
 
+	var flip_to: String = "AppleNoRespawn"
+	if nutritious:
+		flip_to = "NutritiousAppleNoRespawn"
+
 	for slightly_poisonous_apple in slightly_poisonous_apples:
-		delete_and_replace(slightly_poisonous_apple, "AppleNoRespawn")
+		delete_and_replace(slightly_poisonous_apple, flip_to)
 
 
-func flip_apples_back() -> void:
-	var nutritious_apples: Array = get_game_objects_of_name("AppleNoRespawn")
+func flip_apples_back(nutritious: bool = false) -> void:
+	print("flipping back mate")
+	var flip_to: String = "AppleNoRespawn"
+	if nutritious:
+		flip_to = "NutritiousAppleNoRespawn"
+	var nutritious_apples: Array = get_game_objects_of_name(flip_to)
 	var slightly_poisonous_apples: Array = get_game_objects_of_name(
 		"SlightlyPoisonousAppleNoRespawn"
 	)

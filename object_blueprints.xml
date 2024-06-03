@@ -48,6 +48,11 @@
 	<Component Name="Delicious"/>
 </Blueprint>
 
+<Blueprint Name="NutritiousAppleNoRespawn" Inherits="PhysicalObject">
+	<Component Name="Render" texture="green_apple.png"/>
+	<Component Name="Nutritious"/>
+</Blueprint>
+
 <Blueprint Name="DangerApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="apple.png"/>
 	<Component Name="Nutritious"/>
@@ -129,4 +134,10 @@
 <Blueprint Name="ExtraLifeItem" Inherits="PhysicalObject">
 	<Component Name="Render" texture="item_placeholder.png"/>
 	<Component Name="ExtraLifeItem"/>
+</Blueprint>
+
+<Blueprint Name="SingleUseAppleFlipperItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="SingleUseItem" components_as_string="AppleFlipAbility"/>
+	<Component Name="AppleFlipAbility" flip_seconds="5"/>
 </Blueprint>

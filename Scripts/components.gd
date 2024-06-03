@@ -101,6 +101,25 @@ class AIControlledSimple:
 			Event.queue_after_effect(self.game_object, new_event, event)
 
 
+class AppleFlipAbility:
+	extends Component
+	var flip_seconds: int = 10
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "UseItem":
+			self._flip_apples()
+
+		return event
+
+
+	func _flip_apples() -> void:
+		var main_node: Main = game_object.main_node
+
+		if main_node.powerup_1_timer.is_stopped():
+			main_node.flip_apples(true)
+
+
 class AppleFlipTimed:
 	extends Component
 	var flip_seconds: int = 10
@@ -300,8 +319,15 @@ class InventorySlot:
 			self._equip_item(event)
 		if event.id == "DropItem":
 			self._drop_item()
+		if event.id == "ConsumeItem":
+			_destroy_item()
 
 		return event
+
+
+	func _destroy_item() -> void:
+		self.item_name = ""
+
 
 	func _drop_item() -> void:
 		if self.item_name:
@@ -658,6 +684,70 @@ class Royalty:
 
 	func _end_game() -> void:
 		game_object.main_node.gamemode_node.end_game(true)
+
+
+class SingleUseItem:
+	extends Component
+	var components_as_string: String = ""
+	var components_to_inherit: PackedStringArray = []
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			self._bequeath_components(event)
+			self._make_eater_equip_item(event)
+		if event.id == "ConsumeItem":
+			self._relinquish_components()
+		if event.id == "UseItem":
+			_consume_item(event)
+
+		return event
+
+	func first_time_setup() -> void:
+		components_to_inherit = components_as_string.split(",")
+		components_to_inherit.append("SingleUseItem")
+
+	func _bequeath_components(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		for component_name in self.components_to_inherit:
+			var component_parameters: Dictionary = (
+				self.game_object.components[component_name].initial_parameters
+			)
+			eater.add_component(component_name, component_parameters)
+
+
+	func _consume_item(event: Event) -> void:
+		var new_event := GameEngine.Event.new("ConsumeItem")
+		Event.queue_after_effect(game_object, new_event, event)
+
+
+	func _make_eater_equip_item(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+
+		var new_event := GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+		new_event = (
+			Event
+			. new(
+				"EquipItem",
+				{"item_name": self.game_object.name},
+			)
+		)
+		Event.queue_after_effect(eater, new_event, event)
+
+		new_event = (
+			Event
+			. new(
+				"SendSprite",
+				{"to": eater, "name": "EquippedItem"},
+			)
+		)
+		Event.queue_after_effect(self.game_object, new_event, event)
+
+	func _relinquish_components() -> void:
+		for component_name in self.components_to_inherit:
+			self.game_object.queue_remove_component(component_name)
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
 
 
 class SnakeBody:
