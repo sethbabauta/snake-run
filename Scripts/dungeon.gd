@@ -1,5 +1,6 @@
 class_name Dungeon extends Node
 
+const CROWN_POISON_RATE = 10
 const START_LENGTH = 3
 
 @export var dungeon_death_screen: PackedScene
@@ -8,6 +9,8 @@ const START_LENGTH = 3
 var current_room: Room
 var current_room_neighbors: RoomMapper.RoomNeighbors
 var loaded_rooms: Array[Room]
+var crown_poison_counter: CrownPoisonCounter
+var crown_collected: bool = false
 
 @onready var follow_camera: FollowCamera = %FollowCamera
 @onready var main_node: Main = %Main
@@ -19,8 +22,10 @@ func _ready() -> void:
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 	EventBus.level_changed.connect(_on_level_changed)
 	EventBus.crown_collected.connect(_on_crown_pickup)
+	EventBus.player_moved.connect(_on_player_moved)
 
 	_setup_initial_room()
+	crown_poison_counter = CrownPoisonCounter.new(main_node)
 	EventBus.level_changed.emit("Start")
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
@@ -30,8 +35,8 @@ func _ready() -> void:
 		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
 	)
 
-	#game_announcer.announce_message("3 2 1 GO!", 1.05)
-	await get_tree().create_timer(2).timeout
+	game_announcer.announce_message("3 2 1 GO!", 0.75)
+	await get_tree().create_timer(3).timeout
 
 	EventBus.game_started.emit("Dungeon")
 
@@ -115,6 +120,7 @@ func _load_room_neighbors() -> void:
 
 func _on_crown_pickup() -> void:
 	main_node.play_scripted_event(_crown_scripted_event)
+	crown_collected = true
 
 
 func _on_level_changed(direction: String) -> void:
@@ -135,11 +141,18 @@ func _on_level_changed(direction: String) -> void:
 	_load_room_neighbors()
 
 
-	main_node.play_scripted_event(_level_change_pause)
+	if direction != "Start":
+		main_node.play_scripted_event(_level_change_pause)
+
 	if not current_room.get_is_room_complete():
 		main_node.spawn_doors()
 		await get_tree().create_timer(1).timeout
 		main_node.queue_object_to_spawn("Apple")
+
+
+func _on_player_moved() -> void:
+	if crown_collected:
+		crown_poison_counter.increment_counter()
 
 
 func _on_score_changed(_new_score: int, changed_by: int) -> void:
@@ -152,3 +165,22 @@ func _setup_initial_room() -> void:
 	current_room = room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
 	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
 	_load_room(current_room)
+
+
+class CrownPoisonCounter:
+	var poison_interval: int = CROWN_POISON_RATE
+	var current_interval: int = 0
+	var main_node: Main
+
+	func _init(p_main_node: Main) -> void:
+		main_node = p_main_node
+
+	func increment_counter(amount: int = 1) -> void:
+		current_interval += amount
+		if current_interval >= poison_interval:
+			current_interval = 0
+			var new_event := GameEngine.Event.new(
+				"IngestPoison",
+				{"poison_level": 1},
+			)
+			main_node.game_object_factory.notify_subscribers(new_event, "player_controlled")

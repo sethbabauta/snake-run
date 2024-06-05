@@ -549,7 +549,7 @@ func _spawn_background_tile(position: Vector2) -> void:
 	current_tile.global_position = world_position
 
 
-func _spawn_barrier(position: Vector2) -> void:
+func spawn_barrier(position: Vector2) -> void:
 	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 	var barrier := self.game_object_factory.create_object("Barrier", self)
 	var set_position_event := GameEngine.Event.new("SetPosition", {"position": world_position})
@@ -571,16 +571,16 @@ func _spawn_object_from_queue() -> void:
 
 
 func spawn_start_barriers() -> void:
-	self._spawn_barrier(Vector2(0, 0))
-	self._spawn_barrier(Vector2(self.max_simple_size.x - 1, 0))
-	self._spawn_barrier(Vector2(0, self.max_simple_size.y - 1))
-	self._spawn_barrier(Vector2(self.max_simple_size.x - 1, self.max_simple_size.y - 1))
+	self.spawn_barrier(Vector2(0, 0))
+	self.spawn_barrier(Vector2(self.max_simple_size.x - 1, 0))
+	self.spawn_barrier(Vector2(0, self.max_simple_size.y - 1))
+	self.spawn_barrier(Vector2(self.max_simple_size.x - 1, self.max_simple_size.y - 1))
 
 	for coordinate in range(1, self.max_simple_size.x - 1):
-		self._spawn_barrier(Vector2(coordinate, 0))
-		self._spawn_barrier(Vector2(coordinate, self.max_simple_size.y - 1))
-		self._spawn_barrier(Vector2(0, coordinate))
-		self._spawn_barrier(Vector2(self.max_simple_size.x - 1, coordinate))
+		self.spawn_barrier(Vector2(coordinate, 0))
+		self.spawn_barrier(Vector2(coordinate, self.max_simple_size.y - 1))
+		self.spawn_barrier(Vector2(0, coordinate))
+		self.spawn_barrier(Vector2(self.max_simple_size.x - 1, coordinate))
 
 
 class SpawnJob:

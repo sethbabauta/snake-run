@@ -588,6 +588,7 @@ class PlayerControlled:
 	func _save_direction(event: Event) -> void:
 		last_direction_moved = event.parameters.get("direction")
 		has_moved = true
+		EventBus.player_moved.emit()
 
 		if next_direction_queued != "0":
 			(
