@@ -163,6 +163,7 @@ class Crown:
 
 		return event
 
+
 	func _gain_crown(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		var new_event := (
@@ -332,7 +333,7 @@ class InventorySlot:
 	func _drop_item() -> void:
 		if self.item_name:
 			var drop_position: Vector2 = self._get_drop_position()
-			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position)
+			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position, true)
 			self.item_name = ""
 
 	func _equip_item(event: Event) -> void:
@@ -684,12 +685,28 @@ class Royalty:
 	func fire_event(event: Event) -> Event:
 		if event.id == "CheckCrown":
 			_end_game()
+		if event.id == "DropItem":
+			_ditch_crown()
 
 		return event
 
 
+	func _ditch_crown() -> void:
+		var drop_position: Vector2 = self._get_drop_position()
+		self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
+		self.game_object.queue_remove_component("Royalty")
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+		EventBus.crown_dropped.emit()
+
+
 	func _end_game() -> void:
 		game_object.main_node.gamemode_node.end_game(true)
+
+
+	func _get_drop_position() -> Vector2:
+		var snake_body: Components.SnakeBody = self.game_object.components.get("SnakeBody")
+		var tail: GameEngine.GameObject = snake_body.get_tail_game_object()
+		return tail.physics_body.global_position
 
 
 class SingleUseItem:

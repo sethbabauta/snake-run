@@ -411,9 +411,10 @@ func play_scripted_event(
 func queue_object_to_spawn(
 	object_name: String,
 	position: Vector2 = self.get_random_valid_world_position(),
+	force_preferred_position: bool = false
 ) -> GameEngine.GameObject:
 	var new_object := self.game_object_factory.create_object(object_name, self)
-	var new_spawn_job := SpawnJob.new(new_object, position)
+	var new_spawn_job := SpawnJob.new(new_object, position, force_preferred_position)
 	spawn_queue.append(new_spawn_job)
 
 	return new_object
@@ -461,6 +462,13 @@ func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
 	for x in range(self.max_simple_size.x):
 		for y in range(self.max_simple_size.y):
 			self._spawn_background_tile(Vector2(x, y) + offset)
+
+
+func spawn_barrier(position: Vector2) -> void:
+	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+	var barrier := self.game_object_factory.create_object("Barrier", self)
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": world_position})
+	barrier.fire_event(set_position_event)
 
 
 func spawn_doors() -> void:
@@ -549,25 +557,28 @@ func _spawn_background_tile(position: Vector2) -> void:
 	current_tile.global_position = world_position
 
 
-func spawn_barrier(position: Vector2) -> void:
-	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-	var barrier := self.game_object_factory.create_object("Barrier", self)
-	var set_position_event := GameEngine.Event.new("SetPosition", {"position": world_position})
-	barrier.fire_event(set_position_event)
-
-
 func _spawn_object_from_queue() -> void:
 	if not spawn_queue:
 		return
 
 	var current_spawn_job: SpawnJob = spawn_queue.pop_front()
-	var position = current_spawn_job.preferred_position
-	if is_position_taken(position):
+	var position: Vector2 = current_spawn_job.preferred_position
+	var object_to_spawn: GameEngine.GameObject = current_spawn_job.object_to_spawn
+	if is_position_taken(position) and not current_spawn_job.force_preferred_position:
 		position = get_random_valid_world_position()
 
-	if not is_position_taken(position):
-		var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
-		current_spawn_job.object_to_spawn.fire_event(set_position_event)
+	if is_position_taken(position) and not current_spawn_job.force_preferred_position:
+		var warning: String = (
+			"Attempted to spawn "
+			+ object_to_spawn._to_string()
+			+ " at position "
+			+ str(position)
+		)
+		push_warning(warning)
+		return
+
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
+	object_to_spawn.fire_event(set_position_event)
 
 
 func spawn_start_barriers() -> void:
@@ -586,7 +597,13 @@ func spawn_start_barriers() -> void:
 class SpawnJob:
 	var object_to_spawn: GameEngine.GameObject
 	var preferred_position: Vector2
+	var force_preferred_position: bool
 
-	func _init(p_object_to_spawn: GameEngine.GameObject, p_preferred_position: Vector2) -> void:
+	func _init(
+		p_object_to_spawn: GameEngine.GameObject,
+		p_preferred_position: Vector2,
+		p_force_preferred_position: bool = false
+	) -> void:
 		object_to_spawn = p_object_to_spawn
 		preferred_position = p_preferred_position
+		force_preferred_position = p_force_preferred_position

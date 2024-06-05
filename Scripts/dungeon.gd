@@ -11,6 +11,7 @@ var current_room_neighbors: RoomMapper.RoomNeighbors
 var loaded_rooms: Array[Room]
 var crown_poison_counter: CrownPoisonCounter
 var crown_collected: bool = false
+var crown_collected_count: int = 0
 
 @onready var follow_camera: FollowCamera = %FollowCamera
 @onready var main_node: Main = %Main
@@ -19,10 +20,11 @@ var crown_collected: bool = false
 
 
 func _ready() -> void:
-	ScoreKeeper.score_changed.connect(_on_score_changed)
-	EventBus.level_changed.connect(_on_level_changed)
 	EventBus.crown_collected.connect(_on_crown_pickup)
+	EventBus.crown_dropped.connect(_on_crown_dropped)
+	EventBus.level_changed.connect(_on_level_changed)
 	EventBus.player_moved.connect(_on_player_moved)
+	ScoreKeeper.score_changed.connect(_on_score_changed)
 
 	_setup_initial_room()
 	crown_poison_counter = CrownPoisonCounter.new(main_node)
@@ -118,9 +120,15 @@ func _load_room_neighbors() -> void:
 		_load_room(current_room_neighbors.down)
 
 
+func _on_crown_dropped() -> void:
+	crown_collected = false
+
+
 func _on_crown_pickup() -> void:
-	main_node.play_scripted_event(_crown_scripted_event)
 	crown_collected = true
+	crown_collected_count += 1
+	if crown_collected_count == 1:
+		main_node.play_scripted_event(_crown_scripted_event)
 
 
 func _on_level_changed(direction: String) -> void:
