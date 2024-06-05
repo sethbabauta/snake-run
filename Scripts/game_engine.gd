@@ -160,7 +160,6 @@ class GameObject:
 		self.remove_component_queue.append(component_name)
 
 	func remove_component(component_name: String) -> void:
-		print("removing component: ", component_name)
 		self.remove_component_queue.erase(component_name)
 		if component_name in self.components:
 			self.components[component_name].on_remove()

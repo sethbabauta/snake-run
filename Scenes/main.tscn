@@ -16,6 +16,11 @@ script = ExtResource("2_qbs8a")
 unique_name_in_owner = true
 one_shot = true
 
+[node name="SpawnTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.1
+autostart = true
+
 [node name="AudioLibrary" parent="." instance=ExtResource("3_iyxyh")]
 unique_name_in_owner = true
 

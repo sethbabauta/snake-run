@@ -25,7 +25,7 @@ func _ready() -> void:
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
 	main_node.spawn_player_snake(start_position, START_LENGTH)
-	main_node.spawn_and_place_object(
+	main_node.queue_object_to_spawn(
 		"DungeonExit",
 		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
 	)
@@ -139,7 +139,7 @@ func _on_level_changed(direction: String) -> void:
 	if not current_room.get_is_room_complete():
 		main_node.spawn_doors()
 		await get_tree().create_timer(1).timeout
-		main_node.spawn_and_place_object("Apple")
+		main_node.queue_object_to_spawn("Apple")
 
 
 func _on_score_changed(_new_score: int, changed_by: int) -> void:

@@ -32,7 +32,7 @@ func _ready() -> void:
 
 	game_announcer.announce_message("3 2 1 GO!", 1.05)
 	await get_tree().create_timer(1).timeout
-	main_node.spawn_and_place_object("Apple")
+	main_node.queue_object_to_spawn("Apple")
 	await get_tree().create_timer(2).timeout
 
 	EventBus.game_started.emit("Snakeo")
@@ -49,7 +49,7 @@ func _on_ate_item(item_name: String, eater: String) -> void:
 		return
 
 	if item_name == "Apple":
-		main_node.spawn_and_place_object("SlightlyPoisonousApple")
+		main_node.queue_object_to_spawn("SlightlyPoisonousApple")
 	if item_name == "TempAppleFlipper":
 		ScoreKeeper.add_to_score(10)
 
@@ -77,5 +77,5 @@ class ScoreCheckpointSpawner:
 
 	func check_score(score: int) -> void:
 		while not score < checkpoint:
-			main_node.spawn_and_place_object(item_to_spawn)
+			main_node.queue_object_to_spawn(item_to_spawn)
 			checkpoint += checkpoint_interval

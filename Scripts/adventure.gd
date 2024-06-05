@@ -46,7 +46,7 @@ func _ready():
 	await get_tree().create_timer(1).timeout
 	#self.main_node.spawn_start_doors()
 	await get_tree().create_timer(1).timeout
-	self.main_node.spawn_and_place_object("Apple")
+	self.main_node.queue_object_to_spawn("Apple")
 	await get_tree().create_timer(1).timeout
 
 	EventBus.game_started.emit("Dungeon")
@@ -108,7 +108,7 @@ func _on_level_changed(level_name: String) -> void:
 	if legacy_current_level not in self.cleared_levels:
 		self.main_node.spawn_doors()
 		await get_tree().create_timer(1).timeout
-		self.main_node.spawn_and_place_object("Apple")
+		self.main_node.queue_object_to_spawn("Apple")
 
 
 func _on_score_changed(score: int, _changed_by: int) -> void:

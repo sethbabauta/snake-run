@@ -192,7 +192,7 @@ class DeathSpawner:
 	func _spawn_objects() -> void:
 		names_of_objects = names_as_string.split(",")
 		for names_of_object in names_of_objects:
-			self.game_object.main_node.spawn_and_place_object(names_of_object)
+			self.game_object.main_node.queue_object_to_spawn(names_of_object)
 
 
 class Debugger:
@@ -332,7 +332,7 @@ class InventorySlot:
 	func _drop_item() -> void:
 		if self.item_name:
 			var drop_position: Vector2 = self._get_drop_position()
-			self.game_object.main_node.spawn_and_place_object(item_name, drop_position)
+			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position)
 			self.item_name = ""
 
 	func _equip_item(event: Event) -> void:
@@ -651,16 +651,16 @@ class Render:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "SetPosition":
-			self.game_object.physics_body.global_position = (event.parameters.get("position"))
+			_set_position(event)
 		if event.id == "SendSprite":
-			self._overlay_sprite_on_target(event)
+			_overlay_sprite_on_target(event)
 
 		return event
 
 	func first_time_setup() -> void:
-		self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
-		self.sprite_node.texture = load(self.texture)
-		self.sprite_node.z_index = z_idx
+		sprite_node = game_object.physics_body.get_node("PhysicsObjectSprite")
+		sprite_node.texture = load(texture)
+		sprite_node.z_index = z_idx
 
 	func _overlay_sprite_on_target(event: Event) -> void:
 		var target: GameEngine.GameObject = event.parameters.get("to")
@@ -668,7 +668,12 @@ class Render:
 		var offset := Vector2(0, 0)
 		if event.parameters.get("offset"):
 			offset = event.parameters.get("offset")
-		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name, 3, offset)
+		Main.overlay_sprite_on_game_object(texture, target, sprite_node_name, 3, offset)
+
+
+	func _set_position(event: Event) -> void:
+		game_object.physics_body.global_position = (event.parameters.get("position"))
+		game_object.physics_body.visible = true
 
 
 class Royalty:
@@ -821,13 +826,16 @@ class SnakeBody:
 			)
 
 	func _grow() -> void:
-		if get_length_from_here() == 1:
-			var direction: Vector2 = game_object.physics_body.global_position.direction_to(
-				prev_location
-			)
-			self.game_object.main_node.spawn_snake_segment(self.game_object, direction)
-		else:
-			self.game_object.main_node.spawn_snake_segment(self.game_object, Vector2.ZERO)
+		var tail: GameEngine.GameObject = get_tail_game_object()
+		var spawn_location: Vector2 = tail.physics_body.global_position
+		var direction: Vector2 = game_object.physics_body.global_position.direction_to(
+			prev_location
+		)
+		game_object.main_node.spawn_snake_segment(
+			game_object,
+			spawn_location + direction,
+		)
+
 
 	func _move_forward(event: Event) -> void:
 		self.prev_location = self.game_object.physics_body.global_position

@@ -34,7 +34,7 @@ func spawn_tiles(
 	for coordinate in tile.tile_coordinates:
 		var simple_position: Vector2 = spawn_offset_coordinates + Vector2(coordinate)
 		var spawn_position: Vector2 = Utils.convert_simple_to_world_coordinates(simple_position)
-		self.main_node.spawn_and_place_object(tile.blueprint_name, spawn_position)
+		self.main_node.queue_object_to_spawn(tile.blueprint_name, spawn_position)
 
 
 class BlueprintToLevel:
