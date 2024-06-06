@@ -286,7 +286,7 @@ func get_random_world_position() -> Vector2:
 	return position
 
 
-func get_simple_door_locations(exclusions: Array = []) -> Array:
+func get_simple_door_locations(exclusions: Array[String] = []) -> Array:
 	var camera_coordinates: Vector2 = follow_camera.global_position
 	var simple_camera_coordinates: Vector2 = Utils.convert_world_to_simple_coordinates(
 		camera_coordinates
@@ -373,8 +373,6 @@ func is_position_taken(position: Vector2) -> bool:
 	if position not in taken_positions:
 		is_taken = false
 
-	if is_taken:
-		var o = get_game_object_at_position_or_null(position)
 	return is_taken
 
 
@@ -471,12 +469,13 @@ func spawn_barrier(position: Vector2) -> void:
 	barrier.fire_event(set_position_event)
 
 
-func spawn_doors() -> void:
-	var door_positions: Array = get_simple_door_locations()
+func spawn_doors(exclusions: Array[String] = []) -> void:
+	var door_positions: Array = get_simple_door_locations(exclusions)
 
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 		if not is_position_taken(world_position):
+			print("queueing from spawn_doors at ", world_position)
 			queue_object_to_spawn("Door", world_position)
 
 
@@ -566,6 +565,7 @@ func _spawn_object_from_queue() -> void:
 	var object_to_spawn: GameEngine.GameObject = current_spawn_job.object_to_spawn
 	if is_position_taken(position) and not current_spawn_job.force_preferred_position:
 		position = get_random_valid_world_position()
+		print("tried to spawn ", object_to_spawn, " at ", current_spawn_job.preferred_position, " but it was taken. Spawning at ", position, " instead.")
 
 	if is_position_taken(position) and not current_spawn_job.force_preferred_position:
 		var warning: String = (

@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_nc2u3")
-score_threshold = 0
+score_threshold = 5
 tile_map = ExtResource("2_qvs16")
 layout_x = 0
 layout_y = -3

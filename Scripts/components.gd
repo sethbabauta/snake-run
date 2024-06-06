@@ -281,12 +281,12 @@ class ExtraLife:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Die":
-			_spawn_new_player(event)
+			_spawn_new_player()
 
 		return event
 
 
-	func _spawn_new_player(event: Event) -> void:
+	func _spawn_new_player() -> void:
 		var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(
 			Vector2(9, 9)
 		)
@@ -674,8 +674,9 @@ class Render:
 
 
 	func _set_position(event: Event) -> void:
-		game_object.physics_body.global_position = (event.parameters.get("position"))
-		game_object.physics_body.visible = true
+		if is_instance_valid(game_object.physics_body):
+			game_object.physics_body.global_position = (event.parameters.get("position"))
+			game_object.physics_body.visible = true
 
 
 class Royalty:

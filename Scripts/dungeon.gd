@@ -1,6 +1,6 @@
 class_name Dungeon extends Node
 
-const CROWN_POISON_RATE = 10
+const CROWN_POISON_RATE = 4
 const START_LENGTH = 3
 
 @export var dungeon_death_screen: PackedScene
@@ -153,7 +153,8 @@ func _on_level_changed(direction: String) -> void:
 		main_node.play_scripted_event(_level_change_pause)
 
 	if not current_room.get_is_room_complete():
-		main_node.spawn_doors()
+		var exclusions: Array[String] = get_current_room_exclusions()
+		main_node.spawn_doors(exclusions)
 		await get_tree().create_timer(1).timeout
 		main_node.queue_object_to_spawn("Apple")
 
