@@ -117,7 +117,7 @@ func clear_doors(exclusions: Array = []) -> void:
 
 
 func clear_pickup(pickup_name: String) -> void:
-	var pickups: Array = get_game_objects_of_name(pickup_name)
+	var pickups: Array = await get_game_objects_of_name(pickup_name)
 	for pickup in pickups:
 		pickup.delete_self()
 
@@ -176,8 +176,8 @@ func fire_delayed_event(
 
 
 func flip_apples(nutritious: bool = false) -> void:
-	var nutritious_apples: Array = get_game_objects_of_name("Apple")
-	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousApple")
+	var nutritious_apples: Array = await get_game_objects_of_name("Apple")
+	var slightly_poisonous_apples: Array = await get_game_objects_of_name("SlightlyPoisonousApple")
 
 	for nutritious_apple in nutritious_apples:
 		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
@@ -194,8 +194,8 @@ func flip_apples_back(nutritious: bool = false) -> void:
 	var flip_to: String = "AppleNoRespawn"
 	if nutritious:
 		flip_to = "NutritiousAppleNoRespawn"
-	var nutritious_apples: Array = get_game_objects_of_name(flip_to)
-	var slightly_poisonous_apples: Array = get_game_objects_of_name(
+	var nutritious_apples: Array = await get_game_objects_of_name(flip_to)
+	var slightly_poisonous_apples: Array = await get_game_objects_of_name(
 		"SlightlyPoisonousAppleNoRespawn"
 	)
 
@@ -247,7 +247,7 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 
 
 func get_game_objects_of_name(search_name: String) -> Array:
-	var visible_game_objects: Array = get_visible_game_objects()
+	var visible_game_objects: Array = await get_visible_game_objects()
 	var found_game_objects: Array = []
 	if not visible_game_objects:
 		return found_game_objects
@@ -264,7 +264,7 @@ func get_random_valid_world_position() -> Vector2:
 
 	for try_count in range(1000):
 		position = self.get_random_world_position()
-		if not is_position_taken(position):
+		if not await is_position_taken(position):
 			break
 
 	return position
@@ -328,7 +328,7 @@ func get_snake_length() -> int:
 		return snake_length
 
 	await get_tree().create_timer(0.05).timeout
-	var snake_heads: Array = get_game_objects_of_name("PlayerSnakeHead")
+	var snake_heads: Array = await get_game_objects_of_name("PlayerSnakeHead")
 
 	if snake_heads:
 		var snake_component: Components.SnakeBody = snake_heads[0].components.get("SnakeBody")
@@ -339,6 +339,7 @@ func get_snake_length() -> int:
 
 func get_taken_positions() -> Array:
 	var taken_positions: Array = []
+	await get_tree().physics_frame
 	if self.query_area.has_overlapping_areas():
 		for area in query_area.get_overlapping_areas():
 			taken_positions.append(area.global_position)
@@ -348,6 +349,7 @@ func get_taken_positions() -> Array:
 
 func get_visible_game_objects() -> Array:
 	var game_objects: Array = []
+	await get_tree().physics_frame
 	if not self.query_area.has_overlapping_areas():
 		return game_objects
 
@@ -357,8 +359,8 @@ func get_visible_game_objects() -> Array:
 	return game_objects
 
 
-func is_object_visible(object: GameEngine.GameObject) -> bool:
-	var visible_objects: Array = get_visible_game_objects()
+func get_is_object_visible(object: GameEngine.GameObject) -> bool:
+	var visible_objects: Array = await get_visible_game_objects()
 	var is_visible: bool = false
 
 	if object in visible_objects:
@@ -367,11 +369,15 @@ func is_object_visible(object: GameEngine.GameObject) -> bool:
 	return is_visible
 
 
-func is_position_taken(position: Vector2) -> bool:
-	var taken_positions: Array = get_taken_positions()
+func is_position_taken(position: Vector2, debug: bool = false, debug_from: String = "") -> bool:
+	var taken_positions: Array = await get_taken_positions()
 	var is_taken: bool = true
+
 	if position not in taken_positions:
 		is_taken = false
+
+	if debug:
+		print("debug from: ", debug_from, ", searched position: ", position, ", is taken: ", is_taken, ", taken positions: ", taken_positions)
 
 	return is_taken
 
@@ -408,8 +414,8 @@ func play_scripted_event(
 
 func queue_object_to_spawn(
 	object_name: String,
-	position: Vector2 = self.get_random_valid_world_position(),
-	force_preferred_position: bool = false
+	position: Vector2 = await get_random_valid_world_position(),
+	force_preferred_position: bool = false,
 ) -> GameEngine.GameObject:
 	var new_object := self.game_object_factory.create_object(object_name, self)
 	var new_spawn_job := SpawnJob.new(new_object, position, force_preferred_position)
@@ -474,9 +480,8 @@ func spawn_doors(exclusions: Array[String] = []) -> void:
 
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not is_position_taken(world_position):
-			print("queueing from spawn_doors at ", world_position)
-			queue_object_to_spawn("Door", world_position)
+		if not await is_position_taken(world_position):
+			queue_object_to_spawn("Door", world_position, true)
 
 
 func spawn_snake_segment(
@@ -486,7 +491,7 @@ func spawn_snake_segment(
 	var head_snake_body: Components.SnakeBody = head_game_object.components.get("SnakeBody")
 	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
 
-	var new_snake_body_obj: GameEngine.GameObject = self.queue_object_to_spawn(
+	var new_snake_body_obj: GameEngine.GameObject = await queue_object_to_spawn(
 		"SnakeBody", spawn_position
 	)
 
@@ -498,7 +503,7 @@ func spawn_player_snake(start_position: Vector2, snake_length: int, slow: bool =
 	var snake_type: String = "PlayerSnakeHead"
 	if slow:
 		snake_type = "PlayerSnakeHeadSlow"
-	var snake_head := self.queue_object_to_spawn(snake_type, spawn_position)
+	var snake_head := await queue_object_to_spawn(snake_type, spawn_position)
 
 	for snake_body_idx in range(snake_length - 1):
 		spawn_position = spawn_position + (Vector2.DOWN * Settings.BASE_MOVE_SPEED)
@@ -563,11 +568,10 @@ func _spawn_object_from_queue() -> void:
 	var current_spawn_job: SpawnJob = spawn_queue.pop_front()
 	var position: Vector2 = current_spawn_job.preferred_position
 	var object_to_spawn: GameEngine.GameObject = current_spawn_job.object_to_spawn
-	if is_position_taken(position) and not current_spawn_job.force_preferred_position:
-		position = get_random_valid_world_position()
-		print("tried to spawn ", object_to_spawn, " at ", current_spawn_job.preferred_position, " but it was taken. Spawning at ", position, " instead.")
+	if await is_position_taken(position) and not current_spawn_job.force_preferred_position:
+		position = await get_random_valid_world_position()
 
-	if is_position_taken(position) and not current_spawn_job.force_preferred_position:
+	if await is_position_taken(position) and not current_spawn_job.force_preferred_position:
 		var warning: String = (
 			"Attempted to spawn "
 			+ object_to_spawn._to_string()
@@ -602,7 +606,7 @@ class SpawnJob:
 	func _init(
 		p_object_to_spawn: GameEngine.GameObject,
 		p_preferred_position: Vector2,
-		p_force_preferred_position: bool = false
+		p_force_preferred_position: bool = false,
 	) -> void:
 		object_to_spawn = p_object_to_spawn
 		preferred_position = p_preferred_position

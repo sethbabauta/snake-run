@@ -23,6 +23,7 @@ func _ready() -> void:
 	EventBus.crown_collected.connect(_on_crown_pickup)
 	EventBus.crown_dropped.connect(_on_crown_dropped)
 	EventBus.level_changed.connect(_on_level_changed)
+	EventBus.player_fully_entered.connect(_on_player_fully_entered)
 	EventBus.player_moved.connect(_on_player_moved)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 
@@ -54,7 +55,7 @@ func end_game(won: bool = false) -> void:
 func end_level() -> void:
 	var exclusions: Array[String] = get_current_room_exclusions()
 	main_node.clear_doors(exclusions)
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.5).timeout
 	main_node.clear_pickups()
 
 
@@ -132,6 +133,9 @@ func _on_crown_pickup() -> void:
 
 
 func _on_level_changed(direction: String) -> void:
+	if direction == "ERROR":
+		return
+
 	match direction:
 		"N":
 			current_room = current_room_neighbors.up
@@ -147,7 +151,6 @@ func _on_level_changed(direction: String) -> void:
 
 	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
 	_load_room_neighbors()
-
 
 	if direction != "Start":
 		main_node.play_scripted_event(_level_change_pause)
@@ -168,6 +171,12 @@ func _on_score_changed(_new_score: int, changed_by: int) -> void:
 	current_room.current_room_score += changed_by
 	if current_room.get_is_room_complete():
 		end_level()
+
+
+func _on_player_fully_entered() -> void:
+	await get_tree().create_timer(0.5).timeout
+	var exclusions: Array[String] = get_current_room_exclusions()
+	main_node.spawn_doors(exclusions)
 
 
 func _setup_initial_room() -> void:
