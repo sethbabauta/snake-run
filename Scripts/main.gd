@@ -152,7 +152,9 @@ func delete_and_replace(
 ) -> void:
 	var object_position: Vector2 = object_to_delete.physics_body.global_position
 	object_to_delete.delete_self()
-	queue_object_to_spawn(name_of_replacement, object_position)
+	var new_object := self.game_object_factory.create_object(name_of_replacement, self)
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": object_position})
+	new_object.fire_event(set_position_event)
 
 
 func end_game_soon() -> void:

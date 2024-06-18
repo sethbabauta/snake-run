@@ -155,9 +155,11 @@ func _on_level_changed(direction: String) -> void:
 	if direction != "Start":
 		main_node.play_scripted_event(_level_change_pause)
 
+	print("direction: ", direction, " current room: ", current_room, " is complete: ", current_room.get_is_room_complete())
 	if not current_room.get_is_room_complete():
 		var exclusions: Array[String] = get_current_room_exclusions()
 		main_node.spawn_doors(exclusions)
+		print("just spawned doors. exclusions: ", exclusions)
 		await get_tree().create_timer(1).timeout
 		main_node.queue_object_to_spawn("Apple")
 
@@ -174,9 +176,13 @@ func _on_score_changed(_new_score: int, changed_by: int) -> void:
 
 
 func _on_player_fully_entered() -> void:
-	await get_tree().create_timer(0.5).timeout
-	var exclusions: Array[String] = get_current_room_exclusions()
-	main_node.spawn_doors(exclusions)
+	if not current_room:
+		return
+
+	if not current_room.get_is_room_complete():
+		await get_tree().create_timer(0.5).timeout
+		var exclusions: Array[String] = get_current_room_exclusions()
+		main_node.spawn_doors(exclusions)
 
 
 func _setup_initial_room() -> void:
