@@ -155,11 +155,9 @@ func _on_level_changed(direction: String) -> void:
 	if direction != "Start":
 		main_node.play_scripted_event(_level_change_pause)
 
-	print("direction: ", direction, " current room: ", current_room, " is complete: ", current_room.get_is_room_complete())
 	if not current_room.get_is_room_complete():
 		var exclusions: Array[String] = get_current_room_exclusions()
 		main_node.spawn_doors(exclusions)
-		print("just spawned doors. exclusions: ", exclusions)
 		await get_tree().create_timer(1).timeout
 		main_node.queue_object_to_spawn("Apple")
 

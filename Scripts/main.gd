@@ -486,6 +486,17 @@ func spawn_doors(exclusions: Array[String] = []) -> void:
 			queue_object_to_spawn("Door", world_position, true)
 
 
+func spawn_object_instantly(
+	object_name: String,
+	position: Vector2 = await get_random_valid_world_position(),
+) -> GameEngine.GameObject:
+	var new_object := self.game_object_factory.create_object(object_name, self)
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
+	new_object.fire_event(set_position_event)
+
+	return new_object
+
+
 func spawn_snake_segment(
 	head_game_object: GameEngine.GameObject,
 	spawn_position: Vector2,

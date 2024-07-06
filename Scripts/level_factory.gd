@@ -3,7 +3,7 @@ class_name LevelFactory extends Resource
 var tiles: Array = [
 	BlueprintToLevel.new("Barrier", Vector2i(0, 0)),
 	BlueprintToLevel.new("Apple", Vector2i(1, 0)),
-	BlueprintToLevel.new("SlightlyPoisonousAppleNoRespawn", Vector2i(2, 0)),
+	BlueprintToLevel.new("DungeonApple", Vector2i(2, 0)),
 	BlueprintToLevel.new("CrownItem", Vector2i(3, 0)),
 	BlueprintToLevel.new("ExtraLifeItem", Vector2i(0, 1)),
 	BlueprintToLevel.new("SingleUseAppleFlipperItem", Vector2i(1, 1)),
@@ -37,7 +37,7 @@ func spawn_tiles(
 		if tile.blueprint_name == "Barrier":
 			main_node.spawn_barrier(simple_position)
 		else:
-			self.main_node.queue_object_to_spawn(tile.blueprint_name, spawn_position)
+			self.main_node.spawn_object_instantly(tile.blueprint_name, spawn_position)
 
 
 class BlueprintToLevel:

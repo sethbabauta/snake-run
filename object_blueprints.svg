@@ -75,6 +75,11 @@
 	<Component Name="Poisonous" poison_level="3"/>
 </Blueprint>
 
+<Blueprint Name="DungeonApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="1"/>
+</Blueprint>
+
 <Blueprint Name="DeadlyApple" Inherits="PhysicalObject">
 	<Component Name="Render" texture="poison_apple.png"/>
 	<Component Name="Poisonous" poison_level="5"/>
