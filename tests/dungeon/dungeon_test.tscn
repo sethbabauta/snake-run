@@ -1,0 +1,41 @@
+[gd_scene load_steps=10 format=3 uid="uid://foa8jyv151j4"]
+
+[ext_resource type="Script" path="res://Scripts/dungeon.gd" id="1_0ddpw"]
+[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://Scenes/adventure_death_screen.tscn" id="2_j1g2c"]
+[ext_resource type="PackedScene" uid="uid://ev0uehnt8emi" path="res://Scenes/dungeon_win_screen.tscn" id="3_f7v15"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_87s4q"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="5_tf1lc"]
+[ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://Levels/template/room_mapper.tscn" id="6_slsd0"]
+[ext_resource type="Resource" uid="uid://b1sqxj6bkbh7p" path="res://tests/dungeon/test_levels.tres" id="7_85p4c"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="7_hiyqk"]
+[ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://UI/game_announcer.tscn" id="8_dtuja"]
+
+[node name="DungeonTest" type="Node"]
+script = ExtResource("1_0ddpw")
+dungeon_death_screen = ExtResource("2_j1g2c")
+dungeon_win_screen = ExtResource("3_f7v15")
+
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_87s4q")]
+unique_name_in_owner = true
+follow_camera = NodePath("../FollowCamera")
+gamemode_node = NodePath("..")
+
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("5_tf1lc")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")
+
+[node name="room_mapper" parent="." instance=ExtResource("6_slsd0")]
+unique_name_in_owner = true
+rooms_resource_group = ExtResource("7_85p4c")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("7_hiyqk")]
+unique_name_in_owner = true
+main_node = NodePath("../../Main")
+
+[node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("8_dtuja")]
+unique_name_in_owner = true
+
+[editable path="CanvasLayer/GameAnnouncer"]
