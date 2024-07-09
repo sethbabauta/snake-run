@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_gjfbj")
-base_folder = ""
+base_folder = "res://tests/dungeon/dungeon_test_rooms"
 includes = Array[String]([])
 excludes = Array[String]([])
-paths = Array[String]([])
+paths = Array[String](["res://tests/dungeon/dungeon_test_rooms/r1.tres", "res://tests/dungeon/dungeon_test_rooms/r2.tres", "res://tests/dungeon/dungeon_test_rooms/start.tres"])

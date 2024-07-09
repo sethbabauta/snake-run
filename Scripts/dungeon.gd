@@ -178,7 +178,7 @@ func _on_player_fully_entered() -> void:
 		return
 
 	if not current_room.get_is_room_complete():
-		await get_tree().create_timer(0.5).timeout
+		await EventBus.player_moved
 		var exclusions: Array[String] = get_current_room_exclusions()
 		main_node.spawn_doors(exclusions)
 
