@@ -116,20 +116,27 @@ func clear_doors(exclusions: Array = []) -> void:
 		door_game_object.delete_self()
 
 
-func clear_pickup(pickup_name: String) -> void:
+func clear_pickup(pickup_name: String) -> int:
 	var pickups: Array = await get_game_objects_of_name(pickup_name)
+	var pickups_cleared: int = 0
 	for pickup in pickups:
 		pickup.delete_self()
+		pickups_cleared += 1
+
+	return pickups_cleared
 
 
-func clear_pickups() -> void:
+func clear_pickups() -> int:
 	var pickups_to_clear: Array = [
 		"Apple",
 		"PoisonApple",
 	]
 
+	var pickups_cleared: int = 0
 	for pickup_name in pickups_to_clear:
-		clear_pickup(pickup_name)
+		pickups_cleared += await clear_pickup(pickup_name)
+
+	return pickups_cleared
 
 
 func cooldown(
@@ -179,7 +186,7 @@ func fire_delayed_event(
 
 func flip_apples(nutritious: bool = false) -> void:
 	var nutritious_apples: Array = await get_game_objects_of_name("Apple")
-	var slightly_poisonous_apples: Array = await get_game_objects_of_name("SlightlyPoisonousApple")
+	var poisonous_apples: Array = await get_game_objects_of_name("SlightlyPoisonousApple")
 
 	for nutritious_apple in nutritious_apples:
 		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
@@ -188,8 +195,8 @@ func flip_apples(nutritious: bool = false) -> void:
 	if nutritious:
 		flip_to = "NutritiousAppleNoRespawn"
 
-	for slightly_poisonous_apple in slightly_poisonous_apples:
-		delete_and_replace(slightly_poisonous_apple, flip_to)
+	for poisonous_apple in poisonous_apples:
+		delete_and_replace(poisonous_apple, flip_to)
 
 
 func flip_apples_back(nutritious: bool = false) -> void:

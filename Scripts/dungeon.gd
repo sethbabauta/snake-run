@@ -1,6 +1,6 @@
 class_name Dungeon extends Node
 
-const CROWN_POISON_RATE = 4
+const CROWN_POISON_RATE = 20
 const START_LENGTH = 3
 
 @export var dungeon_death_screen: PackedScene
@@ -55,8 +55,14 @@ func end_game(won: bool = false) -> void:
 func end_level() -> void:
 	var exclusions: Array[String] = get_current_room_exclusions()
 	main_node.clear_doors(exclusions)
-	await get_tree().create_timer(0.5).timeout
-	main_node.clear_pickups()
+
+	await EventBus.player_moved
+
+	var pickups_cleared: int = 0
+	var clear_pickup_tries: int = 0
+	while pickups_cleared == 0 and clear_pickup_tries < 10:
+		pickups_cleared += await main_node.clear_pickups()
+		clear_pickup_tries += 1
 
 
 func get_current_room_exclusions() -> Array[String]:
