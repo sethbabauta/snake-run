@@ -847,9 +847,15 @@ class SnakeBody:
 	func _grow() -> void:
 		var tail: GameEngine.GameObject = get_tail_game_object()
 		var spawn_location: Vector2 = tail.physics_body.global_position
-		var direction: Vector2 = game_object.physics_body.global_position.direction_to(
-			prev_location
-		)
+		var direction:= Vector2.ZERO
+
+		# if only 1 segment do not spawn on head
+		if get_length_from_here() == 1:
+			direction = game_object.physics_body.global_position.direction_to(
+				prev_location
+			)
+			direction = direction * Settings.BASE_MOVE_SPEED
+
 		game_object.main_node.spawn_snake_segment(
 			game_object,
 			spawn_location + direction,

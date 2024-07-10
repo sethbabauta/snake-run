@@ -510,7 +510,7 @@ func spawn_snake_segment(
 	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
 
 	var new_snake_body_obj: GameEngine.GameObject = await queue_object_to_spawn(
-		"SnakeBody", spawn_position
+		"SnakeBody", spawn_position, true
 	)
 
 	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
