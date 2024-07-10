@@ -117,7 +117,7 @@ func clear_doors(exclusions: Array = []) -> void:
 
 
 func clear_pickup(pickup_name: String) -> int:
-	var pickups: Array = await get_game_objects_of_name(pickup_name)
+	var pickups: Array[GameEngine.GameObject] = await get_game_objects_of_name(pickup_name)
 	var pickups_cleared: int = 0
 	for pickup in pickups:
 		pickup.delete_self()
@@ -185,38 +185,36 @@ func fire_delayed_event(
 
 
 func flip_apples(nutritious: bool = false) -> void:
-	var nutritious_apples: Array = await get_game_objects_of_name("Apple")
-	var poisonous_apples: Array = await get_game_objects_of_name("SlightlyPoisonousApple")
-
-	for nutritious_apple in nutritious_apples:
-		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
+	flip_objects("Apple", "SlightlyPoisonousAppleNoRespawn")
 
 	var flip_to: String = "AppleNoRespawn"
 	if nutritious:
 		flip_to = "NutritiousAppleNoRespawn"
 
-	for poisonous_apple in poisonous_apples:
-		delete_and_replace(poisonous_apple, flip_to)
+	flip_objects("SlightlyPoisonousApple", flip_to)
+
 
 
 func flip_apples_back(nutritious: bool = false) -> void:
 	var flip_to: String = "AppleNoRespawn"
 	if nutritious:
 		flip_to = "NutritiousAppleNoRespawn"
-	var nutritious_apples: Array = await get_game_objects_of_name(flip_to)
-	var slightly_poisonous_apples: Array = await get_game_objects_of_name(
+	flip_objects(flip_to, "SlightlyPoisonousApple")
+
+	var slightly_poisonous_apples: Array[GameEngine.GameObject] = await get_game_objects_of_name(
 		"SlightlyPoisonousAppleNoRespawn"
 	)
-
-	for nutritious_apple in nutritious_apples:
-		delete_and_replace(nutritious_apple, "SlightlyPoisonousApple")
-
 	if not slightly_poisonous_apples:
 		queue_object_to_spawn("Apple")
 		return
 
-	for slightly_poisonous_apple in slightly_poisonous_apples:
-		delete_and_replace(slightly_poisonous_apple, "Apple")
+	flip_objects("SlightlyPoisonousAppleNoRespawn", "Apple")
+
+
+func flip_objects(target_name: String, flip_to: String) -> void:
+	var target_objects: Array[GameEngine.GameObject] = await get_game_objects_of_name(target_name)
+	for target_object in target_objects:
+		delete_and_replace(target_object, flip_to)
 
 
 func get_closest_player_controlled(
@@ -255,9 +253,9 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 	return found_game_object
 
 
-func get_game_objects_of_name(search_name: String) -> Array:
-	var visible_game_objects: Array = await get_visible_game_objects()
-	var found_game_objects: Array = []
+func get_game_objects_of_name(search_name: String) -> Array[GameEngine.GameObject]:
+	var visible_game_objects: Array[GameEngine.GameObject] = await get_visible_game_objects()
+	var found_game_objects: Array[GameEngine.GameObject] = []
 	if not visible_game_objects:
 		return found_game_objects
 
@@ -337,7 +335,7 @@ func get_snake_length() -> int:
 		return snake_length
 
 	await get_tree().create_timer(0.05).timeout
-	var snake_heads: Array = await get_game_objects_of_name("PlayerSnakeHead")
+	var snake_heads: Array[GameEngine.GameObject] = await get_game_objects_of_name("PlayerSnakeHead")
 
 	if snake_heads:
 		var snake_component: Components.SnakeBody = snake_heads[0].components.get("SnakeBody")
@@ -356,8 +354,8 @@ func get_taken_positions() -> Array:
 	return taken_positions
 
 
-func get_visible_game_objects() -> Array:
-	var game_objects: Array = []
+func get_visible_game_objects() -> Array[GameEngine.GameObject]:
+	var game_objects: Array[GameEngine.GameObject] = []
 	await get_tree().physics_frame
 	if not self.query_area.has_overlapping_areas():
 		return game_objects

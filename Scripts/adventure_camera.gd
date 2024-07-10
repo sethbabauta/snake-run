@@ -100,8 +100,8 @@ func _on_level_changed(direction: String) -> void:
 
 
 func _on_move_timer_speed_5() -> void:
-	var snake_heads: Array = await main_node.get_game_objects_of_name("PlayerSnakeHead")
-	var snake_heads_slow: Array = await main_node.get_game_objects_of_name("PlayerSnakeHeadSlow")
+	var snake_heads: Array[GameEngine.GameObject] = await main_node.get_game_objects_of_name("PlayerSnakeHead")
+	var snake_heads_slow: Array[GameEngine.GameObject] = await main_node.get_game_objects_of_name("PlayerSnakeHeadSlow")
 	snake_heads += snake_heads_slow
 
 	if not snake_heads:
