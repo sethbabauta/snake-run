@@ -188,6 +188,11 @@ func _on_player_fully_entered() -> void:
 		var exclusions: Array[String] = get_current_room_exclusions()
 		main_node.spawn_doors(exclusions)
 
+		# workaround for edge case where player clears lvl then fully enters
+		await get_tree().create_timer(5).timeout
+		if current_room.get_is_room_complete():
+			main_node.clear_doors(exclusions)
+
 
 func _setup_initial_room() -> void:
 	current_room = room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))

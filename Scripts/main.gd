@@ -192,6 +192,7 @@ func flip_apples(nutritious: bool = false) -> void:
 		flip_to = "NutritiousAppleNoRespawn"
 
 	flip_objects("SlightlyPoisonousApple", flip_to)
+	flip_objects("DungeonApple", flip_to)
 
 
 
