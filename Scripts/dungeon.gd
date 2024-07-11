@@ -64,6 +64,8 @@ func end_level() -> void:
 		pickups_cleared += await main_node.clear_pickups()
 		clear_pickup_tries += 1
 
+	main_node.play_scripted_event(_level_cleared_event)
+
 
 func get_current_room_exclusions() -> Array[String]:
 	var exclusions: Array[String] = []
@@ -92,6 +94,12 @@ func _crown_scripted_event(_args: Dictionary) -> void:
 func _level_change_pause(_args: Dictionary) -> void:
 	game_announcer.announce_message("3 2 1 GO")
 	await get_tree().create_timer(2).timeout
+	EventBus.scripted_event_completed.emit()
+
+
+func _level_cleared_event(_args: Dictionary) -> void:
+	game_announcer.announce_message("ROOM CLEARED")
+	await get_tree().create_timer(1).timeout
 	EventBus.scripted_event_completed.emit()
 
 
