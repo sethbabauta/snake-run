@@ -64,7 +64,8 @@ func end_level() -> void:
 		pickups_cleared += await main_node.clear_pickups()
 		clear_pickup_tries += 1
 
-	main_node.play_scripted_event(_level_cleared_event)
+	await main_node.play_scripted_event(_level_cleared_event)
+	game_announcer.announce_arrows(exclusions)
 
 
 func get_current_room_exclusions() -> Array[String]:

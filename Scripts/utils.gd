@@ -3,6 +3,15 @@ extends Node
 var rng := RandomNumberGenerator.new()
 
 
+func array_subtract(array_a: Array, array_b: Array) -> Array:
+	var result: Array = array_a.duplicate(true)
+	for element in array_a:
+		if array_b.has(element):
+			result.erase(element)
+
+	return result
+
+
 func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
 	var new_coordinates: Vector2 = (
 		(coordinates.round() * Settings.BASE_MOVE_SPEED)

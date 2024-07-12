@@ -1,22 +1,17 @@
 class_name DungeonArrow extends Control
 
-@onready var middle_c: AudioStreamPlayer = %MiddleC
-@onready var e_note: AudioStreamPlayer = %ENote
-@onready var g_note: AudioStreamPlayer = %GNote
-@onready var high_c: AudioStreamPlayer = %HighC
+@onready var animation_player: AnimationPlayer = %AnimationPlayer
+@onready var texture_rect: TextureRect = %TextureRect
+@onready var beep: AudioStreamPlayer = %Beep
 
 
-func play_middle_c() -> void:
-	middle_c.play()
+func _ready() -> void:
+	texture_rect.visible = false
 
 
-func play_e_note() -> void:
-	e_note.play()
+func play_arrow_animation() -> void:
+	animation_player.play("dungeon_door_arrow")
 
 
-func play_g_note() -> void:
-	g_note.play()
-
-
-func play_high_c() -> void:
-	high_c.play()
+func play_beep() -> void:
+	beep.play()
