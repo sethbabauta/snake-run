@@ -22,6 +22,10 @@ func _process(delta: float) -> void:
 	)
 
 
+func announce_arrows() -> void:
+	pass
+
+
 func announce_message(
 	announce_text: String,
 	time_between_words: float = 0.5,

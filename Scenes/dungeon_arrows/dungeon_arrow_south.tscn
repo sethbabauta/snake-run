@@ -1,0 +1,102 @@
+[gd_scene load_steps=8 format=3 uid="uid://bb0rjfvrl8cqu"]
+
+[ext_resource type="Texture2D" uid="uid://dxq08he1jw1im" path="res://Sprites/gray_arrow2.png" id="1_43m6n"]
+[ext_resource type="Texture2D" uid="uid://dt0cbklfummgr" path="res://Sprites/gray_arrow1.png" id="2_wpcgw"]
+[ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://Audio/g_note.wav" id="3_7n314"]
+
+[sub_resource type="Animation" id="Animation_bpo7q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TextureRect:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_sj7vl"]
+load_path = "res://.godot/imported/gray_arrow1.png-b39563431817861e6a3bd511427e207a.ctex"
+
+[sub_resource type="Animation" id="Animation_x35ju"]
+resource_name = "dungeon_door_arrow_animation"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TextureRect:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TextureRect:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [SubResource("CompressedTexture2D_sj7vl"), ExtResource("1_43m6n"), ExtResource("2_wpcgw")]
+}
+tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Beep")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("3_7n314")
+}],
+"times": PackedFloat32Array(0.2)
+}
+tracks/2/use_blend = true
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_st1kb"]
+_data = {
+"RESET": SubResource("Animation_bpo7q"),
+"dungeon_door_arrow": SubResource("Animation_x35ju")
+}
+
+[node name="DungeonArrowSouth" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_st1kb")
+}
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("2_wpcgw")
+flip_v = true
+
+[node name="Beep" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
