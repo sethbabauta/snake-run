@@ -41,7 +41,7 @@ func _on_game_paused(is_paused: bool) -> void:
 
 func _on_game_started(gamemode_name: String) -> void:
 	update_snake_length()
-	if gamemode_name == "Snakeo":
+	if gamemode_name == "Snakeo" or "Dungeon":
 		powerup_1_label.visible = true
 
 

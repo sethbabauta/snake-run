@@ -1,0 +1,148 @@
+<Blueprint Name="PhysicalObject">
+	<Component Name="PhysicsBody" priority="102"/>
+	<Component Name="Render" texture="icon.svg"/>
+</Blueprint>
+
+<Blueprint Name="SnakeBody" Inherits="PhysicalObject">
+	<Component Name="Render" texture="snake.png" z_idx="1"/>
+	<Component Name="SnakeBody"/>
+	<Component Name="Poisonous"/>
+</Blueprint>
+
+<Blueprint Name="PlayerSnakeHead" Inherits="SnakeBody">
+	<Component Name="PlayerControlled" priority="102"/>
+	<Component Name="Movable" speed="3" direction="N" priority="99"/>
+	<Component Name="InventorySlot"/>
+</Blueprint>
+
+<Blueprint Name="PlayerSnakeHeadSlow" Inherits="SnakeBody">
+	<Component Name="PlayerControlled" priority="102"/>
+	<Component Name="Movable" speed="2" direction="N" priority="99"/>
+	<Component Name="InventorySlot"/>
+</Blueprint>
+
+<Blueprint Name="Barrier" Inherits="PhysicalObject">
+	<Component Name="Render" texture="barrier.png" z_idx="2"/>
+	<Component Name="Poisonous"/>
+</Blueprint>
+
+<Blueprint Name="Door" Inherits="PhysicalObject">
+	<Component Name="Render" texture="barrier.png" z_idx="2"/>
+	<Component Name="Poisonous"/>
+</Blueprint>
+
+<Blueprint Name="DungeonEntrance" Inherits="PhysicalObject">
+	<Component Name="Render" texture="barrier.png" z_idx="2"/>
+	<Component Name="Poisonous"/>
+	<Component Name="DungeonEntrance"/>
+</Blueprint>
+
+<Blueprint Name="Apple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="apple.png"/>
+	<Component Name="Nutritious"/>
+	<Component Name="DeathSpawner" names_as_string="Apple"/>
+</Blueprint>
+
+<Blueprint Name="AppleNoRespawn" Inherits="PhysicalObject">
+	<Component Name="Render" texture="green_apple.png"/>
+	<Component Name="Delicious"/>
+</Blueprint>
+
+<Blueprint Name="NutritiousAppleNoRespawn" Inherits="PhysicalObject">
+	<Component Name="Render" texture="green_apple.png"/>
+	<Component Name="Nutritious"/>
+</Blueprint>
+
+<Blueprint Name="DangerApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="apple.png"/>
+	<Component Name="Nutritious"/>
+	<Component Name="DeathSpawner" names_as_string="DangerApple,DeadlyApple"/>
+</Blueprint>
+
+<Blueprint Name="PoisonApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="1"/>
+</Blueprint>
+
+<Blueprint Name="SlightlyPoisonousApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="3"/>
+	<Component Name="DeathSpawner" names_as_string="SlightlyPoisonousApple,SlightlyPoisonousApple"/>
+</Blueprint>
+
+<Blueprint Name="SlightlyPoisonousAppleNoRespawn" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="3"/>
+</Blueprint>
+
+<Blueprint Name="DungeonApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="1"/>
+</Blueprint>
+
+<Blueprint Name="DeadlyApple" Inherits="PhysicalObject">
+	<Component Name="Render" texture="poison_apple.png"/>
+	<Component Name="Poisonous" poison_level="5"/>
+</Blueprint>
+
+<Blueprint Name="SpeedUpItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="EquipabbleItem" components_as_string="SpeedIncrease"/>
+	<Component Name="SpeedIncrease" increase_amount="2"/>
+</Blueprint>
+
+<Blueprint Name="SlowDownItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="EquipabbleItem" components_as_string="SpeedDecrease"/>
+	<Component Name="SpeedDecrease" decrease_amount="1"/>
+</Blueprint>
+
+<Blueprint Name="SpeedUpAbilityItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="EquipabbleItem" components_as_string="SpeedIncreaseAbility"/>
+	<Component Name="SpeedIncreaseAbility" increase_amount="2" cooldown_duration="3"/>
+</Blueprint>
+
+<Blueprint Name="SlowDownAbilityItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="EquipabbleItem" components_as_string="SpeedDecreaseAbility"/>
+	<Component Name="SpeedDecreaseAbility" decrease_amount="1" cooldown_duration="10" ability_duration="10"/>
+</Blueprint>
+
+<Blueprint Name="PoisonResistanceItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder2.png"/>
+	<Component Name="EquipabbleItem" components_as_string="PoisonResistance"/>
+	<Component Name="PoisonResistance" priority="101"/>
+</Blueprint>
+
+<Blueprint Name="ActiveCamoItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder2.png"/>
+	<Component Name="EquipabbleItem" components_as_string="ActiveCamoAbility"/>
+	<Component Name="ActiveCamoAbility" cooldown_duration="7" ability_duration="3"/>
+</Blueprint>
+
+<Blueprint Name="CrownItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="crown.png"/>
+	<Component Name="Crown"/>
+</Blueprint>
+
+<Blueprint Name="TempAppleFlipper" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="AppleFlipTimed" flip_seconds="5"/>
+</Blueprint>
+
+<Blueprint Name="DungeonExit" Inherits="PhysicalObject">
+	<Component Name="Render" texture="stairs_up.png"/>
+	<Component Name="Stairs"/>
+</Blueprint>
+
+<Blueprint Name="ExtraLifeItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="ExtraLifeItem"/>
+</Blueprint>
+
+<Blueprint Name="SingleUseAppleFlipperItem" Inherits="PhysicalObject">
+	<Component Name="Render" texture="item_placeholder.png"/>
+	<Component Name="SingleUseItem" components_as_string="AppleFlipAbility"/>
+	<Component Name="AppleFlipAbility" flip_seconds="5"/>
+</Blueprint>

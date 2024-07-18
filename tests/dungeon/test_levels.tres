@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceGroup" load_steps=2 format=3 uid="uid://b1sqxj6bkbh7p"]
+
+[ext_resource type="Script" path="res://addons/godot_resource_groups/resource_group.gd" id="1_gjfbj"]
+
+[resource]
+script = ExtResource("1_gjfbj")
+base_folder = "res://tests/dungeon/dungeon_test_rooms"
+includes = Array[String]([])
+excludes = Array[String]([])
+paths = Array[String](["res://tests/dungeon/dungeon_test_rooms/r1.tres", "res://tests/dungeon/dungeon_test_rooms/r2.tres", "res://tests/dungeon/dungeon_test_rooms/start.tres"])

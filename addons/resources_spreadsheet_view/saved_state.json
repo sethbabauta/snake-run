@@ -3,10 +3,20 @@
     "res://Levels/room_resources/": {
       "resource_local_to_scene": true,
       "resource_name": true
+    },
+    "res://tests/dungeon/": {
+      "resource_local_to_scene": true,
+      "resource_name": true
+    },
+    "res://tests/dungeon/dungeon_test_rooms/": {
+      "resource_local_to_scene": true,
+      "resource_name": true
     }
   },
   "recent_paths": [
-    "res://Levels/room_resources/"
+    "res://Levels/room_resources/",
+    "res://tests/dungeon/",
+    "res://tests/dungeon/dungeon_test_rooms/"
   ],
   "table_functions": {
     "filter": [

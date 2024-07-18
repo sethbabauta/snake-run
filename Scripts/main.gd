@@ -8,9 +8,13 @@ var level_factory: LevelFactory
 var max_simple_size: Vector2
 var query_area: Area2D
 var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
+var spawn_queue: Array[SpawnJob] = []
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
+@onready var spawn_timer: Timer = %SpawnTimer
+@onready var audio_library: Node2D = %AudioLibrary
+
 
 func _init() -> void:
 	self.game_object_factory = GameEngine.GameObjectFactory.new()
@@ -23,6 +27,7 @@ func _ready() -> void:
 	move_timer.speed_3.connect(_on_move_timer_speed_3)
 	move_timer.speed_4.connect(_on_move_timer_speed_4)
 	move_timer.speed_5.connect(_on_move_timer_speed_5)
+	spawn_timer.timeout.connect(_spawn_object_from_queue)
 	EventBus.game_started.connect(_on_game_start)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
@@ -86,6 +91,15 @@ static func apply_shader_to_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
+func check_is_player_alive() -> bool:
+	var player_positions: Array = game_object_factory.subscribe_lists["player_controlled"]
+	var is_player_alive: bool = false
+	if player_positions.size() > 0:
+		is_player_alive = true
+
+	return is_player_alive
+
+
 func clear_doors(exclusions: Array = []) -> void:
 	var door_locations: Array = get_simple_door_locations(exclusions)
 	for door_location in door_locations:
@@ -102,20 +116,27 @@ func clear_doors(exclusions: Array = []) -> void:
 		door_game_object.delete_self()
 
 
-func clear_pickup(pickup_name: String) -> void:
-	var pickups: Array = get_game_objects_of_name(pickup_name)
+func clear_pickup(pickup_name: String) -> int:
+	var pickups: Array[GameEngine.GameObject] = await get_game_objects_of_name(pickup_name)
+	var pickups_cleared: int = 0
 	for pickup in pickups:
 		pickup.delete_self()
+		pickups_cleared += 1
+
+	return pickups_cleared
 
 
-func clear_pickups() -> void:
+func clear_pickups() -> int:
 	var pickups_to_clear: Array = [
 		"Apple",
 		"PoisonApple",
 	]
 
+	var pickups_cleared: int = 0
 	for pickup_name in pickups_to_clear:
-		clear_pickup(pickup_name)
+		pickups_cleared += await clear_pickup(pickup_name)
+
+	return pickups_cleared
 
 
 func cooldown(
@@ -138,7 +159,20 @@ func delete_and_replace(
 ) -> void:
 	var object_position: Vector2 = object_to_delete.physics_body.global_position
 	object_to_delete.delete_self()
-	spawn_and_place_object(name_of_replacement, object_position)
+	var new_object := self.game_object_factory.create_object(name_of_replacement, self)
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": object_position})
+	new_object.fire_event(set_position_event)
+
+
+func end_game_soon() -> void:
+	move_timer.paused = true
+	await get_tree().create_timer(3).timeout
+
+	if not check_is_player_alive():
+		gamemode_node.end_game()
+		return
+
+	EventBus.player_respawned.emit()
 
 
 func fire_delayed_event(
@@ -150,32 +184,38 @@ func fire_delayed_event(
 	target.fire_event(event)
 
 
-func flip_apples() -> void:
-	var nutritious_apples: Array = get_game_objects_of_name("Apple")
-	var slightly_poisonous_apples: Array = get_game_objects_of_name("SlightlyPoisonousApple")
+func flip_apples(nutritious: bool = false) -> void:
+	flip_objects("Apple", "SlightlyPoisonousAppleNoRespawn")
 
-	for nutritious_apple in nutritious_apples:
-		delete_and_replace(nutritious_apple, "SlightlyPoisonousAppleNoRespawn")
+	var flip_to: String = "AppleNoRespawn"
+	if nutritious:
+		flip_to = "NutritiousAppleNoRespawn"
 
-	for slightly_poisonous_apple in slightly_poisonous_apples:
-		delete_and_replace(slightly_poisonous_apple, "AppleNoRespawn")
+	flip_objects("SlightlyPoisonousApple", flip_to)
+	flip_objects("DungeonApple", flip_to)
 
 
-func flip_apples_back() -> void:
-	var nutritious_apples: Array = get_game_objects_of_name("AppleNoRespawn")
-	var slightly_poisonous_apples: Array = get_game_objects_of_name(
+
+func flip_apples_back(nutritious: bool = false) -> void:
+	var flip_to: String = "AppleNoRespawn"
+	if nutritious:
+		flip_to = "NutritiousAppleNoRespawn"
+	flip_objects(flip_to, "SlightlyPoisonousApple")
+
+	var slightly_poisonous_apples: Array[GameEngine.GameObject] = await get_game_objects_of_name(
 		"SlightlyPoisonousAppleNoRespawn"
 	)
-
-	for nutritious_apple in nutritious_apples:
-		delete_and_replace(nutritious_apple, "SlightlyPoisonousApple")
-
 	if not slightly_poisonous_apples:
-		spawn_and_place_object("Apple")
+		queue_object_to_spawn("Apple")
 		return
 
-	for slightly_poisonous_apple in slightly_poisonous_apples:
-		delete_and_replace(slightly_poisonous_apple, "Apple")
+	flip_objects("SlightlyPoisonousAppleNoRespawn", "Apple")
+
+
+func flip_objects(target_name: String, flip_to: String) -> void:
+	var target_objects: Array[GameEngine.GameObject] = await get_game_objects_of_name(target_name)
+	for target_object in target_objects:
+		delete_and_replace(target_object, flip_to)
 
 
 func get_closest_player_controlled(
@@ -214,9 +254,9 @@ func get_game_object_at_position_or_null(position: Vector2) -> Variant:
 	return found_game_object
 
 
-func get_game_objects_of_name(search_name: String) -> Array:
-	var visible_game_objects: Array = get_visible_game_objects()
-	var found_game_objects: Array = []
+func get_game_objects_of_name(search_name: String) -> Array[GameEngine.GameObject]:
+	var visible_game_objects: Array[GameEngine.GameObject] = await get_visible_game_objects()
+	var found_game_objects: Array[GameEngine.GameObject] = []
 	if not visible_game_objects:
 		return found_game_objects
 
@@ -232,7 +272,7 @@ func get_random_valid_world_position() -> Vector2:
 
 	for try_count in range(1000):
 		position = self.get_random_world_position()
-		if not is_position_taken(position):
+		if not await is_position_taken(position):
 			break
 
 	return position
@@ -254,7 +294,7 @@ func get_random_world_position() -> Vector2:
 	return position
 
 
-func get_simple_door_locations(exclusions: Array = []) -> Array:
+func get_simple_door_locations(exclusions: Array[String] = []) -> Array:
 	var camera_coordinates: Vector2 = follow_camera.global_position
 	var simple_camera_coordinates: Vector2 = Utils.convert_world_to_simple_coordinates(
 		camera_coordinates
@@ -296,7 +336,7 @@ func get_snake_length() -> int:
 		return snake_length
 
 	await get_tree().create_timer(0.05).timeout
-	var snake_heads: Array = get_game_objects_of_name("PlayerSnakeHead")
+	var snake_heads: Array[GameEngine.GameObject] = await get_game_objects_of_name("PlayerSnakeHead")
 
 	if snake_heads:
 		var snake_component: Components.SnakeBody = snake_heads[0].components.get("SnakeBody")
@@ -307,6 +347,7 @@ func get_snake_length() -> int:
 
 func get_taken_positions() -> Array:
 	var taken_positions: Array = []
+	await get_tree().physics_frame
 	if self.query_area.has_overlapping_areas():
 		for area in query_area.get_overlapping_areas():
 			taken_positions.append(area.global_position)
@@ -314,8 +355,9 @@ func get_taken_positions() -> Array:
 	return taken_positions
 
 
-func get_visible_game_objects() -> Array:
-	var game_objects: Array = []
+func get_visible_game_objects() -> Array[GameEngine.GameObject]:
+	var game_objects: Array[GameEngine.GameObject] = []
+	await get_tree().physics_frame
 	if not self.query_area.has_overlapping_areas():
 		return game_objects
 
@@ -325,8 +367,8 @@ func get_visible_game_objects() -> Array:
 	return game_objects
 
 
-func is_object_visible(object: GameEngine.GameObject) -> bool:
-	var visible_objects: Array = get_visible_game_objects()
+func get_is_object_visible(object: GameEngine.GameObject) -> bool:
+	var visible_objects: Array = await get_visible_game_objects()
 	var is_visible: bool = false
 
 	if object in visible_objects:
@@ -335,11 +377,15 @@ func is_object_visible(object: GameEngine.GameObject) -> bool:
 	return is_visible
 
 
-func is_position_taken(position: Vector2) -> bool:
-	var taken_positions: Array = get_taken_positions()
+func is_position_taken(position: Vector2, debug: bool = false, debug_from: String = "") -> bool:
+	var taken_positions: Array = await get_taken_positions()
 	var is_taken: bool = true
+
 	if position not in taken_positions:
 		is_taken = false
+
+	if debug:
+		print("debug from: ", debug_from, ", searched position: ", position, ", is taken: ", is_taken, ", taken positions: ", taken_positions)
 
 	return is_taken
 
@@ -362,6 +408,28 @@ static func overlay_sprite_on_game_object(
 func pause_or_play() -> void:
 	move_timer.paused = not move_timer.paused
 	EventBus.game_paused.emit(move_timer.paused)
+
+
+func play_scripted_event(
+	event_callable: Callable,
+	callable_args: Dictionary = {},
+) -> void:
+	move_timer.paused = true
+	event_callable.call(callable_args)
+	await EventBus.scripted_event_completed
+	move_timer.paused = false
+
+
+func queue_object_to_spawn(
+	object_name: String,
+	position: Vector2 = await get_random_valid_world_position(),
+	force_preferred_position: bool = false,
+) -> GameEngine.GameObject:
+	var new_object := self.game_object_factory.create_object(object_name, self)
+	var new_spawn_job := SpawnJob.new(new_object, position, force_preferred_position)
+	spawn_queue.append(new_spawn_job)
+
+	return new_object
 
 
 static func remove_overlay_sprite_from_physics_body(
@@ -402,9 +470,31 @@ static func remove_shader_from_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
-func spawn_and_place_object(
+func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
+	for x in range(self.max_simple_size.x):
+		for y in range(self.max_simple_size.y):
+			self._spawn_background_tile(Vector2(x, y) + offset)
+
+
+func spawn_barrier(position: Vector2) -> void:
+	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+	var barrier := self.game_object_factory.create_object("Barrier", self)
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": world_position})
+	barrier.fire_event(set_position_event)
+
+
+func spawn_doors(exclusions: Array[String] = []) -> void:
+	var door_positions: Array = get_simple_door_locations(exclusions)
+
+	for position in door_positions:
+		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
+		if not await is_position_taken(world_position):
+			queue_object_to_spawn("Door", world_position, true)
+
+
+func spawn_object_instantly(
 	object_name: String,
-	position: Vector2 = self.get_random_valid_world_position(),
+	position: Vector2 = await get_random_valid_world_position(),
 ) -> GameEngine.GameObject:
 	var new_object := self.game_object_factory.create_object(object_name, self)
 	var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
@@ -413,68 +503,30 @@ func spawn_and_place_object(
 	return new_object
 
 
-func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
-	for x in range(self.max_simple_size.x):
-		for y in range(self.max_simple_size.y):
-			self._spawn_background_tile(Vector2(x, y) + offset)
-
-
-func spawn_doors() -> void:
-	var door_positions: Array = get_simple_door_locations()
-
-	for position in door_positions:
-		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not is_position_taken(world_position):
-			spawn_and_place_object("Door", world_position)
-
-
-func spawn_start_doors() -> void:
-	var camera_coordinates: Vector2 = follow_camera.global_position
-	var simple_camera_coordinates: Vector2 = Utils.convert_world_to_simple_coordinates(
-		camera_coordinates
-	)
-	var door_positions_south: Array = [
-		simple_camera_coordinates + Vector2(0, 9),
-		simple_camera_coordinates + Vector2(-1, 9),
-	]
-	var door_positions: Array = get_simple_door_locations(["S", "E"])
-
-	for position in door_positions:
-		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not is_position_taken(world_position):
-			spawn_and_place_object("Door", world_position)
-
-	for position in door_positions_south:
-		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not is_position_taken(world_position):
-			spawn_and_place_object("DungeonEntrance", world_position)
-
-
 func spawn_snake_segment(
 	head_game_object: GameEngine.GameObject,
-	spawn_direction: Vector2 = Vector2.DOWN,
+	spawn_position: Vector2,
 ) -> void:
 	var head_snake_body: Components.SnakeBody = head_game_object.components.get("SnakeBody")
 	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
 
-	var spawn_position: Vector2 = (
-		tail.physics_body.global_position + (spawn_direction * Settings.BASE_MOVE_SPEED)
-	)
-	var new_snake_body_obj: GameEngine.GameObject = self.spawn_and_place_object(
-		"SnakeBody", spawn_position
+	var new_snake_body_obj: GameEngine.GameObject = await queue_object_to_spawn(
+		"SnakeBody", spawn_position, true
 	)
 
 	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
 
 func spawn_player_snake(start_position: Vector2, snake_length: int, slow: bool = false) -> void:
+	var spawn_position: Vector2 = start_position
 	var snake_type: String = "PlayerSnakeHead"
 	if slow:
 		snake_type = "PlayerSnakeHeadSlow"
-	var snake_head := self.spawn_and_place_object(snake_type, start_position)
+	var snake_head := await queue_object_to_spawn(snake_type, spawn_position)
 
 	for snake_body_idx in range(snake_length - 1):
-		self.spawn_snake_segment(snake_head)
+		spawn_position = spawn_position + (Vector2.DOWN * Settings.BASE_MOVE_SPEED)
+		self.spawn_snake_segment(snake_head, spawn_position)
 
 
 func _fire_change_direction_event(input_name: String) -> void:
@@ -528,21 +580,53 @@ func _spawn_background_tile(position: Vector2) -> void:
 	current_tile.global_position = world_position
 
 
-func _spawn_barrier(position: Vector2) -> void:
-	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-	var barrier := self.game_object_factory.create_object("Barrier", self)
-	var set_position_event := GameEngine.Event.new("SetPosition", {"position": world_position})
-	barrier.fire_event(set_position_event)
+func _spawn_object_from_queue() -> void:
+	if not spawn_queue:
+		return
+
+	var current_spawn_job: SpawnJob = spawn_queue.pop_front()
+	var position: Vector2 = current_spawn_job.preferred_position
+	var object_to_spawn: GameEngine.GameObject = current_spawn_job.object_to_spawn
+	if await is_position_taken(position) and not current_spawn_job.force_preferred_position:
+		position = await get_random_valid_world_position()
+
+	if await is_position_taken(position) and not current_spawn_job.force_preferred_position:
+		var warning: String = (
+			"Attempted to spawn "
+			+ object_to_spawn._to_string()
+			+ " at position "
+			+ str(position)
+		)
+		push_warning(warning)
+		return
+
+	var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
+	object_to_spawn.fire_event(set_position_event)
 
 
 func spawn_start_barriers() -> void:
-	self._spawn_barrier(Vector2(0, 0))
-	self._spawn_barrier(Vector2(self.max_simple_size.x - 1, 0))
-	self._spawn_barrier(Vector2(0, self.max_simple_size.y - 1))
-	self._spawn_barrier(Vector2(self.max_simple_size.x - 1, self.max_simple_size.y - 1))
+	self.spawn_barrier(Vector2(0, 0))
+	self.spawn_barrier(Vector2(self.max_simple_size.x - 1, 0))
+	self.spawn_barrier(Vector2(0, self.max_simple_size.y - 1))
+	self.spawn_barrier(Vector2(self.max_simple_size.x - 1, self.max_simple_size.y - 1))
 
 	for coordinate in range(1, self.max_simple_size.x - 1):
-		self._spawn_barrier(Vector2(coordinate, 0))
-		self._spawn_barrier(Vector2(coordinate, self.max_simple_size.y - 1))
-		self._spawn_barrier(Vector2(0, coordinate))
-		self._spawn_barrier(Vector2(self.max_simple_size.x - 1, coordinate))
+		self.spawn_barrier(Vector2(coordinate, 0))
+		self.spawn_barrier(Vector2(coordinate, self.max_simple_size.y - 1))
+		self.spawn_barrier(Vector2(0, coordinate))
+		self.spawn_barrier(Vector2(self.max_simple_size.x - 1, coordinate))
+
+
+class SpawnJob:
+	var object_to_spawn: GameEngine.GameObject
+	var preferred_position: Vector2
+	var force_preferred_position: bool
+
+	func _init(
+		p_object_to_spawn: GameEngine.GameObject,
+		p_preferred_position: Vector2,
+		p_force_preferred_position: bool = false,
+	) -> void:
+		object_to_spawn = p_object_to_spawn
+		preferred_position = p_preferred_position
+		force_preferred_position = p_force_preferred_position

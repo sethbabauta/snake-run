@@ -1,0 +1,111 @@
+[gd_scene load_steps=7 format=3 uid="uid://bnjk6212auow8"]
+
+[ext_resource type="Script" path="res://UI/game_announcer.gd" id="1_xt5pp"]
+[ext_resource type="PackedScene" uid="uid://cqddmtc4lrco6" path="res://Scenes/dungeon_arrows/dungeon_arrow_base.tscn" id="2_jw2vv"]
+[ext_resource type="AudioStream" uid="uid://bhncceffefguf" path="res://Audio/middle_c_note.wav" id="3_v1rec"]
+[ext_resource type="AudioStream" uid="uid://c8ibc2io4i0ob" path="res://Audio/e_note.wav" id="4_47w0f"]
+[ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://Audio/g_note.wav" id="5_d87xu"]
+[ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://Audio/higher_c_note.wav" id="6_7bmws"]
+
+[node name="GameAnnouncer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xt5pp")
+
+[node name="Announcement" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+
+[node name="DungeonArrowNorth" parent="." instance=ExtResource("2_jw2vv")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="TextureRect" parent="DungeonArrowNorth" index="1"]
+visible = false
+
+[node name="Beep" parent="DungeonArrowNorth" index="2"]
+stream = ExtResource("3_v1rec")
+
+[node name="DungeonArrowEast" parent="." instance=ExtResource("2_jw2vv")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="TextureRect" parent="DungeonArrowEast" index="1"]
+visible = false
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 0.0
+offset_bottom = 50.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5708
+pivot_offset = Vector2(50, 50)
+
+[node name="Beep" parent="DungeonArrowEast" index="2"]
+stream = ExtResource("4_47w0f")
+
+[node name="DungeonArrowSouth" parent="." instance=ExtResource("2_jw2vv")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="TextureRect" parent="DungeonArrowSouth" index="1"]
+visible = false
+anchors_preset = 7
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+offset_bottom = 0.0
+grow_vertical = 0
+flip_v = true
+
+[node name="Beep" parent="DungeonArrowSouth" index="2"]
+stream = ExtResource("5_d87xu")
+
+[node name="DungeonArrowWest" parent="." instance=ExtResource("2_jw2vv")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="TextureRect" parent="DungeonArrowWest" index="1"]
+visible = false
+anchors_preset = 4
+anchor_left = 0.0
+anchor_top = 0.5
+anchor_right = 0.0
+anchor_bottom = 0.5
+offset_left = 0.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 1
+grow_vertical = 2
+rotation = -1.5708
+pivot_offset = Vector2(50, 50)
+
+[node name="Beep" parent="DungeonArrowWest" index="2"]
+stream = ExtResource("6_7bmws")
+
+[editable path="DungeonArrowNorth"]
+[editable path="DungeonArrowEast"]
+[editable path="DungeonArrowSouth"]
+[editable path="DungeonArrowWest"]

@@ -3,6 +3,15 @@ extends Node
 var rng := RandomNumberGenerator.new()
 
 
+func array_subtract(array_a: Array, array_b: Array) -> Array:
+	var result: Array = array_a.duplicate(true)
+	for element in array_a:
+		if array_b.has(element):
+			result.erase(element)
+
+	return result
+
+
 func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
 	var new_coordinates: Vector2 = (
 		(coordinates.round() * Settings.BASE_MOVE_SPEED)
@@ -21,6 +30,19 @@ func convert_world_to_simple_coordinates(coordinates: Vector2) -> Vector2:
 	)
 
 	return new_coordinates
+
+
+func decay_to_zero(
+	from: float,
+	to: float,
+	weight: float,
+	cutoff: float = 0.2,
+) -> float:
+	var result: float = lerp(from, to, weight)
+	if result < cutoff:
+		result = 0.0
+
+	return result
 
 
 func get_farthest_direction(vector_from: Vector2, vector_to: Vector2) -> String:

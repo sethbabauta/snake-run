@@ -101,6 +101,25 @@ class AIControlledSimple:
 			Event.queue_after_effect(self.game_object, new_event, event)
 
 
+class AppleFlipAbility:
+	extends Component
+	var flip_seconds: int = 10
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "UseItem":
+			self._flip_apples()
+
+		return event
+
+
+	func _flip_apples() -> void:
+		var main_node: Main = game_object.main_node
+
+		if main_node.powerup_1_timer.is_stopped():
+			main_node.flip_apples(true)
+
+
 class AppleFlipTimed:
 	extends Component
 	var flip_seconds: int = 10
@@ -127,11 +146,23 @@ class AppleFlipTimed:
 class Crown:
 	extends Component
 
+	func _init(p_name: String, p_game_object: GameObject = null) -> void:
+		super(p_name, p_game_object)
+		Main.overlay_sprite_on_game_object(
+			Settings.SPRITES_PATH + "get_text.png",
+			game_object,
+			"getIndicator",
+			3,
+			Vector2(0, 0),
+		)
+
+
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._gain_crown(event)
+			_gain_crown(event)
 
 		return event
+
 
 	func _gain_crown(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
@@ -142,10 +173,10 @@ class Crown:
 				{"to": eater, "name": "EquippedItem", "offset": Vector2(0, -32)},
 			)
 		)
-		Event.queue_after_effect(self.game_object, new_event, event)
+		Event.queue_after_effect(game_object, new_event, event)
 
-		new_event = Event.new("KillSelf")
-		self.game_object.factory_from.notify_subscribers(new_event, "dungeon_entrance")
+		eater.add_component("Royalty", {})
+		EventBus.crown_collected.emit()
 
 
 class DeathSpawner:
@@ -162,7 +193,7 @@ class DeathSpawner:
 	func _spawn_objects() -> void:
 		names_of_objects = names_as_string.split(",")
 		for names_of_object in names_of_objects:
-			self.game_object.main_node.spawn_and_place_object(names_of_object)
+			self.game_object.main_node.queue_object_to_spawn(names_of_object)
 
 
 class Debugger:
@@ -186,14 +217,6 @@ class Delicious:
 
 	func _feed_delicious() -> void:
 		ScoreKeeper.add_to_score(1)
-
-
-class DungeonEntrance:
-	extends Component
-
-	func _init(p_name: String, p_game_object: GameObject = null) -> void:
-		super(p_name, p_game_object)
-		self.game_object.factory_from.subscribe(p_game_object, "dungeon_entrance")
 
 
 class EquipabbleItem:
@@ -252,6 +275,42 @@ class EquipabbleItem:
 		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
 
 
+class ExtraLife:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Die":
+			_spawn_new_player()
+
+		return event
+
+
+	func _spawn_new_player() -> void:
+		var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(
+			Vector2(9, 9)
+		)
+		var start_length: int = game_object.main_node.gamemode_node.START_LENGTH
+		game_object.main_node.spawn_player_snake(start_position, start_length)
+		game_object.remove_component("ExtraLife")
+
+
+class ExtraLifeItem:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			_gain_extra_life(event)
+
+		return event
+
+
+	func _gain_extra_life(event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		eater.add_component("ExtraLife", {})
+
+
 class InventorySlot:
 	extends Component
 	var item_name: String = ""
@@ -261,13 +320,20 @@ class InventorySlot:
 			self._equip_item(event)
 		if event.id == "DropItem":
 			self._drop_item()
+		if event.id == "ConsumeItem":
+			_destroy_item()
 
 		return event
+
+
+	func _destroy_item() -> void:
+		self.item_name = ""
+
 
 	func _drop_item() -> void:
 		if self.item_name:
 			var drop_position: Vector2 = self._get_drop_position()
-			self.game_object.main_node.spawn_and_place_object(item_name, drop_position)
+			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position, true)
 			self.item_name = ""
 
 	func _equip_item(event: Event) -> void:
@@ -497,7 +563,7 @@ class PlayerControlled:
 			event.parameters["direction"] = "0"
 
 	func _end_game() -> void:
-		game_object.main_node.gamemode_node.end_game()
+		game_object.main_node.end_game_soon()
 
 	func _grow_score() -> void:
 		ScoreKeeper.add_to_score(1)
@@ -523,6 +589,7 @@ class PlayerControlled:
 	func _save_direction(event: Event) -> void:
 		last_direction_moved = event.parameters.get("direction")
 		has_moved = true
+		EventBus.player_moved.emit()
 
 		if next_direction_queued != "0":
 			(
@@ -586,16 +653,16 @@ class Render:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "SetPosition":
-			self.game_object.physics_body.global_position = (event.parameters.get("position"))
+			_set_position(event)
 		if event.id == "SendSprite":
-			self._overlay_sprite_on_target(event)
+			_overlay_sprite_on_target(event)
 
 		return event
 
 	func first_time_setup() -> void:
-		self.sprite_node = self.game_object.physics_body.get_node("PhysicsObjectSprite")
-		self.sprite_node.texture = load(self.texture)
-		self.sprite_node.z_index = z_idx
+		sprite_node = game_object.physics_body.get_node("PhysicsObjectSprite")
+		sprite_node.texture = load(texture)
+		sprite_node.z_index = z_idx
 
 	func _overlay_sprite_on_target(event: Event) -> void:
 		var target: GameEngine.GameObject = event.parameters.get("to")
@@ -603,7 +670,108 @@ class Render:
 		var offset := Vector2(0, 0)
 		if event.parameters.get("offset"):
 			offset = event.parameters.get("offset")
-		Main.overlay_sprite_on_game_object(self.texture, target, sprite_node_name, 3, offset)
+		Main.overlay_sprite_on_game_object(texture, target, sprite_node_name, 3, offset)
+
+
+	func _set_position(event: Event) -> void:
+		if is_instance_valid(game_object.physics_body):
+			game_object.physics_body.global_position = (event.parameters.get("position"))
+			game_object.physics_body.visible = true
+
+
+class Royalty:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "CheckCrown":
+			_end_game()
+		if event.id == "DropItem":
+			_ditch_crown()
+
+		return event
+
+
+	func _ditch_crown() -> void:
+		var drop_position: Vector2 = self._get_drop_position()
+		self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
+		self.game_object.queue_remove_component("Royalty")
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+		EventBus.crown_dropped.emit()
+
+
+	func _end_game() -> void:
+		game_object.main_node.gamemode_node.end_game(true)
+
+
+	func _get_drop_position() -> Vector2:
+		var snake_body: Components.SnakeBody = self.game_object.components.get("SnakeBody")
+		var tail: GameEngine.GameObject = snake_body.get_tail_game_object()
+		return tail.physics_body.global_position
+
+
+class SingleUseItem:
+	extends Component
+	var components_as_string: String = ""
+	var components_to_inherit: PackedStringArray = []
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			self._bequeath_components(event)
+			self._make_eater_equip_item(event)
+		if event.id == "ConsumeItem":
+			self._relinquish_components()
+		if event.id == "UseItem":
+			_consume_item(event)
+
+		return event
+
+	func first_time_setup() -> void:
+		components_to_inherit = components_as_string.split(",")
+		components_to_inherit.append("SingleUseItem")
+
+	func _bequeath_components(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		for component_name in self.components_to_inherit:
+			var component_parameters: Dictionary = (
+				self.game_object.components[component_name].initial_parameters
+			)
+			eater.add_component(component_name, component_parameters)
+
+
+	func _consume_item(event: Event) -> void:
+		var new_event := GameEngine.Event.new("ConsumeItem")
+		Event.queue_after_effect(game_object, new_event, event)
+
+
+	func _make_eater_equip_item(event: Event) -> void:
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+
+		var new_event := GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+		new_event = (
+			Event
+			. new(
+				"EquipItem",
+				{"item_name": self.game_object.name},
+			)
+		)
+		Event.queue_after_effect(eater, new_event, event)
+
+		new_event = (
+			Event
+			. new(
+				"SendSprite",
+				{"to": eater, "name": "EquippedItem"},
+			)
+		)
+		Event.queue_after_effect(self.game_object, new_event, event)
+
+	func _relinquish_components() -> void:
+		for component_name in self.components_to_inherit:
+			self.game_object.queue_remove_component(component_name)
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
 
 
 class SnakeBody:
@@ -677,13 +845,22 @@ class SnakeBody:
 			)
 
 	func _grow() -> void:
+		var tail: GameEngine.GameObject = get_tail_game_object()
+		var spawn_location: Vector2 = tail.physics_body.global_position
+		var direction:= Vector2.ZERO
+
+		# if only 1 segment do not spawn on head
 		if get_length_from_here() == 1:
-			var direction: Vector2 = game_object.physics_body.global_position.direction_to(
+			direction = game_object.physics_body.global_position.direction_to(
 				prev_location
 			)
-			self.game_object.main_node.spawn_snake_segment(self.game_object, direction)
-		else:
-			self.game_object.main_node.spawn_snake_segment(self.game_object, Vector2.ZERO)
+			direction = direction * Settings.BASE_MOVE_SPEED
+
+		game_object.main_node.spawn_snake_segment(
+			game_object,
+			spawn_location + direction,
+		)
+
 
 	func _move_forward(event: Event) -> void:
 		self.prev_location = self.game_object.physics_body.global_position
@@ -924,3 +1101,23 @@ class SpeedIncreaseAbility:
 					self.game_object,
 				)
 			)
+
+
+class Stairs:
+	extends Component
+
+
+	func fire_event(event: Event) -> Event:
+		if event.id == "Eat":
+			_check_for_crown(event)
+
+		return event
+
+
+	func _check_for_crown(event: Event) -> void:
+		Event.dequeue_after_effect(event, "KillSelf")
+
+		var eater: GameEngine.GameObject = event.parameters.get("eater")
+		if eater:
+			var new_event := Event.new("CheckCrown")
+			eater.fire_event(new_event)

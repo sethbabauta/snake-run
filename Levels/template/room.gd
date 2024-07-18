@@ -4,8 +4,14 @@ class_name Room extends Resource
 @export var tile_map: PackedScene
 @export var layout_x: int
 @export var layout_y: int
+@export var walled_off_directions: Array[String] = []
 
 var current_room_score: int = 0
+
+
+func _to_string() -> String:
+	var as_string: String = "(%s,%s) %s/%s" % [str(layout_x), str(layout_y),str(current_room_score), str(score_threshold)]
+	return as_string
 
 
 static func get_world_coordinates(layout_coordinates: Vector2) -> Vector2:
