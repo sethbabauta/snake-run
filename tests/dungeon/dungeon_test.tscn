@@ -39,3 +39,7 @@ main_node = NodePath("../../Main")
 unique_name_in_owner = true
 
 [editable path="CanvasLayer/GameAnnouncer"]
+[editable path="CanvasLayer/GameAnnouncer/DungeonArrowNorth"]
+[editable path="CanvasLayer/GameAnnouncer/DungeonArrowEast"]
+[editable path="CanvasLayer/GameAnnouncer/DungeonArrowSouth"]
+[editable path="CanvasLayer/GameAnnouncer/DungeonArrowWest"]
