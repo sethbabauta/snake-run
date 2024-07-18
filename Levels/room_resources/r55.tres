@@ -9,3 +9,4 @@ score_threshold = 3
 tile_map = ExtResource("2_4avqx")
 layout_x = 5
 layout_y = -3
+walled_off_directions = Array[String](["W"])
