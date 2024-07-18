@@ -80,6 +80,10 @@ func get_current_room_exclusions() -> Array[String]:
 	if not current_room_neighbors.right:
 		exclusions.append("E")
 
+	if current_room:
+		var walled_off_directions: Array[String] = current_room.walled_off_directions.duplicate()
+		exclusions = exclusions + walled_off_directions
+
 	return exclusions
 
 
