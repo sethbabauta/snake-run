@@ -7,6 +7,7 @@ signal crown_dropped
 signal game_paused(is_paused: bool)
 signal game_started(gamemode_name: String)
 signal level_changed(direction: String)
+signal menu_state_change(new_state: State)
 signal player_fully_entered
 signal player_moved
 signal player_respawned
