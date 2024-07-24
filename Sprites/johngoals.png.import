@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c0ugsissxvnu5"
-path="res://.godot/imported/johngoals.png-996e222c81425c8f0d25c6091ca9f024.ctex"
+path="res://.godot/imported/johngoals.png-78199ecbdbaaf0588a8e2e9acbba1399.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/johngoals.png"
-dest_files=["res://.godot/imported/johngoals.png-996e222c81425c8f0d25c6091ca9f024.ctex"]
+source_file="res://sprites/johngoals.png"
+dest_files=["res://.godot/imported/johngoals.png-78199ecbdbaaf0588a8e2e9acbba1399.ctex"]
 
 [params]
 

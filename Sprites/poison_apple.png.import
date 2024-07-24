@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci7ks22v2e2g0"
-path="res://.godot/imported/poison_apple.png-29cd7475465581baa7ed28ea51a47da0.ctex"
+path="res://.godot/imported/poison_apple.png-6550b85d0084235aa9c63b47b864ef1a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/poison_apple.png"
-dest_files=["res://.godot/imported/poison_apple.png-29cd7475465581baa7ed28ea51a47da0.ctex"]
+source_file="res://sprites/poison_apple.png"
+dest_files=["res://.godot/imported/poison_apple.png-6550b85d0084235aa9c63b47b864ef1a.ctex"]
 
 [params]
 

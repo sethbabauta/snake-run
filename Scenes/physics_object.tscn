@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7f11puwfib6s"]
 
-[ext_resource type="Script" path="res://Scripts/physics_object.gd" id="1_xokus"]
-[ext_resource type="Texture2D" uid="uid://c0ugsissxvnu5" path="res://Sprites/johngoals.png" id="2_k538e"]
+[ext_resource type="Script" path="res://scripts/physics_object.gd" id="1_xokus"]
+[ext_resource type="Texture2D" uid="uid://c0ugsissxvnu5" path="res://sprites/johngoals.png" id="2_k538e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h5tqg"]
 size = Vector2(30, 30)

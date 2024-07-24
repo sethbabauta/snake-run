@@ -1,16 +1,16 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7ty05m56ksow"]
 
-[ext_resource type="Script" path="res://Scripts/main.gd" id="1_4bfl7"]
-[ext_resource type="Script" path="res://Scripts/move_timer.gd" id="2_qbs8a"]
-[ext_resource type="PackedScene" uid="uid://bk3fu16h5e36m" path="res://Audio/audio_library.tscn" id="3_iyxyh"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_20cme"]
+[ext_resource type="Script" path="res://scripts/move_timer.gd" id="2_734pb"]
+[ext_resource type="PackedScene" uid="uid://bk3fu16h5e36m" path="res://audio/audio_library.tscn" id="3_06phk"]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_4bfl7")
+script = ExtResource("1_20cme")
 
 [node name="MoveTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 wait_time = 0.05
-script = ExtResource("2_qbs8a")
+script = ExtResource("2_734pb")
 
 [node name="Powerup1Timer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -21,7 +21,7 @@ unique_name_in_owner = true
 wait_time = 0.1
 autostart = true
 
-[node name="AudioLibrary" parent="." instance=ExtResource("3_iyxyh")]
+[node name="AudioLibrary" parent="." instance=ExtResource("3_06phk")]
 unique_name_in_owner = true
 
 [connection signal="timeout" from="MoveTimer" to="MoveTimer" method="_on_timeout"]

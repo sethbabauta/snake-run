@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bvb4k8h5376d2"]
 
-[ext_resource type="Script" path="res://Scripts/snakeo_death_screen.gd" id="1_3pcty"]
+[ext_resource type="Script" path="res://scripts/snakeo_death_screen.gd" id="1_3pcty"]
 
 [node name="SnakeoDeathScreen" type="Control" node_paths=PackedStringArray("score_label")]
 layout_mode = 3

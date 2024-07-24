@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ev0uehnt8emi"]
 
-[ext_resource type="Script" path="res://Scripts/dungeon_win_screen.gd" id="1_vvpea"]
+[ext_resource type="Script" path="res://scripts/dungeon_win_screen.gd" id="1_vvpea"]
 
 [node name="DungeonWinScreen" type="Control"]
 layout_mode = 3

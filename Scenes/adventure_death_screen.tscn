@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://blk3nwgjh1k6k"]
 
-[ext_resource type="Script" path="res://Scripts/adventure_death_screen.gd" id="1_p3dsk"]
+[ext_resource type="Script" path="res://scripts/adventure_death_screen.gd" id="1_p3dsk"]
 
 [node name="AdventureDeathScreen" type="Control" node_paths=PackedStringArray("score_label")]
 layout_mode = 3

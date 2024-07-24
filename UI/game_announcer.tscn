@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://bnjk6212auow8"]
 
-[ext_resource type="Script" path="res://UI/game_announcer.gd" id="1_xt5pp"]
-[ext_resource type="PackedScene" uid="uid://cqddmtc4lrco6" path="res://Scenes/dungeon_arrows/dungeon_arrow_base.tscn" id="2_jw2vv"]
-[ext_resource type="AudioStream" uid="uid://bhncceffefguf" path="res://Audio/middle_c_note.wav" id="3_v1rec"]
-[ext_resource type="AudioStream" uid="uid://c8ibc2io4i0ob" path="res://Audio/e_note.wav" id="4_47w0f"]
-[ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://Audio/g_note.wav" id="5_d87xu"]
-[ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://Audio/higher_c_note.wav" id="6_7bmws"]
+[ext_resource type="Script" path="res://ui/game_announcer.gd" id="1_xt5pp"]
+[ext_resource type="PackedScene" uid="uid://cqddmtc4lrco6" path="res://scenes/dungeon_arrows/dungeon_arrow_base.tscn" id="2_jw2vv"]
+[ext_resource type="AudioStream" uid="uid://bhncceffefguf" path="res://audio/middle_c_note.wav" id="3_v1rec"]
+[ext_resource type="AudioStream" uid="uid://c8ibc2io4i0ob" path="res://audio/e_note.wav" id="4_47w0f"]
+[ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://audio/g_note.wav" id="5_d87xu"]
+[ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://audio/higher_c_note.wav" id="6_7bmws"]
 
 [node name="GameAnnouncer" type="Control"]
 layout_mode = 3

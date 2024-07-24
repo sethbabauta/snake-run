@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cplmkjpmiudy3"]
 
-[ext_resource type="Script" path="res://Levels/template/room_tile_map.gd" id="1_h2qcs"]
-[ext_resource type="PackedScene" uid="uid://cpluroqpx65vt" path="res://Tilesets/snake_world_tile_map.tscn" id="2_5rlop"]
+[ext_resource type="Script" path="res://levels/template/room_tile_map.gd" id="1_h2qcs"]
+[ext_resource type="PackedScene" uid="uid://cpluroqpx65vt" path="res://tilesets/snake_world_tile_map.tscn" id="2_5rlop"]
 
 [node name="RoomTileMapRoot" type="Node2D"]
 script = ExtResource("1_h2qcs")

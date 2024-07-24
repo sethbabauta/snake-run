@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://cqddmtc4lrco6"]
 
-[ext_resource type="Script" path="res://Scripts/dungeon_door_arrow.gd" id="1_3y0mi"]
-[ext_resource type="Texture2D" uid="uid://dxq08he1jw1im" path="res://Sprites/gray_arrow2.png" id="2_tmmdy"]
-[ext_resource type="Texture2D" uid="uid://dt0cbklfummgr" path="res://Sprites/gray_arrow1.png" id="3_fms50"]
+[ext_resource type="Script" path="res://scripts/dungeon_door_arrow.gd" id="1_drrfy"]
+[ext_resource type="Texture2D" uid="uid://dxq08he1jw1im" path="res://sprites/gray_arrow2.png" id="2_ekkns"]
+[ext_resource type="Texture2D" uid="uid://cdtky7vdpic58" path="res://sprites/gray_arrow1.png" id="3_tdrcq"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_sj7vl"]
 load_path = "res://.godot/imported/gray_arrow1.png-b39563431817861e6a3bd511427e207a.ctex"
@@ -31,7 +31,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": [SubResource("CompressedTexture2D_sj7vl"), ExtResource("2_tmmdy"), ExtResource("3_fms50"), ExtResource("2_tmmdy"), SubResource("CompressedTexture2D_sj7vl")]
+"values": [SubResource("CompressedTexture2D_sj7vl"), ExtResource("2_ekkns"), ExtResource("3_tdrcq"), ExtResource("2_ekkns"), SubResource("CompressedTexture2D_sj7vl")]
 }
 tracks/2/type = "method"
 tracks/2/imported = false
@@ -60,7 +60,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_3y0mi")
+script = ExtResource("1_drrfy")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
