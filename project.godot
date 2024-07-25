@@ -21,7 +21,7 @@ resources_spreadsheet_view/context_menu_on_leftclick=false
 [application]
 
 config/name="Snake Run"
-run/main_scene="res://game_state/logo/logo.tscn"
+run/main_scene="res://game_state/game_state_manager.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://sprites/icon.svg"
 
@@ -31,7 +31,6 @@ ScoreKeeper="*res://singletons/score_keeper.gd"
 Utils="*res://singletons/utils.gd"
 Settings="*res://config/settings.gd"
 EventBus="*res://singletons/event_bus.gd"
-GameStateManager="*res://game_state/game_state_manager.tscn"
 
 [display]
 

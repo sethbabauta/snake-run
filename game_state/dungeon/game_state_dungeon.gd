@@ -1,5 +1,5 @@
-class_name GameStateDungeon extends GameState
+extends GameState
 
 
 func enter() -> void:
-	game_state_manager.get_tree().change_scene_to_file(Settings.DUNGEON_SCENE)
+	game_state_manager.scene_change_requested.emit(Settings.DUNGEON_SCENE)

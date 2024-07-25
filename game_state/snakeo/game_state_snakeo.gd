@@ -1,5 +1,5 @@
-class_name GameStateSnakeo extends GameState
+extends GameState
 
 
 func enter() -> void:
-	game_state_manager.get_tree().change_scene_to_file(Settings.SNAKEO_SCENE)
+	game_state_manager.scene_change_requested.emit(Settings.SNAKEO_SCENE)

@@ -1,16 +1,24 @@
 extends Node
 
+signal scene_change_requested(scene_path: String)
+
 var state_machine:= StateMachine.new()
 
-var logo:= GameStateLogo.new(self)
-var menu:= GameStateMenu.new(self)
-var classic:= GameStateClassic.new(self)
-var snakeo:= GameStateSnakeo.new(self)
-var dungeon:= GameStateDungeon.new(self)
+@onready var game_state_logo: GameState = %GameStateLogo
+@onready var game_state_menu: GameState = %GameStateMenu
+@onready var game_state_classic: GameState = %GameStateClassic
+@onready var game_state_snakeo: GameState = %GameStateSnakeo
+@onready var game_state_dungeon: GameState = %GameStateDungeon
+@onready var current_scene: Node = %CurrentScene
+@onready var states: Node = %States
 
 
 func _ready() -> void:
-	state_machine.set_state(logo)
+	scene_change_requested.connect(_change_scene)
+	for game_state in states.get_children():
+		game_state.game_state_manager = self
+
+	state_machine.set_state(game_state_logo)
 
 
 func _physics_process(_delta: float) -> void:
@@ -26,8 +34,12 @@ func _process(_delta: float) -> void:
 
 func choose_next_state() -> void:
 	match state_machine.state:
-		logo:
-			state_machine.set_state(menu)
-		menu:
-			var next_state: State = menu.next_state
+		game_state_logo:
+			state_machine.set_state(game_state_menu)
+		game_state_menu:
+			var next_state: State = game_state_menu.next_state
 			state_machine.set_state(next_state)
+
+
+func _change_scene(scene_path: String) -> void:
+	current_scene.change_scene(scene_path)

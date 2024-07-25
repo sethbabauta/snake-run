@@ -1,4 +1,4 @@
-class_name GameEngine extends Resource
+class_name GameEngine extends RefCounted
 
 
 class Component:

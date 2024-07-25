@@ -1,4 +1,8 @@
-class_name Menu extends Control
+extends Control
+
+@onready var start_classic: Button = %StartClassic
+@onready var start_snake_o_mode: Button = %"StartSnake-oMode"
+@onready var start_dungeon: Button = %StartDungeon
 
 
 func _ready() -> void:
@@ -6,15 +10,15 @@ func _ready() -> void:
 
 
 func _on_start_classic_pressed() -> void:
-	EventBus.menu_state_change.emit(GameStateManager.classic)
+	pass
 
 
 func _on_start_snakeo_mode_pressed() -> void:
-	EventBus.menu_state_change.emit(GameStateManager.snakeo)
+	pass
 
 
 func _on_start_dungeon_pressed() -> void:
-	EventBus.menu_state_change.emit(GameStateManager.dungeon)
+	pass
 
 
 func _on_quit_pressed() -> void:

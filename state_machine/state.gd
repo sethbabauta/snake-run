@@ -1,4 +1,4 @@
-class_name State extends RefCounted
+class_name State extends Node
 
 var is_complete: bool
 var parent: State

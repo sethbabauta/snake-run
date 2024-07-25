@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bcwkfdsotaoow"]
 
-[ext_resource type="Script" path="res://game_state/menu/menu.gd" id="1_wvn5m"]
+[ext_resource type="Script" path="res://game_state/menu/menu.gd" id="1_dq2e7"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_wvn5m")
+script = ExtResource("1_dq2e7")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -26,18 +26,22 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="StartClassic" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Classic Snake"
 
 [node name="StartSnake-oMode" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Snake-o Mode"
 
 [node name="StartDungeon" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Dungeon Mode"
 
 [node name="Quit" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Quit"
 
@@ -55,8 +59,5 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "test env"
 
-[connection signal="pressed" from="VBoxContainer/StartClassic" to="." method="_on_start_classic_pressed"]
-[connection signal="pressed" from="VBoxContainer/StartSnake-oMode" to="." method="_on_start_snakeo_mode_pressed"]
-[connection signal="pressed" from="VBoxContainer/StartDungeon" to="." method="_on_start_dungeon_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="TestEnv" to="." method="_on_test_env_pressed"]
