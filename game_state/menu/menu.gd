@@ -9,12 +9,12 @@ func _on_start_classic_pressed() -> void:
 	EventBus.menu_state_change.emit(GameStateManager.classic)
 
 
+func _on_start_snakeo_mode_pressed() -> void:
+	EventBus.menu_state_change.emit(GameStateManager.snakeo)
+
+
 func _on_start_dungeon_pressed() -> void:
-	pass
-
-
-func _on_start_snakeo_pressed() -> void:
-	pass
+	EventBus.menu_state_change.emit(GameStateManager.dungeon)
 
 
 func _on_quit_pressed() -> void:

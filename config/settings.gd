@@ -20,3 +20,5 @@ const GRASS_BACKGROUND_PATHS = [
 # game state paths
 const MENU_SCENE = "res://game_state/menu/menu.tscn"
 const CLASSIC_SCENE = "res://game_state/classic/classic.tscn"
+const SNAKEO_SCENE = "res://game_state/snakeo/snakeo.tscn"
+const DUNGEON_SCENE = "res://game_state/dungeon/dungeon.tscn"

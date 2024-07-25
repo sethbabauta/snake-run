@@ -56,4 +56,7 @@ grow_vertical = 0
 text = "test env"
 
 [connection signal="pressed" from="VBoxContainer/StartClassic" to="." method="_on_start_classic_pressed"]
+[connection signal="pressed" from="VBoxContainer/StartSnake-oMode" to="." method="_on_start_snakeo_mode_pressed"]
+[connection signal="pressed" from="VBoxContainer/StartDungeon" to="." method="_on_start_dungeon_pressed"]
+[connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="TestEnv" to="." method="_on_test_env_pressed"]

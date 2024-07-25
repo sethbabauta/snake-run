@@ -5,6 +5,8 @@ var state_machine:= StateMachine.new()
 var logo:= GameStateLogo.new(self)
 var menu:= GameStateMenu.new(self)
 var classic:= GameStateClassic.new(self)
+var snakeo:= GameStateSnakeo.new(self)
+var dungeon:= GameStateDungeon.new(self)
 
 
 func _ready() -> void:
