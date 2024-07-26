@@ -9,18 +9,6 @@ func _ready() -> void:
 	_random_tests()
 
 
-func _on_start_classic_pressed() -> void:
-	pass
-
-
-func _on_start_snakeo_mode_pressed() -> void:
-	pass
-
-
-func _on_start_dungeon_pressed() -> void:
-	pass
-
-
 func _on_quit_pressed() -> void:
 	get_tree().quit()
 

@@ -2,4 +2,4 @@ extends GameState
 
 
 func enter() -> void:
-	game_state_manager.scene_change_requested.emit(Settings.CLASSIC_SCENE)
+	_change_scene(Settings.CLASSIC_SCENE)

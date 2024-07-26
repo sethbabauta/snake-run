@@ -1,7 +1,5 @@
 extends Node
 
-signal scene_change_requested(scene_path: String)
-
 var state_machine:= StateMachine.new()
 
 @onready var game_state_logo: GameState = %GameStateLogo
@@ -9,12 +7,10 @@ var state_machine:= StateMachine.new()
 @onready var game_state_classic: GameState = %GameStateClassic
 @onready var game_state_snakeo: GameState = %GameStateSnakeo
 @onready var game_state_dungeon: GameState = %GameStateDungeon
-@onready var current_scene: Node = %CurrentScene
 @onready var states: Node = %States
 
 
 func _ready() -> void:
-	scene_change_requested.connect(_change_scene)
 	for game_state in states.get_children():
 		game_state.game_state_manager = self
 
@@ -39,7 +35,3 @@ func choose_next_state() -> void:
 		game_state_menu:
 			var next_state: State = game_state_menu.next_state
 			state_machine.set_state(next_state)
-
-
-func _change_scene(scene_path: String) -> void:
-	current_scene.change_scene(scene_path)
