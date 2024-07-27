@@ -169,7 +169,7 @@ func end_game_soon() -> void:
 	await get_tree().create_timer(3).timeout
 
 	if not check_is_player_alive():
-		gamemode_node.end_game()
+		EventBus.game_ended.emit(false)
 		return
 
 	EventBus.player_respawned.emit()

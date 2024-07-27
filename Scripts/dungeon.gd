@@ -44,14 +44,6 @@ func _ready() -> void:
 	EventBus.game_started.emit("Dungeon")
 
 
-func end_game(won: bool = false) -> void:
-	if not won:
-		get_tree().change_scene_to_packed(dungeon_death_screen)
-		return
-
-	get_tree().change_scene_to_packed(dungeon_win_screen)
-
-
 func end_level() -> void:
 	var exclusions: Array[String] = get_current_room_exclusions()
 	main_node.clear_doors(exclusions)

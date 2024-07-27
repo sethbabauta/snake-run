@@ -20,9 +20,3 @@ func _ready():
 	await get_tree().create_timer(2).timeout
 
 	EventBus.game_started.emit("Classic")
-
-
-func end_game(won: bool = false) -> void:
-	if not won:
-		get_tree().change_scene_to_packed(classic_death_screen)
-		return

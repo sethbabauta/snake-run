@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://b0xlwmro2kyby"]
+[gd_scene load_steps=8 format=3 uid="uid://b0xlwmro2kyby"]
 
 [ext_resource type="Script" path="res://game_state/game_state_manager.gd" id="1_52rvp"]
 [ext_resource type="Script" path="res://game_state/logo/game_state_logo.gd" id="2_kfmw1"]
 [ext_resource type="Script" path="res://game_state/menu/game_state_menu.gd" id="3_srn44"]
+[ext_resource type="PackedScene" uid="uid://bchtrar3ax1mc" path="res://game_state/game_state.tscn" id="4_b7lyr"]
 [ext_resource type="Script" path="res://game_state/classic/game_state_classic.gd" id="4_vuupf"]
 [ext_resource type="Script" path="res://game_state/snakeo/game_state_snakeo.gd" id="5_7m04d"]
 [ext_resource type="Script" path="res://game_state/dungeon/game_state_dungeon.gd" id="6_4a1hm"]
@@ -21,8 +22,7 @@ script = ExtResource("2_kfmw1")
 unique_name_in_owner = true
 script = ExtResource("3_srn44")
 
-[node name="GameStateClassic" type="Node" parent="States"]
-unique_name_in_owner = true
+[node name="GameStateClassic" parent="States" instance=ExtResource("4_b7lyr")]
 script = ExtResource("4_vuupf")
 
 [node name="GameStateSnakeo" type="Node" parent="States"]
@@ -32,3 +32,5 @@ script = ExtResource("5_7m04d")
 [node name="GameStateDungeon" type="Node" parent="States"]
 unique_name_in_owner = true
 script = ExtResource("6_4a1hm")
+
+[editable path="States/GameStateClassic"]
