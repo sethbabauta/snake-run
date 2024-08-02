@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://bbgwhsfyw5xdo"]
 
-[ext_resource type="Script" path="res://scripts/death_screen.gd" id="1_uvahm"]
+[ext_resource type="Script" path="res://game_state/classic/classic_death_screen.gd" id="1_lu2ek"]
 
-[node name="ClassicDeathScreen" type="Control" node_paths=PackedStringArray("score_label")]
+[node name="ClassicDeathScreen" type="Control" node_paths=PackedStringArray("score_label", "play_again", "menu")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,10 +11,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("1_uvahm")
-classic_scene = "res://Scenes/classic.tscn"
-menu_scene = "res://Scenes/menu.tscn"
+script = ExtResource("1_lu2ek")
 score_label = NodePath("MainButtonsContainer/Score")
+play_again = NodePath("MainButtonsContainer/PlayAgain")
+menu = NodePath("MainButtonsContainer/Menu")
 
 [node name="MainButtonsContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -58,6 +58,4 @@ text = "Menu"
 layout_mode = 2
 text = "Quit"
 
-[connection signal="pressed" from="MainButtonsContainer/PlayAgain" to="." method="_on_play_again_pressed"]
-[connection signal="pressed" from="MainButtonsContainer/Menu" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="MainButtonsContainer/Quit" to="." method="_on_quit_pressed"]

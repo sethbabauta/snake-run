@@ -1,6 +1,6 @@
-class_name ClassicDeathScreen extends Control
+extends Control
 
-@export_file("*.tscn") var classic_scene
+@export_file("*.tscn") var snakeo_scene
 @export_file("*.tscn") var menu_scene
 @export var score_label: Label
 
@@ -10,7 +10,7 @@ func _ready() -> void:
 
 
 func _on_play_again_pressed() -> void:
-	get_tree().change_scene_to_file(classic_scene)
+	get_tree().change_scene_to_file(snakeo_scene)
 
 
 func _on_menu_pressed() -> void:

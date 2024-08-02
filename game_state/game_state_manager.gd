@@ -35,3 +35,6 @@ func choose_next_state() -> void:
 		game_state_menu:
 			var next_state: State = game_state_menu.next_state
 			state_machine.set_state(next_state)
+		game_state_classic:
+			var next_state: State = game_state_classic.next_state
+			state_machine.set_state(next_state)

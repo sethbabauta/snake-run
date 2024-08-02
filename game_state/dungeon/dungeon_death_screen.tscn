@@ -1,15 +1,15 @@
 [gd_scene load_steps=2 format=3 uid="uid://blk3nwgjh1k6k"]
 
-[ext_resource type="Script" path="res://scripts/adventure_death_screen.gd" id="1_p3dsk"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_death_screen.gd" id="1_8oecd"]
 
-[node name="AdventureDeathScreen" type="Control" node_paths=PackedStringArray("score_label")]
+[node name="DungeonDeathScreen" type="Control" node_paths=PackedStringArray("score_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_p3dsk")
+script = ExtResource("1_8oecd")
 dungeon_scene = "res://Scenes/dungeon.tscn"
 menu_scene = "res://Scenes/menu.tscn"
 score_label = NodePath("VBoxContainer/Score")

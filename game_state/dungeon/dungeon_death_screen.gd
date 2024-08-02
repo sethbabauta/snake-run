@@ -1,4 +1,4 @@
-class_name DungeonDeathScreen extends Control
+extends Control
 
 @export_file("*.tscn") var dungeon_scene
 @export_file("*.tscn") var menu_scene

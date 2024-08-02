@@ -14,23 +14,28 @@ script = ExtResource("1_52rvp")
 [node name="States" type="Node" parent="."]
 unique_name_in_owner = true
 
-[node name="GameStateLogo" type="Node" parent="States"]
+[node name="GameStateLogo" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("2_kfmw1")
 
-[node name="GameStateMenu" type="Node" parent="States"]
+[node name="GameStateMenu" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("3_srn44")
 
 [node name="GameStateClassic" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
 script = ExtResource("4_vuupf")
 
-[node name="GameStateSnakeo" type="Node" parent="States"]
+[node name="GameStateSnakeo" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("5_7m04d")
 
-[node name="GameStateDungeon" type="Node" parent="States"]
+[node name="GameStateDungeon" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("6_4a1hm")
 
+[editable path="States/GameStateLogo"]
+[editable path="States/GameStateMenu"]
 [editable path="States/GameStateClassic"]
+[editable path="States/GameStateSnakeo"]
+[editable path="States/GameStateDungeon"]

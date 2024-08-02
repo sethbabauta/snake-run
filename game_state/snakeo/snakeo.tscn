@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://cu6he2syq2bse"]
 
-[ext_resource type="Script" path="res://scripts/snakeo.gd" id="1_by8yj"]
+[ext_resource type="Script" path="res://game_state/snakeo/snakeo.gd" id="1_by8yj"]
 [ext_resource type="PackedScene" uid="uid://bvb4k8h5376d2" path="res://game_state/snakeo/snakeo_death_screen.tscn" id="2_54pgv"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://scenes/main.tscn" id="4_csxen"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="5_1xoox"]

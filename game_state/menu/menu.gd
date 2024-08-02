@@ -1,8 +1,8 @@
 extends Control
 
-@onready var start_classic: Button = %StartClassic
-@onready var start_snake_o_mode: Button = %"StartSnake-oMode"
-@onready var start_dungeon: Button = %StartDungeon
+@export var start_classic: Button
+@export var start_snake_o_mode: Button
+@export var start_dungeon: Button
 
 
 func _ready() -> void:

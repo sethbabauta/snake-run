@@ -26,5 +26,8 @@ const CLASSIC_SCENE = "res://game_state/classic/classic.tscn"
 const CLASSIC_DEATH_SCREEN = "res://game_state/classic/classic_death_screen.tscn"
 
 const SNAKEO_SCENE = "res://game_state/snakeo/snakeo.tscn"
+const SNAKEO_DEATH_SCREEN = "res://game_state/snakeo/snakeo_death_screen.tscn"
 
 const DUNGEON_SCENE = "res://game_state/dungeon/dungeon.tscn"
+const DUNGEON_DEATH_SCREEN = "res://game_state/dungeon/dungeon_death_screen.tscn"
+const DUNGEON_WIN_SCREEN = "res://game_state/dungeon/dungeon_win_screen.tscn"
