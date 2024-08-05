@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_win_screen.gd" id="1_vvpea"]
 
-[node name="DungeonWinScreen" type="Control"]
+[node name="DungeonWinScreen" type="Control" node_paths=PackedStringArray("score_label", "play_again", "menu")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +10,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vvpea")
-dungeon_scene = "res://Scenes/dungeon.tscn"
-menu_scene = "res://Scenes/menu.tscn"
+score_label = NodePath("VBoxContainer/Score")
+play_again = NodePath("VBoxContainer/PlayAgain")
+menu = NodePath("VBoxContainer/Menu")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -54,6 +55,4 @@ text = "Menu"
 layout_mode = 2
 text = "Quit"
 
-[connection signal="pressed" from="VBoxContainer/PlayAgain" to="." method="_on_play_again_pressed"]
-[connection signal="pressed" from="VBoxContainer/Menu" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

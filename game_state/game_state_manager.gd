@@ -33,8 +33,15 @@ func choose_next_state() -> void:
 		game_state_logo:
 			state_machine.set_state(game_state_menu)
 		game_state_menu:
-			var next_state: State = game_state_menu.next_state
-			state_machine.set_state(next_state)
+			_gamemode_next_state(game_state_menu)
 		game_state_classic:
-			var next_state: State = game_state_classic.next_state
-			state_machine.set_state(next_state)
+			_gamemode_next_state(game_state_classic)
+		game_state_snakeo:
+			_gamemode_next_state(game_state_snakeo)
+		game_state_dungeon:
+			_gamemode_next_state(game_state_dungeon)
+
+
+func _gamemode_next_state(game_state: GameState) -> void:
+	var next_state: State = game_state.next_state
+	state_machine.set_state(next_state)
