@@ -29,6 +29,7 @@ func _ready() -> void:
 	move_timer.speed_5.connect(_on_move_timer_speed_5)
 	spawn_timer.timeout.connect(_spawn_object_from_queue)
 	EventBus.game_started.connect(_on_game_start)
+	EventBus.pause_requested.connect(_on_pause_requested)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -571,6 +572,10 @@ func _on_move_timer_speed_4() -> void:
 func _on_move_timer_speed_5() -> void:
 	var new_event := GameEngine.Event.new("MoveForward")
 	self.game_object_factory.notify_subscribers(new_event, "movable5")
+
+
+func _on_pause_requested() -> void:
+	move_timer.paused = not move_timer.paused
 
 
 func _spawn_background_tile(position: Vector2) -> void:

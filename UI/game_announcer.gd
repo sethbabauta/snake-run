@@ -27,12 +27,15 @@ func _process(delta: float) -> void:
 
 
 func announce_arrows(exclusions: Array[String] = []) -> void:
+	EventBus.pause_requested.emit()
 	var arrows_to_play: Array[String] = ["N", "E", "S", "W"]
 	arrows_to_play = Utils.array_subtract(arrows_to_play, exclusions)
 
 	for direction in arrows_to_play:
 		_announce_arrow(direction)
 		await get_tree().create_timer(0.2).timeout
+
+	EventBus.pause_requested.emit()
 
 
 func announce_message(

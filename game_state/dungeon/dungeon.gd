@@ -22,42 +22,9 @@ var crown_collected_count: int = 0
 func _ready() -> void:
 	EventBus.crown_collected.connect(_on_crown_pickup)
 	EventBus.crown_dropped.connect(_on_crown_dropped)
-	EventBus.level_changed.connect(_on_level_changed)
 	EventBus.player_fully_entered.connect(_on_player_fully_entered)
 	EventBus.player_moved.connect(_on_player_moved)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
-
-	_setup_initial_room()
-	crown_poison_counter = CrownPoisonCounter.new(main_node)
-	EventBus.level_changed.emit("Start")
-
-	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
-	main_node.spawn_player_snake(start_position, START_LENGTH)
-	main_node.queue_object_to_spawn(
-		"DungeonExit",
-		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
-	)
-
-	game_announcer.announce_message("3 2 1 GO!", 0.75)
-	await get_tree().create_timer(3).timeout
-
-	EventBus.game_started.emit("Dungeon")
-
-
-func end_level() -> void:
-	var exclusions: Array[String] = get_current_room_exclusions()
-	main_node.clear_doors(exclusions)
-
-	await EventBus.player_moved
-
-	var pickups_cleared: int = 0
-	var clear_pickup_tries: int = 0
-	while pickups_cleared == 0 and clear_pickup_tries < 10:
-		pickups_cleared += await main_node.clear_pickups()
-		clear_pickup_tries += 1
-
-	await main_node.play_scripted_event(_level_cleared_event)
-	game_announcer.announce_arrows(exclusions)
 
 
 func get_current_room_exclusions() -> Array[String]:
@@ -79,28 +46,13 @@ func get_current_room_exclusions() -> Array[String]:
 	return exclusions
 
 
-func _crown_scripted_event(_args: Dictionary) -> void:
-	main_node.audio_library.play_sound("earthquake")
-	follow_camera.shake_with_noise()
-	await EventBus.shake_completed
-	game_announcer.announce_message("ESCAPE WITH YOUR LIFE")
+func level_change_pause(_args: Dictionary) -> void:
+	game_announcer.announce_message("3 2 1 GO")
 	await EventBus.announcement_completed
 	EventBus.scripted_event_completed.emit()
 
 
-func _level_change_pause(_args: Dictionary) -> void:
-	game_announcer.announce_message("3 2 1 GO")
-	await get_tree().create_timer(2).timeout
-	EventBus.scripted_event_completed.emit()
-
-
-func _level_cleared_event(_args: Dictionary) -> void:
-	game_announcer.announce_message("ROOM CLEARED")
-	await get_tree().create_timer(1).timeout
-	EventBus.scripted_event_completed.emit()
-
-
-func _load_room(room: Room) -> void:
+func load_room(room: Room) -> void:
 	var room_tile_map: RoomTileMap = room.tile_map.instantiate()
 	room_mapper.add_child(room_tile_map)
 	room_tile_map.visible = false
@@ -109,41 +61,7 @@ func _load_room(room: Room) -> void:
 	loaded_rooms.append(room)
 
 
-func _load_room_neighbors() -> void:
-	if (
-		current_room_neighbors.left not in loaded_rooms
-		and current_room_neighbors.left
-	):
-		_load_room(current_room_neighbors.left)
-	if (
-		current_room_neighbors.right not in loaded_rooms
-		and current_room_neighbors.right
-	):
-		_load_room(current_room_neighbors.right)
-	if (
-		current_room_neighbors.up not in loaded_rooms
-		and current_room_neighbors.up
-	):
-		_load_room(current_room_neighbors.up)
-	if (
-		current_room_neighbors.down not in loaded_rooms
-		and current_room_neighbors.down
-	):
-		_load_room(current_room_neighbors.down)
-
-
-func _on_crown_dropped() -> void:
-	crown_collected = false
-
-
-func _on_crown_pickup() -> void:
-	crown_collected = true
-	crown_collected_count += 1
-	if crown_collected_count == 1:
-		main_node.play_scripted_event(_crown_scripted_event)
-
-
-func _on_level_changed(direction: String) -> void:
+func update_rooms(direction: String) -> void:
 	if direction == "ERROR":
 		return
 
@@ -164,13 +82,50 @@ func _on_level_changed(direction: String) -> void:
 	_load_room_neighbors()
 
 	if direction != "Start":
-		main_node.play_scripted_event(_level_change_pause)
+		main_node.play_scripted_event(level_change_pause)
 
-	if not current_room.get_is_room_complete():
-		var exclusions: Array[String] = get_current_room_exclusions()
-		main_node.spawn_doors(exclusions)
-		await get_tree().create_timer(1).timeout
-		main_node.queue_object_to_spawn("Apple")
+
+func _crown_scripted_event(_args: Dictionary) -> void:
+	main_node.audio_library.play_sound("earthquake")
+	follow_camera.shake_with_noise()
+	await EventBus.shake_completed
+	game_announcer.announce_message("ESCAPE WITH YOUR LIFE")
+	await EventBus.announcement_completed
+	EventBus.scripted_event_completed.emit()
+
+
+func _load_room_neighbors() -> void:
+	if (
+		current_room_neighbors.left not in loaded_rooms
+		and current_room_neighbors.left
+	):
+		load_room(current_room_neighbors.left)
+	if (
+		current_room_neighbors.right not in loaded_rooms
+		and current_room_neighbors.right
+	):
+		load_room(current_room_neighbors.right)
+	if (
+		current_room_neighbors.up not in loaded_rooms
+		and current_room_neighbors.up
+	):
+		load_room(current_room_neighbors.up)
+	if (
+		current_room_neighbors.down not in loaded_rooms
+		and current_room_neighbors.down
+	):
+		load_room(current_room_neighbors.down)
+
+
+func _on_crown_dropped() -> void:
+	crown_collected = false
+
+
+func _on_crown_pickup() -> void:
+	crown_collected = true
+	crown_collected_count += 1
+	if crown_collected_count == 1:
+		main_node.play_scripted_event(_crown_scripted_event)
 
 
 func _on_player_moved() -> void:
@@ -181,7 +136,7 @@ func _on_player_moved() -> void:
 func _on_score_changed(_new_score: int, changed_by: int) -> void:
 	current_room.current_room_score += changed_by
 	if current_room.get_is_room_complete():
-		end_level()
+		EventBus.level_completed.emit()
 
 
 func _on_player_fully_entered() -> void:
@@ -197,12 +152,6 @@ func _on_player_fully_entered() -> void:
 		await get_tree().create_timer(5).timeout
 		if current_room.get_is_room_complete():
 			main_node.clear_doors(exclusions)
-
-
-func _setup_initial_room() -> void:
-	current_room = room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
-	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-	_load_room(current_room)
 
 
 class CrownPoisonCounter:

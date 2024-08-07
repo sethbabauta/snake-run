@@ -1,11 +1,10 @@
 extends DungeonState
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+func enter() -> void:
+	var exclusions: Array[String] = dungeon.get_current_room_exclusions()
+	dungeon.main_node.spawn_doors(exclusions)
+	await get_tree().create_timer(1).timeout
+	dungeon.main_node.queue_object_to_spawn("Apple")
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+	is_complete = true

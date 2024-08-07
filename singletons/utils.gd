@@ -12,6 +12,10 @@ func array_subtract(array_a: Array, array_b: Array) -> Array:
 	return result
 
 
+func await_multiple_signals(all_signals: Array[Signal]) -> void:
+	pass
+
+
 func convert_simple_to_world_coordinates(coordinates: Vector2) -> Vector2:
 	var new_coordinates: Vector2 = (
 		(coordinates.round() * Settings.BASE_MOVE_SPEED)
@@ -64,3 +68,12 @@ func roll(die_count: int, sides: int) -> int:
 		result += self.rng.randi_range(1, sides)
 
 	return result
+
+
+class SignalTracker:
+	var signal_to_wait_for: Signal
+	var has_emitted: bool
+
+	func _init(p_signal_to_wait_for: Signal, p_has_emitted: bool = false) -> void:
+		signal_to_wait_for = p_signal_to_wait_for
+		has_emitted = p_has_emitted
