@@ -23,9 +23,9 @@ gamemode_node = NodePath("..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("6_4fbu5")]
+unique_name_in_owner = true
+
 [node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("5_m1c66")]
 unique_name_in_owner = true
 main_node = NodePath("../../Main")
-
-[node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("6_4fbu5")]
-unique_name_in_owner = true

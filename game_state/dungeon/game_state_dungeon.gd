@@ -63,7 +63,7 @@ func set_dungeon_for_all_states(new_dungeon: Dungeon) -> void:
 
 
 func _dungeon_next_state(dungeon_state: DungeonState) -> void:
-	var next_dungeon_state: State = dungeon_state.next_dungeon_state
+	var next_dungeon_state: State = dungeon_state.next_state
 	dungeon_state_machine.set_state(next_dungeon_state)
 
 

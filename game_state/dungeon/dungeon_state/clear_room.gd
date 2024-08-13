@@ -14,7 +14,7 @@ func enter() -> void:
 		clear_pickup_tries += 1
 
 	await dungeon.main_node.play_scripted_event(_level_cleared_event)
-	dungeon.game_announcer.announce_arrows(exclusions)
+	await dungeon.game_announcer.announce_arrows(exclusions)
 
 	is_complete = true
 

@@ -28,12 +28,17 @@ func _process(delta: float) -> void:
 
 func announce_arrows(exclusions: Array[String] = []) -> void:
 	EventBus.pause_requested.emit()
+
 	var arrows_to_play: Array[String] = ["N", "E", "S", "W"]
 	arrows_to_play = Utils.array_subtract(arrows_to_play, exclusions)
 
+	var current_arrow: DungeonArrow
 	for direction in arrows_to_play:
-		_announce_arrow(direction)
+		current_arrow = _announce_arrow(direction)
 		await get_tree().create_timer(0.2).timeout
+
+	if current_arrow:
+		await current_arrow.animation_player.animation_finished
 
 	EventBus.pause_requested.emit()
 
@@ -51,16 +56,28 @@ func announce_message(
 	EventBus.announcement_completed.emit()
 
 
-func _announce_arrow(direction: String) -> void:
+func hide_arrows() -> void:
+	dungeon_arrow_north.visible = false
+	dungeon_arrow_east.visible = false
+	dungeon_arrow_south.visible = false
+	dungeon_arrow_west.visible = false
+
+
+func _announce_arrow(direction: String) -> DungeonArrow:
+	var announcing_arrow: DungeonArrow
 	match direction:
 		"N":
-			dungeon_arrow_north.play_arrow_animation()
+			announcing_arrow = dungeon_arrow_north
 		"E":
-			dungeon_arrow_east.play_arrow_animation()
+			announcing_arrow = dungeon_arrow_east
 		"S":
-			dungeon_arrow_south.play_arrow_animation()
+			announcing_arrow = dungeon_arrow_south
 		"W":
-			dungeon_arrow_west.play_arrow_animation()
+			announcing_arrow = dungeon_arrow_west
+
+	announcing_arrow.play_arrow_animation()
+
+	return announcing_arrow
 
 
 func _announce_word(word: String, time_between_words: float) -> void:
