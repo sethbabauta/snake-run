@@ -38,8 +38,6 @@ func _process(_delta: float) -> void:
 func choose_next_state() -> void:
 	match dungeon_state_machine.state:
 		start_game:
-			dungeon_state_machine.set_state(enter_room)
-		enter_room:
 			dungeon_state_machine.set_state(collect_apples)
 		collect_apples:
 			dungeon_state_machine.set_state(clear_room)
@@ -47,6 +45,8 @@ func choose_next_state() -> void:
 			dungeon_state_machine.set_state(roam_free)
 		roam_free:
 			dungeon_state_machine.set_state(enter_room)
+		enter_room:
+			dungeon_state_machine.set_state(collect_apples)
 		win:
 			_dungeon_next_state(win)
 		lose:

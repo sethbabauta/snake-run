@@ -61,6 +61,13 @@ func load_room(room: Room) -> void:
 	loaded_rooms.append(room)
 
 
+func spawn_doors_and_apple() -> void:
+	var exclusions: Array[String] = get_current_room_exclusions()
+	main_node.spawn_doors(exclusions)
+	await get_tree().create_timer(1).timeout
+	main_node.queue_object_to_spawn("Apple")
+
+
 func update_rooms(direction: String) -> void:
 	if direction == "ERROR":
 		return

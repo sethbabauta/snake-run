@@ -18,6 +18,7 @@ func enter() -> void:
 		"DungeonExit",
 		Utils.convert_simple_to_world_coordinates(Vector2(9, 6)),
 	)
+	dungeon.spawn_doors_and_apple()
 
 	dungeon.main_node.play_scripted_event(dungeon.level_change_pause)
 	await EventBus.announcement_completed
