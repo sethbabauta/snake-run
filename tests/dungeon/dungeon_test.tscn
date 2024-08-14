@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://foa8jyv151j4"]
 
-[ext_resource type="Script" path="res://Scripts/dungeon.gd" id="1_0ddpw"]
-[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://Scenes/adventure_death_screen.tscn" id="2_j1g2c"]
-[ext_resource type="PackedScene" uid="uid://ev0uehnt8emi" path="res://Scenes/dungeon_win_screen.tscn" id="3_f7v15"]
-[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://Scenes/main.tscn" id="4_87s4q"]
-[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://Scenes/follow_camera.tscn" id="5_tf1lc"]
-[ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://Levels/template/room_mapper.tscn" id="6_slsd0"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon.gd" id="1_0ddpw"]
+[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://game_state/dungeon/dungeon_death_screen.tscn" id="2_j1g2c"]
+[ext_resource type="PackedScene" uid="uid://ev0uehnt8emi" path="res://game_state/dungeon/dungeon_win_screen.tscn" id="3_f7v15"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://scenes/main.tscn" id="4_87s4q"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="5_tf1lc"]
+[ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://levels/template/room_mapper.tscn" id="6_slsd0"]
 [ext_resource type="Resource" uid="uid://b1sqxj6bkbh7p" path="res://tests/dungeon/test_levels.tres" id="7_85p4c"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://Scenes/game_ui.tscn" id="7_hiyqk"]
-[ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://UI/game_announcer.tscn" id="8_dtuja"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://scenes/game_ui.tscn" id="7_hiyqk"]
+[ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer.tscn" id="8_dtuja"]
 
 [node name="DungeonTest" type="Node"]
 script = ExtResource("1_0ddpw")

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Room" load_steps=3 format=3 uid="uid://qw4bd3mkw1u0"]
 
-[ext_resource type="Script" path="res://Levels/template/room.gd" id="1_aiuhb"]
+[ext_resource type="Script" path="res://levels/template/room.gd" id="1_aiuhb"]
 [ext_resource type="PackedScene" uid="uid://dqitsdhjc5kg5" path="res://Levels/room_tilemaps/r22.tscn" id="2_g3pdu"]
 
 [resource]

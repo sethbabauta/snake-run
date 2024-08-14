@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://51e72pym3jkv"]
 
-[ext_resource type="Texture2D" uid="uid://b5mh3r3vg5517" path="res://Sprites/grass_background1.png" id="1_tbeww"]
-[ext_resource type="Script" path="res://Scripts/grass_background.gd" id="2_kje8u"]
+[ext_resource type="Texture2D" uid="uid://b5mh3r3vg5517" path="res://sprites/grass_background1.png" id="1_tbeww"]
+[ext_resource type="Script" path="res://scripts/grass_background.gd" id="2_kje8u"]
 
 [node name="GrassBackground" type="Sprite2D"]
 texture = ExtResource("1_tbeww")

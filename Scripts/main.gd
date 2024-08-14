@@ -9,6 +9,8 @@ var max_simple_size: Vector2
 var query_area: Area2D
 var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
 var spawn_queue: Array[SpawnJob] = []
+var timer_frozen: bool = false
+var is_paused: bool = false
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -29,6 +31,7 @@ func _ready() -> void:
 	move_timer.speed_5.connect(_on_move_timer_speed_5)
 	spawn_timer.timeout.connect(_spawn_object_from_queue)
 	EventBus.game_started.connect(_on_game_start)
+	EventBus.pause_requested.connect(_on_pause_requested)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -55,7 +58,7 @@ func _input(event: InputEvent) -> void:
 		self._fire_use_item_event()
 
 	if event.is_action_pressed("pause"):
-		pause_or_play()
+		EventBus.pause_requested.emit()
 
 
 static func apply_shader_to_physics_body(
@@ -169,7 +172,7 @@ func end_game_soon() -> void:
 	await get_tree().create_timer(3).timeout
 
 	if not check_is_player_alive():
-		gamemode_node.end_game()
+		EventBus.game_ended.emit(false)
 		return
 
 	EventBus.player_respawned.emit()
@@ -357,7 +360,12 @@ func get_taken_positions() -> Array:
 
 func get_visible_game_objects() -> Array[GameEngine.GameObject]:
 	var game_objects: Array[GameEngine.GameObject] = []
+
+	if not get_tree():
+		return game_objects
+
 	await get_tree().physics_frame
+
 	if not self.query_area.has_overlapping_areas():
 		return game_objects
 
@@ -405,19 +413,12 @@ static func overlay_sprite_on_game_object(
 	new_sprite.position += offset
 
 
-func pause_or_play() -> void:
-	move_timer.paused = not move_timer.paused
-	EventBus.game_paused.emit(move_timer.paused)
-
-
 func play_scripted_event(
 	event_callable: Callable,
 	callable_args: Dictionary = {},
 ) -> void:
-	move_timer.paused = true
 	event_callable.call(callable_args)
 	await EventBus.scripted_event_completed
-	move_timer.paused = false
 
 
 func queue_object_to_spawn(
@@ -529,6 +530,11 @@ func spawn_player_snake(start_position: Vector2, snake_length: int, slow: bool =
 		self.spawn_snake_segment(snake_head, spawn_position)
 
 
+func toggle_timer_freeze() -> void:
+	timer_frozen = not timer_frozen
+	move_timer.paused = not move_timer.paused
+
+
 func _fire_change_direction_event(input_name: String) -> void:
 	var new_event := GameEngine.Event.new("TryChangeDirection", {"input": input_name})
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
@@ -571,6 +577,15 @@ func _on_move_timer_speed_4() -> void:
 func _on_move_timer_speed_5() -> void:
 	var new_event := GameEngine.Event.new("MoveForward")
 	self.game_object_factory.notify_subscribers(new_event, "movable5")
+
+
+func _on_pause_requested() -> void:
+	is_paused = not is_paused
+	if not timer_frozen:
+		move_timer.paused = is_paused
+
+	EventBus.game_paused.emit(is_paused)
+	print("pause detected. is paused: ", is_paused)
 
 
 func _spawn_background_tile(position: Vector2) -> void:

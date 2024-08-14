@@ -116,6 +116,7 @@ func _on_move_timer_speed_5() -> void:
 		.get("SnakeBody")
 		.get_tail_game_object()
 	)
+
 	if await main_node.get_is_object_visible(tail_game_object) and not is_tail_visible:
 		is_tail_visible = true
 		EventBus.player_fully_entered.emit()

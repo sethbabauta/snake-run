@@ -701,7 +701,7 @@ class Royalty:
 
 
 	func _end_game() -> void:
-		game_object.main_node.gamemode_node.end_game(true)
+		EventBus.game_ended.emit(true)
 
 
 	func _get_drop_position() -> Vector2:

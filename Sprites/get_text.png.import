@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bydv5roxl85cc"
-path="res://.godot/imported/get_text.png-e45dabf2d6340a1c6dcaa59c26dab5b1.ctex"
+path="res://.godot/imported/get_text.png-b384ce0e255cbdc8570cf38533f0715e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/get_text.png"
-dest_files=["res://.godot/imported/get_text.png-e45dabf2d6340a1c6dcaa59c26dab5b1.ctex"]
+source_file="res://sprites/get_text.png"
+dest_files=["res://.godot/imported/get_text.png-b384ce0e255cbdc8570cf38533f0715e.ctex"]
 
 [params]
 

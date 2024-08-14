@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://0c6whndjsqar"
-path="res://.godot/imported/higher_c_note.wav-e02139e0bd6b43b65c8c7e5f511305d8.sample"
+path="res://.godot/imported/higher_c_note.wav-23dbeab0732d93061a02a99e07938402.sample"
 
 [deps]
 
-source_file="res://Audio/higher_c_note.wav"
-dest_files=["res://.godot/imported/higher_c_note.wav-e02139e0bd6b43b65c8c7e5f511305d8.sample"]
+source_file="res://audio/higher_c_note.wav"
+dest_files=["res://.godot/imported/higher_c_note.wav-23dbeab0732d93061a02a99e07938402.sample"]
 
 [params]
 

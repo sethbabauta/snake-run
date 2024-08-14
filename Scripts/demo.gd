@@ -20,10 +20,6 @@ func _ready():
 	EventBus.game_started.emit("Demo")
 
 
-func end_game() -> void:
-	get_tree().change_scene_to_file(adventure_death_screen)
-
-
 func setup_level() -> void:
 	#var level_path: String = Settings.LEVELS_PATH + "level_" + str(Utils.roll(1, 2)) + ".tscn"
 	var level_path: String = Settings.LEVELS_PATH + "level_1" + ".tscn"

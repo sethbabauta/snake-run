@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://bung5knnx5cud"]
+
+[ext_resource type="Script" path="res://game_state/classic/classic.gd" id="1_rch0c"]
+[ext_resource type="PackedScene" uid="uid://bbgwhsfyw5xdo" path="res://game_state/classic/classic_death_screen.tscn" id="2_6qh41"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://scenes/game_ui.tscn" id="3_t4vht"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://scenes/main.tscn" id="4_f8r07"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="5_c87cb"]
+[ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer.tscn" id="6_l58uj"]
+
+[node name="Classic" type="Node"]
+script = ExtResource("1_rch0c")
+classic_death_screen = ExtResource("2_6qh41")
+
+[node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_f8r07")]
+unique_name_in_owner = true
+follow_camera = NodePath("../FollowCamera")
+gamemode_node = NodePath("..")
+
+[node name="FollowCamera" parent="." node_paths=PackedStringArray("main_node", "gamemode_node") instance=ExtResource("5_c87cb")]
+unique_name_in_owner = true
+main_node = NodePath("../Main")
+gamemode_node = NodePath("..")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("6_l58uj")]
+unique_name_in_owner = true
+
+[node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("3_t4vht")]
+unique_name_in_owner = true
+main_node = NodePath("../../Main")

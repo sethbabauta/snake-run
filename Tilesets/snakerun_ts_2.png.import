@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dh4q6jyoj4ko8"
-path="res://.godot/imported/snakerun_ts_2.png-ae3bc63d0901b9b8d7ee02f4a37bda11.ctex"
+path="res://.godot/imported/snakerun_ts_2.png-72922184f97228ffa8d33209b3dd815b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Tilesets/snakerun_ts_2.png"
-dest_files=["res://.godot/imported/snakerun_ts_2.png-ae3bc63d0901b9b8d7ee02f4a37bda11.ctex"]
+source_file="res://tilesets/snakerun_ts_2.png"
+dest_files=["res://.godot/imported/snakerun_ts_2.png-72922184f97228ffa8d33209b3dd815b.ctex"]
 
 [params]
 

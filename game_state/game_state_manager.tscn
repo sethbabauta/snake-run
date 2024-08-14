@@ -1,0 +1,74 @@
+[gd_scene load_steps=17 format=3 uid="uid://b0xlwmro2kyby"]
+
+[ext_resource type="Script" path="res://game_state/game_state_manager.gd" id="1_52rvp"]
+[ext_resource type="Script" path="res://game_state/logo/game_state_logo.gd" id="2_kfmw1"]
+[ext_resource type="Script" path="res://game_state/menu/game_state_menu.gd" id="3_srn44"]
+[ext_resource type="PackedScene" uid="uid://bchtrar3ax1mc" path="res://game_state/game_state.tscn" id="4_b7lyr"]
+[ext_resource type="Script" path="res://game_state/classic/game_state_classic.gd" id="4_vuupf"]
+[ext_resource type="Script" path="res://game_state/snakeo/game_state_snakeo.gd" id="5_7m04d"]
+[ext_resource type="Script" path="res://game_state/dungeon/game_state_dungeon.gd" id="6_4a1hm"]
+[ext_resource type="PackedScene" uid="uid://cu6jc22wmsou4" path="res://game_state/dungeon/dungeon_state/dungeon_state.tscn" id="8_nxkad"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/wait.gd" id="9_7sptv"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/start_game.gd" id="9_vhyvp"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/collect_apples.gd" id="10_vbaot"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/clear_room.gd" id="11_druvu"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/roam_free.gd" id="12_h5tnb"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/enter_room.gd" id="13_ibpqm"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/win.gd" id="14_ffv4s"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/lose.gd" id="15_qg1fj"]
+
+[node name="GameStateManager" type="Node"]
+script = ExtResource("1_52rvp")
+
+[node name="States" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="GameStateLogo" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
+script = ExtResource("2_kfmw1")
+
+[node name="GameStateMenu" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
+script = ExtResource("3_srn44")
+
+[node name="GameStateClassic" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
+script = ExtResource("4_vuupf")
+
+[node name="GameStateSnakeo" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
+script = ExtResource("5_7m04d")
+
+[node name="GameStateDungeon" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
+script = ExtResource("6_4a1hm")
+
+[node name="Wait" parent="States/GameStateDungeon/States" index="0" instance=ExtResource("8_nxkad")]
+script = ExtResource("9_7sptv")
+
+[node name="StartGame" parent="States/GameStateDungeon/States" index="1" instance=ExtResource("8_nxkad")]
+script = ExtResource("9_vhyvp")
+
+[node name="CollectApples" parent="States/GameStateDungeon/States" index="2" instance=ExtResource("8_nxkad")]
+script = ExtResource("10_vbaot")
+
+[node name="ClearRoom" parent="States/GameStateDungeon/States" index="3" instance=ExtResource("8_nxkad")]
+script = ExtResource("11_druvu")
+
+[node name="RoamFree" parent="States/GameStateDungeon/States" index="4" instance=ExtResource("8_nxkad")]
+script = ExtResource("12_h5tnb")
+
+[node name="EnterRoom" parent="States/GameStateDungeon/States" index="5" instance=ExtResource("8_nxkad")]
+script = ExtResource("13_ibpqm")
+
+[node name="Win" parent="States/GameStateDungeon/States" index="6" instance=ExtResource("8_nxkad")]
+script = ExtResource("14_ffv4s")
+
+[node name="Lose" parent="States/GameStateDungeon/States" index="7" instance=ExtResource("8_nxkad")]
+script = ExtResource("15_qg1fj")
+
+[editable path="States/GameStateLogo"]
+[editable path="States/GameStateMenu"]
+[editable path="States/GameStateClassic"]
+[editable path="States/GameStateSnakeo"]
+[editable path="States/GameStateDungeon"]
