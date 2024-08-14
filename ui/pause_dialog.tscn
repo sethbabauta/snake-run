@@ -1,9 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c2rxm4oown5nh"]
+[gd_scene load_steps=2 format=3 uid="uid://c2rxm4oown5nh"]
 
-[ext_resource type="Script" path="res://scripts/pause_dialog.gd" id="1_prgy2"]
-[ext_resource type="PackedScene" uid="uid://bcwkfdsotaoow" path="res://game_state/menu/menu.tscn" id="2_tlfog"]
+[ext_resource type="Script" path="res://scripts/pause_dialog.gd" id="1_maqxt"]
 
-[node name="PauseDialog" type="PanelContainer"]
+[node name="PauseDialog" type="PanelContainer" node_paths=PackedStringArray("main_menu_button")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -16,8 +15,8 @@ offset_bottom = 50.5
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
-script = ExtResource("1_prgy2")
-main_menu_scene = ExtResource("2_tlfog")
+script = ExtResource("1_maqxt")
+main_menu_button = NodePath("MarginContainer/VBoxContainer/MainMenuButton")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -46,5 +45,4 @@ size_flags_vertical = 6
 text = "Quit Game"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/QuitGameButton" to="." method="_on_quit_game_button_pressed"]

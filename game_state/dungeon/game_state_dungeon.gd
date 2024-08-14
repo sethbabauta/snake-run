@@ -57,6 +57,13 @@ func enter() -> void:
 	dungeon_state_machine.set_state(start_game)
 
 
+func set_current_screen_to_dungeon(new_screen: Dungeon) -> void:
+	current_screen = new_screen
+	current_screen.game_ui.pause_dialog.main_menu_button.pressed.connect(
+		_on_menu_pressed
+	)
+
+
 func set_dungeon_for_all_states(new_dungeon: Dungeon) -> void:
 	for dungeon_state in states.get_children():
 		dungeon_state.dungeon = new_dungeon
@@ -72,3 +79,7 @@ func _on_game_ended(won: bool) -> void:
 		dungeon_state_machine.set_state(win)
 	else:
 		dungeon_state_machine.set_state(lose)
+
+
+func _on_menu_pressed() -> void:
+	_select_mode(game_state_manager.game_state_menu)

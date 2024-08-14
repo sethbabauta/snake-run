@@ -14,9 +14,7 @@ func enter() -> void:
 
 
 func _on_menu_pressed() -> void:
-	dungeon_state_manager._select_mode(
-		dungeon_state_manager.game_state_manager.game_state_menu
-	)
+	dungeon_state_manager._on_menu_pressed()
 
 
 func _on_play_again_pressed() -> void:

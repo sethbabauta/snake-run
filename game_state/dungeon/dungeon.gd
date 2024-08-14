@@ -17,6 +17,7 @@ var crown_collected_count: int = 0
 @onready var main_node: Main = %Main
 @onready var room_mapper: RoomMapper = %room_mapper
 @onready var game_announcer: GameAnnouncer = %GameAnnouncer
+@onready var game_ui: GameUI = %GameUI
 
 
 func _ready() -> void:
@@ -47,9 +48,11 @@ func get_current_room_exclusions() -> Array[String]:
 
 
 func level_change_pause(_args: Dictionary) -> void:
-	game_announcer.announce_message("3 2 1 GO")
+	main_node.toggle_timer_freeze()
+	game_announcer.announce_message("3 2 1 GO", 1.05)
 	await EventBus.announcement_completed
 	EventBus.scripted_event_completed.emit()
+	main_node.toggle_timer_freeze()
 
 
 func load_room(room: Room) -> void:

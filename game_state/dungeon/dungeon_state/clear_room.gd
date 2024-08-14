@@ -7,6 +7,8 @@ func enter() -> void:
 
 	await EventBus.player_moved
 
+	dungeon.main_node.toggle_timer_freeze()
+
 	var pickups_cleared: int = 0
 	var clear_pickup_tries: int = 0
 	while pickups_cleared == 0 and clear_pickup_tries < 10:
@@ -15,6 +17,8 @@ func enter() -> void:
 
 	await dungeon.main_node.play_scripted_event(_level_cleared_event)
 	await dungeon.game_announcer.announce_arrows(exclusions)
+
+	dungeon.main_node.toggle_timer_freeze()
 
 	is_complete = true
 

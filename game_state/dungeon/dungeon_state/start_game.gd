@@ -5,14 +5,16 @@ func enter() -> void:
 	var new_dungeon: Dungeon = dungeon_state_manager._change_scene(
 		Settings.DUNGEON_SCENE
 	)
-	dungeon_state_manager.current_screen = new_dungeon
+	dungeon_state_manager.set_current_screen_to_dungeon(new_dungeon)
 	dungeon_state_manager.set_dungeon_for_all_states(new_dungeon)
 
 	_setup_initial_room()
 	dungeon.crown_poison_counter = Dungeon.CrownPoisonCounter.new(dungeon.main_node)
 	dungeon.update_rooms("Start")
 
-	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(Vector2(9, 9))
+	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(
+		Vector2(9, 9)
+	)
 	dungeon.main_node.spawn_player_snake(start_position, dungeon.START_LENGTH)
 	dungeon.main_node.queue_object_to_spawn(
 		"DungeonExit",

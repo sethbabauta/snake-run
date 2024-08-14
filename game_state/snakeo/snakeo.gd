@@ -9,6 +9,7 @@ var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
 @onready var main_node: Main = %Main
 @onready var game_announcer: GameAnnouncer = %GameAnnouncer
+@onready var game_ui: GameUI = %GameUI
 
 
 func _ready() -> void:
@@ -33,7 +34,7 @@ func _ready() -> void:
 	game_announcer.announce_message("3 2 1 GO!", 1.05)
 	await get_tree().create_timer(1).timeout
 	main_node.queue_object_to_spawn("Apple")
-	await get_tree().create_timer(2).timeout
+	await EventBus.announcement_completed
 
 	EventBus.game_started.emit("Snakeo")
 
