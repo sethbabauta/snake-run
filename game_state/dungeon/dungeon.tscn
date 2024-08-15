@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon.gd" id="1_pqnat"]
 [ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://game_state/dungeon/dungeon_death_screen.tscn" id="2_6by23"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://scenes/game_ui.tscn" id="2_ynyrs"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="2_ynyrs"]
 [ext_resource type="PackedScene" uid="uid://ev0uehnt8emi" path="res://game_state/dungeon/dungeon_win_screen.tscn" id="3_7shf6"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://scenes/main.tscn" id="3_waiuv"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="4_qb1ah"]

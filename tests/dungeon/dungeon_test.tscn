@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="5_tf1lc"]
 [ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://levels/template/room_mapper.tscn" id="6_slsd0"]
 [ext_resource type="Resource" uid="uid://b1sqxj6bkbh7p" path="res://tests/dungeon/test_levels.tres" id="7_85p4c"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://scenes/game_ui.tscn" id="7_hiyqk"]
+[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="7_hiyqk"]
 [ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer.tscn" id="8_dtuja"]
 
 [node name="DungeonTest" type="Node"]

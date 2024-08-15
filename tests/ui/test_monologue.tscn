@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfysiwbg58s57"]
+
+[ext_resource type="Script" path="res://tests/ui/test_monologue.gd" id="1_s4jq0"]
+[ext_resource type="PackedScene" uid="uid://bqvkxod686681" path="res://ui/monologue.tscn" id="2_rgcj6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kahty"]
+
+[node name="TestMonologue" type="Node" node_paths=PackedStringArray("monologue_controller", "body")]
+script = ExtResource("1_s4jq0")
+monologue_controller = NodePath("Monologue")
+body = NodePath("Body")
+
+[node name="Monologue" parent="." instance=ExtResource("2_rgcj6")]
+
+[node name="Body" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
+shape = SubResource("RectangleShape2D_kahty")

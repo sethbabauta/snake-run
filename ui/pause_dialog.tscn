@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c2rxm4oown5nh"]
 
-[ext_resource type="Script" path="res://scripts/pause_dialog.gd" id="1_maqxt"]
+[ext_resource type="Script" path="res://ui/pause_dialog.gd" id="1_maqxt"]
 
 [node name="PauseDialog" type="PanelContainer" node_paths=PackedStringArray("main_menu_button")]
 anchors_preset = 8
