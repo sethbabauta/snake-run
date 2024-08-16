@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/monologue.gd" id="1_3wleo"]
 
-[node name="Monologue" type="Control"]
+[node name="Monologue" type="Control" node_paths=PackedStringArray("monologue_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,11 +10,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3wleo")
+monologue_label = NodePath("MonologueText")
 
 [node name="MonologueText" type="Label" parent="."]
 visible = false
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
-visible_characters = 0
-visible_ratio = 0.589744

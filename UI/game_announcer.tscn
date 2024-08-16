@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bnjk6212auow8"]
+[gd_scene load_steps=8 format=3 uid="uid://bnjk6212auow8"]
 
 [ext_resource type="Script" path="res://ui/game_announcer.gd" id="1_xt5pp"]
 [ext_resource type="PackedScene" uid="uid://cqddmtc4lrco6" path="res://scenes/dungeon_arrows/dungeon_arrow_base.tscn" id="2_jw2vv"]
@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://c8ibc2io4i0ob" path="res://audio/e_note.wav" id="4_47w0f"]
 [ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://audio/g_note.wav" id="5_d87xu"]
 [ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://audio/higher_c_note.wav" id="6_7bmws"]
+[ext_resource type="PackedScene" uid="uid://bqvkxod686681" path="res://ui/monologue.tscn" id="7_hfy3j"]
 
 [node name="GameAnnouncer" type="Control"]
 layout_mode = 3
@@ -104,6 +105,10 @@ pivot_offset = Vector2(50, 50)
 
 [node name="Beep" parent="DungeonArrowWest" index="2"]
 stream = ExtResource("6_7bmws")
+
+[node name="Monologue" parent="." instance=ExtResource("7_hfy3j")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [editable path="DungeonArrowNorth"]
 [editable path="DungeonArrowEast"]

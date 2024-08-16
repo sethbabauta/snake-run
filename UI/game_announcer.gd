@@ -12,6 +12,7 @@ var is_game_paused: bool = false
 @onready var dungeon_arrow_east: DungeonArrow = %DungeonArrowEast
 @onready var dungeon_arrow_south: DungeonArrow = %DungeonArrowSouth
 @onready var dungeon_arrow_west: DungeonArrow = %DungeonArrowWest
+@onready var monologue: Control = %Monologue
 
 
 func _init() -> void:
