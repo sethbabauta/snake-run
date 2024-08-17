@@ -284,8 +284,8 @@ func get_random_valid_world_position() -> Vector2:
 func get_random_world_position() -> Vector2:
 	var rng := RandomNumberGenerator.new()
 	var position := Vector2(
-		rng.randi_range(0, self.max_simple_size.x - 1.0),
-		rng.randi_range(0, self.max_simple_size.y - 1.0),
+		rng.randf_range(0, self.max_simple_size.x - 1.0),
+		rng.randf_range(0, self.max_simple_size.y - 1.0),
 	)
 	var camera_offset: Vector2 = (
 		Utils.convert_world_to_simple_coordinates(self.follow_camera.global_position)

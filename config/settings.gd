@@ -1,6 +1,6 @@
 extends Node
 
-const BASE_MOVE_SPEED = 32
+const BASE_MOVE_SPEED = 32.0
 
 # general paths
 const BLUEPRINTS_PATH = "res://config/object_blueprints.txt"
