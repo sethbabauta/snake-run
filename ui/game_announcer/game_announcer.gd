@@ -68,6 +68,10 @@ func hide_arrows() -> void:
 	dungeon_arrow_west.visible = false
 
 
+func start_monologue(monologuer: Area2D, speech: String) -> void:
+	monologue.start_monologue(monologuer, speech)
+
+
 func _announce_arrow(direction: String) -> DungeonArrow:
 	var announcing_arrow: DungeonArrow
 	match direction:

@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://2esaq6uvofnq"]
 
 [ext_resource type="Script" path="res://ui/game_ui.gd" id="1_2wlwj"]
-[ext_resource type="PackedScene" uid="uid://c2rxm4oown5nh" path="res://ui/pause_dialog.tscn" id="2_33cnr"]
-[ext_resource type="PackedScene" uid="uid://co1motepffns5" path="res://ui/settings_dialog.tscn" id="3_lr8h3"]
+[ext_resource type="PackedScene" uid="uid://c2rxm4oown5nh" path="res://ui/pause_menu/pause_dialog.tscn" id="2_33cnr"]
+[ext_resource type="PackedScene" uid="uid://co1motepffns5" path="res://ui/pause_menu/settings_dialog.tscn" id="3_lr8h3"]
 
 [node name="GameUI" type="Control"]
 z_index = 10
