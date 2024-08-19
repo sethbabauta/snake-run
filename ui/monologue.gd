@@ -4,7 +4,7 @@ enum Side {LEFT, RIGHT}
 
 const TEXT_MOVEMENT_SPEED = 4.0
 const TEXT_TYPE_SPEED = 1
-const TIME_AFTER_REVEALED = 25.0
+const TIME_AFTER_REVEALED = 5.0
 const FLIP_MARGIN = 20.0
 const LABEL_OFFSET = 32.0
 
@@ -19,22 +19,6 @@ var label_target_position: Vector2
 
 func _ready() -> void:
 	camera = get_viewport().get_camera_2d()
-	var viewport_horizontal_size:= float(get_viewport().get_visible_rect().size.x)
-	var center_x: float = (
-		camera.get_screen_center_position().x
-	)
-	var right_margin_x: float = (
-		center_x
-		+ (viewport_horizontal_size / 2)
-		- FLIP_MARGIN
-	)
-	var left_margin_x: float = (
-		center_x
-		- (viewport_horizontal_size / 2)
-		+ FLIP_MARGIN
-	)
-	print("left margin x: ", left_margin_x)
-	print("right margin x: ", right_margin_x)
 
 
 func _physics_process(delta: float) -> void:
@@ -76,10 +60,8 @@ func _check_for_flip() -> void:
 
 func _flip_label_side() -> void:
 	if current_side == Side.RIGHT:
-		print("flipping to the left")
 		current_side = Side.LEFT
 	elif current_side == Side.LEFT:
-		print("flipping to the right")
 		current_side = Side.RIGHT
 
 
