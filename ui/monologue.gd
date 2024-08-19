@@ -19,6 +19,22 @@ var label_target_position: Vector2
 
 func _ready() -> void:
 	camera = get_viewport().get_camera_2d()
+	var viewport_horizontal_size:= float(get_viewport().get_visible_rect().size.x)
+	var center_x: float = (
+		camera.get_screen_center_position().x
+	)
+	var right_margin_x: float = (
+		center_x
+		+ (viewport_horizontal_size / 2)
+		- FLIP_MARGIN
+	)
+	var left_margin_x: float = (
+		center_x
+		- (viewport_horizontal_size / 2)
+		+ FLIP_MARGIN
+	)
+	print("left margin x: ", left_margin_x)
+	print("right margin x: ", right_margin_x)
 
 
 func _physics_process(delta: float) -> void:
@@ -46,7 +62,7 @@ func start_monologue(monologuer: Area2D, speech: String) -> void:
 
 
 func _check_for_flip() -> void:
-	var viewport_horizontal_size: float = float(get_viewport().size.x)
+	var viewport_horizontal_size:= float(get_viewport().get_visible_rect().size.x)
 	var label_edge: float
 
 	if current_side == Side.RIGHT:
@@ -81,26 +97,24 @@ func _get_is_label_past_margin(
 	viewport_horizontal_size: float,
 ) -> bool:
 
-	var center_x: float = (
-		get_viewport().get_camera_2d().get_screen_center_position().x
-	)
+	var center_x: float = camera.get_screen_center_position().x
 	if current_side == Side.RIGHT:
 		var right_margin_x: float = (
-			center_x
-			- (viewport_horizontal_size / 2)
-			+ FLIP_MARGIN
-		)
-
-		return label_edge < right_margin_x
-
-	elif current_side == Side.LEFT:
-		var left_margin_x: float = (
 			center_x
 			+ (viewport_horizontal_size / 2)
 			- FLIP_MARGIN
 		)
 
-		return label_edge > left_margin_x
+		return label_edge > right_margin_x
+
+	elif current_side == Side.LEFT:
+		var left_margin_x: float = (
+			center_x
+			- (viewport_horizontal_size / 2)
+			+ FLIP_MARGIN
+		)
+
+		return label_edge < left_margin_x
 
 
 	# if somehow current side is broken just return false
@@ -132,8 +146,7 @@ func _get_target_position() -> Vector2:
 		target_position += Vector2(LABEL_OFFSET, 0)
 	elif current_side == Side.LEFT:
 		target_position -= (
-			Vector2(LABEL_OFFSET, 0)
-			- Vector2(monologue_label.size.x, 0)
+			Vector2(monologue_label.size.x, 0)
 		)
 
 	return target_position
