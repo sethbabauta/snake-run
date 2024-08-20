@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7ty05m56ksow"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_20cme"]
-[ext_resource type="Script" path="res://scripts/move_timer.gd" id="2_734pb"]
+[ext_resource type="Script" path="res://snake_engine/main.gd" id="1_20cme"]
+[ext_resource type="Script" path="res://snake_engine/move_timer.gd" id="2_734pb"]
 [ext_resource type="PackedScene" uid="uid://bk3fu16h5e36m" path="res://audio/audio_library.tscn" id="3_06phk"]
 
 [node name="Main" type="Node"]

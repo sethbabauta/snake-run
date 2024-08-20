@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://4bsu0cbbp4e1"]
 
 [ext_resource type="Script" path="res://scripts/demo.gd" id="1_p3bi1"]
-[ext_resource type="Script" path="res://scripts/main.gd" id="2_0sktt"]
-[ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://scenes/move_timer.tscn" id="3_5ku6j"]
+[ext_resource type="Script" path="res://snake_engine/main.gd" id="2_0sktt"]
+[ext_resource type="PackedScene" uid="uid://dc70xjui22ivx" path="res://snake_engine/move_timer.tscn" id="3_5ku6j"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="3_hgows"]
 
 [node name="Demo" type="Node" node_paths=PackedStringArray("main_node", "move_timer")]

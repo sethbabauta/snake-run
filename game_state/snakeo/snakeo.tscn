@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game_state/snakeo/snakeo.gd" id="1_by8yj"]
 [ext_resource type="PackedScene" uid="uid://bvb4k8h5376d2" path="res://game_state/snakeo/snakeo_death_screen.tscn" id="2_54pgv"]
-[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://scenes/main.tscn" id="4_csxen"]
+[ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="4_csxen"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="5_1xoox"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="5_m1c66"]
 [ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer/game_announcer.tscn" id="6_4fbu5"]
