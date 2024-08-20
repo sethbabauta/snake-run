@@ -473,6 +473,8 @@ class PhysicsBody:
 		self.game_object.physics_body = self.physics_body_node
 		self.game_object.main_node.add_child(self.physics_body_node)
 		self.physics_body_node.game_object = self.game_object
+		physics_body_node.name = game_object.name + str(game_object.unique_id)
+
 
 	func _check_eat() -> void:
 		if self.physics_body_node.has_overlapping_areas():

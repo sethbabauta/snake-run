@@ -12,6 +12,8 @@ var spawn_queue: Array[SpawnJob] = []
 var timer_frozen: bool = false
 var is_paused: bool = false
 var is_game_started: bool = false
+var poison_turn_counter: PoisonTurnCounter
+var score_turn_counter: ScoreTurnCounter
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -35,6 +37,9 @@ func _ready() -> void:
 	EventBus.pause_requested.connect(_on_pause_requested)
 	EventBus.ate_poison.connect(_on_ate_poison)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
+
+	poison_turn_counter = PoisonTurnCounter.new(move_timer.speed_3)
+	score_turn_counter = ScoreTurnCounter.new(move_timer.speed_3)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -558,11 +563,10 @@ func _on_ate_poison(poison_amount: int) -> void:
 		return
 
 	var snake_go: GameEngine.GameObject = get_closest_player_controlled(Vector2.ZERO)
-	var display_value: String = "- " + str(poison_amount)
-	gamemode_node.game_announcer.display_number(
-		display_value,
-		snake_go.physics_body,
-		true,
+	poison_turn_counter.try_notify(
+		snake_go,
+		poison_amount,
+		gamemode_node.game_announcer,
 	)
 
 
@@ -609,16 +613,17 @@ func _on_score_changed(_new_score: int, changed_by: int) -> void:
 		return
 
 	var snake_go: GameEngine.GameObject = get_closest_player_controlled(Vector2.ZERO)
-	var display_value: String = "+ " + str(changed_by)
-	gamemode_node.game_announcer.display_number(
-		display_value,
-		snake_go.physics_body,
+	score_turn_counter.try_notify(
+		snake_go,
+		changed_by,
+		gamemode_node.game_announcer,
 	)
 
 
 func _spawn_background_tile(position: Vector2) -> void:
 	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
 	var current_tile: Sprite2D = self.background_tile.instantiate()
+	current_tile.name = "background_tile-" + str(Utils.rng.randi_range(1, 10000))
 	self.add_child(current_tile)
 	current_tile.global_position = world_position
 
