@@ -21,5 +21,3 @@ func _ready():
 	await EventBus.announcement_completed
 
 	EventBus.game_started.emit("Classic")
-
-	var snake_go: GameEngine.GameObject = main_node.get_closest_player_controlled(Vector2.ZERO)

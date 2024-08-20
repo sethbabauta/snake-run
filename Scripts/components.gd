@@ -893,6 +893,7 @@ class SnakeBody:
 				)
 			)
 			Event.queue_after_effect(self.next_body, new_event, event)
+			EventBus.ate_poison.emit(poison_level)
 
 
 class SpeedIncrease:

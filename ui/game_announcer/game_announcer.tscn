@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://audio/g_note.wav" id="5_d87xu"]
 [ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://audio/higher_c_note.wav" id="6_7bmws"]
 [ext_resource type="PackedScene" uid="uid://bqvkxod686681" path="res://ui/game_announcer/monologue.tscn" id="7_hfy3j"]
-[ext_resource type="PackedScene" uid="uid://bwmwop5re10mg" path="res://ui/game_announcer/item_info.tscn" id="8_61mas"]
+[ext_resource type="PackedScene" uid="uid://bwmwop5re10mg" path="res://ui/game_announcer/item_effect_number.tscn" id="8_61mas"]
 
 [node name="GameAnnouncer" type="Control"]
 layout_mode = 3
@@ -111,7 +111,8 @@ stream = ExtResource("6_7bmws")
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="ItemInfo" parent="." instance=ExtResource("8_61mas")]
+[node name="ItemEffectNumber" parent="." instance=ExtResource("8_61mas")]
+unique_name_in_owner = true
 
 [editable path="DungeonArrowNorth"]
 [editable path="DungeonArrowEast"]

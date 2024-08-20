@@ -11,6 +11,7 @@ var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
 var spawn_queue: Array[SpawnJob] = []
 var timer_frozen: bool = false
 var is_paused: bool = false
+var is_game_started: bool = false
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -32,6 +33,8 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_spawn_object_from_queue)
 	EventBus.game_started.connect(_on_game_start)
 	EventBus.pause_requested.connect(_on_pause_requested)
+	EventBus.ate_poison.connect(_on_ate_poison)
+	ScoreKeeper.score_changed.connect(_on_score_changed)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -550,8 +553,22 @@ func _fire_use_item_event() -> void:
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
+func _on_ate_poison(poison_amount: int) -> void:
+	if not is_game_started:
+		return
+
+	var snake_go: GameEngine.GameObject = get_closest_player_controlled(Vector2.ZERO)
+	var display_value: String = "- " + str(poison_amount)
+	gamemode_node.game_announcer.display_number(
+		display_value,
+		snake_go.physics_body,
+		true,
+	)
+
+
 func _on_game_start(_gamemode_name: String) -> void:
 	move_timer.start()
+	is_game_started = true
 
 
 func _on_move_timer_speed_1() -> void:
@@ -585,7 +602,18 @@ func _on_pause_requested() -> void:
 		move_timer.paused = is_paused
 
 	EventBus.game_paused.emit(is_paused)
-	print("pause detected. is paused: ", is_paused)
+
+
+func _on_score_changed(_new_score: int, changed_by: int) -> void:
+	if not is_game_started:
+		return
+
+	var snake_go: GameEngine.GameObject = get_closest_player_controlled(Vector2.ZERO)
+	var display_value: String = "+ " + str(changed_by)
+	gamemode_node.game_announcer.display_number(
+		display_value,
+		snake_go.physics_body,
+	)
 
 
 func _spawn_background_tile(position: Vector2) -> void:

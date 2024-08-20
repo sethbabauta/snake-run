@@ -2,6 +2,7 @@ extends Node
 
 signal announcement_completed
 signal ate_item(item_name: String, eater: String)
+signal ate_poison(poison_amount: int)
 signal crown_collected
 signal crown_dropped
 signal game_ended(won: bool)
