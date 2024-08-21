@@ -1,10 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://bwmwop5re10mg"]
+[gd_scene load_steps=3 format=3 uid="uid://bwmwop5re10mg"]
 
 [ext_resource type="Script" path="res://ui/game_announcer/item_effect_number.gd" id="1_8f4yr"]
+[ext_resource type="PackedScene" uid="uid://dmrtbc0g3167a" path="res://ui/game_announcer/text_target_position.tscn" id="2_n75ar"]
 
-[node name="ItemInfo" type="Control"]
+[node name="ItemInfo" type="Control" node_paths=PackedStringArray("text_target_position")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_8f4yr")
+text_target_position = NodePath("TextTargetPosition")
+
+[node name="TextTargetPosition" parent="." instance=ExtResource("2_n75ar")]
+label_offset = 16.0

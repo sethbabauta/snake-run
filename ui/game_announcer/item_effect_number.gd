@@ -3,17 +3,29 @@ extends Control
 const LABEL_OFFSET = Vector2(16.0, 0.0)
 const BOUNCE_HEIGHT = 16
 
+@export var text_target_position: TextTargetPosition
+
+var camera: Camera2D
+
+
+func _ready() -> void:
+	camera = get_viewport().get_camera_2d()
+
+
 func display_number(
 	value: String,
 	affected_body: Area2D,
 	is_damage: bool = false,
 ) -> void:
 
-	var number_label: Label = _create_label(value, affected_body, is_damage)
+	var number_label: Label = _create_label(value, is_damage)
 
 	call_deferred("add_child", number_label)
 
 	await number_label.resized
+
+	text_target_position.setup(number_label, affected_body, camera)
+	number_label.global_position = text_target_position.get_target_position()
 	number_label.pivot_offset = Vector2(number_label.size / 2)
 
 	await _animate_number(number_label)
@@ -38,12 +50,11 @@ func _animate_number(number_label: Label) -> void:
 
 func _create_label(
 	value: String,
-	affected_body: Area2D,
 	is_damage: bool = false,
 ) -> Label:
 
 	var number_label:= Label.new()
-	number_label.global_position = affected_body.global_position + LABEL_OFFSET
+
 	number_label.text = value
 	number_label.z_index = 5
 	number_label.label_settings = LabelSettings.new()
