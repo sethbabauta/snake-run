@@ -5,16 +5,15 @@ class_name Main extends Node
 
 var game_object_factory: GameEngine.GameObjectFactory
 var level_factory: LevelFactory
-var max_simple_size: Vector2
-var query_area: Area2D
-var background_tile: PackedScene = load(Settings.GRASS_BACKGROUND_SCENE_PATH)
-var spawn_queue: Array[SpawnJob] = []
-var timer_frozen: bool = false
-var is_paused: bool = false
-var is_game_started: bool = false
 var item_pickup_observer: ItemPickupObserver
 var move_timer_notifier: MoveTimerNotifier
 var apple_flipper: AppleFlipper
+var object_spawner: ObjectSpawner
+var query_area: Area2D
+var max_simple_size: Vector2
+var timer_frozen: bool = false
+var is_paused: bool = false
+var is_game_started: bool = false
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -28,13 +27,8 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	spawn_timer.timeout.connect(_spawn_object_from_queue)
-	EventBus.game_started.connect(_on_game_start)
-	EventBus.pause_requested.connect(_on_pause_requested)
-
-	item_pickup_observer = ItemPickupObserver.new(self, move_timer)
-	move_timer_notifier = MoveTimerNotifier.new(move_timer, game_object_factory)
-	apple_flipper = AppleFlipper.new(self)
+	_connect_signals()
+	_setup_utils()
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -392,11 +386,15 @@ func queue_object_to_spawn(
 	position: Vector2 = await get_random_valid_world_position(),
 	force_preferred_position: bool = false,
 ) -> GameEngine.GameObject:
-	var new_object := self.game_object_factory.create_object(object_name, self)
-	var new_spawn_job := SpawnJob.new(new_object, position, force_preferred_position)
-	spawn_queue.append(new_spawn_job)
+	var spawned_object: GameEngine.GameObject = (
+		await object_spawner.queue_object_to_spawn(
+			object_name,
+			position,
+			force_preferred_position,
+		)
+	)
 
-	return new_object
+	return spawned_object
 
 
 static func remove_overlay_sprite_from_physics_body(
@@ -437,35 +435,25 @@ static func remove_shader_from_snake(
 		current_snakebody = prev_body.components.get("SnakeBody")
 
 
-func spawn_background(offset: Vector2 = Vector2(0, 0)) -> void:
-	for x in range(self.max_simple_size.x):
-		for y in range(self.max_simple_size.y):
-			self._spawn_background_tile(Vector2(x, y) + offset)
+func spawn_background(offset:= Vector2(0, 0)) -> void:
+	object_spawner.spawn_background(offset)
 
 
 func spawn_barrier(position: Vector2) -> void:
-	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-	var barrier := self.game_object_factory.create_object("Barrier", self)
-	var set_position_event := GameEngine.Event.new("SetPosition", {"position": world_position})
-	barrier.fire_event(set_position_event)
+	object_spawner.spawn_barrier(position)
 
 
 func spawn_doors(exclusions: Array[String] = []) -> void:
-	var door_positions: Array = get_simple_door_locations(exclusions)
-
-	for position in door_positions:
-		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-		if not await is_position_taken(world_position):
-			queue_object_to_spawn("Door", world_position, true)
+	object_spawner.spawn_doors(exclusions)
 
 
 func spawn_object_instantly(
 	object_name: String,
 	position: Vector2 = await get_random_valid_world_position(),
 ) -> GameEngine.GameObject:
-	var new_object := self.game_object_factory.create_object(object_name, self)
-	var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
-	new_object.fire_event(set_position_event)
+	var new_object: GameEngine.GameObject = await (
+		object_spawner.spawn_object_instantly(object_name, position)
+	)
 
 	return new_object
 
@@ -474,31 +462,33 @@ func spawn_snake_segment(
 	head_game_object: GameEngine.GameObject,
 	spawn_position: Vector2,
 ) -> void:
-	var head_snake_body: Components.SnakeBody = head_game_object.components.get("SnakeBody")
-	var tail: GameEngine.GameObject = head_snake_body.get_tail_game_object()
-
-	var new_snake_body_obj: GameEngine.GameObject = await queue_object_to_spawn(
-		"SnakeBody", spawn_position, true
+	object_spawner.spawn_snake_segment(
+		head_game_object,
+		spawn_position,
 	)
 
-	Components.SnakeBody.connect_bodies(tail, new_snake_body_obj)
 
-
-func spawn_player_snake(start_position: Vector2, snake_length: int, slow: bool = false) -> void:
-	var spawn_position: Vector2 = start_position
-	var snake_type: String = "PlayerSnakeHead"
-	if slow:
-		snake_type = "PlayerSnakeHeadSlow"
-	var snake_head := await queue_object_to_spawn(snake_type, spawn_position)
-
-	for snake_body_idx in range(snake_length - 1):
-		spawn_position = spawn_position + (Vector2.DOWN * Settings.BASE_MOVE_SPEED)
-		self.spawn_snake_segment(snake_head, spawn_position)
+func spawn_player_snake(
+	start_position: Vector2,
+	snake_length: int,
+	slow: bool = false,
+) -> void:
+	object_spawner.spawn_player_snake(
+		start_position,
+		snake_length,
+		slow,
+	)
 
 
 func toggle_timer_freeze() -> void:
 	timer_frozen = not timer_frozen
 	move_timer.paused = not move_timer.paused
+
+
+func _connect_signals() -> void:
+	spawn_timer.timeout.connect(_spawn_object_from_queue)
+	EventBus.game_started.connect(_on_game_start)
+	EventBus.pause_requested.connect(_on_pause_requested)
 
 
 func _fire_change_direction_event(input_name: String) -> void:
@@ -529,50 +519,16 @@ func _on_pause_requested() -> void:
 	EventBus.game_paused.emit(is_paused)
 
 
-func _spawn_background_tile(position: Vector2) -> void:
-	var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
-	var current_tile: Sprite2D = self.background_tile.instantiate()
-	current_tile.name = "background_tile-" + str(Utils.rng.randi_range(1, 10000))
-	self.add_child(current_tile)
-	current_tile.global_position = world_position
+func _setup_utils() -> void:
+	item_pickup_observer = ItemPickupObserver.new(self, move_timer)
+	move_timer_notifier = MoveTimerNotifier.new(move_timer, game_object_factory)
+	apple_flipper = AppleFlipper.new(self)
+	object_spawner = ObjectSpawner.new(self)
 
 
 func _spawn_object_from_queue() -> void:
-	if not spawn_queue:
-		return
-
-	var current_spawn_job: SpawnJob = spawn_queue.pop_front()
-	var position: Vector2 = current_spawn_job.preferred_position
-	var object_to_spawn: GameEngine.GameObject = current_spawn_job.object_to_spawn
-	if await is_position_taken(position) and not current_spawn_job.force_preferred_position:
-		position = await get_random_valid_world_position()
-
-	if await is_position_taken(position) and not current_spawn_job.force_preferred_position:
-		var warning: String = (
-			"Attempted to spawn "
-			+ object_to_spawn._to_string()
-			+ " at position "
-			+ str(position)
-		)
-		push_warning(warning)
-
-		if current_spawn_job.can_retry():
-			current_spawn_job.try_requeue_job(spawn_queue)
-
-		return
-
-	var set_position_event := GameEngine.Event.new("SetPosition", {"position": position})
-	object_to_spawn.fire_event(set_position_event)
+	object_spawner._spawn_object_from_queue()
 
 
 func spawn_start_barriers() -> void:
-	self.spawn_barrier(Vector2(0, 0))
-	self.spawn_barrier(Vector2(self.max_simple_size.x - 1, 0))
-	self.spawn_barrier(Vector2(0, self.max_simple_size.y - 1))
-	self.spawn_barrier(Vector2(self.max_simple_size.x - 1, self.max_simple_size.y - 1))
-
-	for coordinate in range(1, self.max_simple_size.x - 1):
-		self.spawn_barrier(Vector2(coordinate, 0))
-		self.spawn_barrier(Vector2(coordinate, self.max_simple_size.y - 1))
-		self.spawn_barrier(Vector2(0, coordinate))
-		self.spawn_barrier(Vector2(self.max_simple_size.x - 1, coordinate))
+	object_spawner.spawn_start_barriers()
