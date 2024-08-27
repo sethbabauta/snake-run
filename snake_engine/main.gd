@@ -13,6 +13,7 @@ var timer_frozen: bool = false
 var is_paused: bool = false
 var is_game_started: bool = false
 var item_pickup_observer: ItemPickupObserver
+var move_timer_notifier: MoveTimerNotifier
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -26,16 +27,12 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	move_timer.speed_1.connect(_on_move_timer_speed_1)
-	move_timer.speed_2.connect(_on_move_timer_speed_2)
-	move_timer.speed_3.connect(_on_move_timer_speed_3)
-	move_timer.speed_4.connect(_on_move_timer_speed_4)
-	move_timer.speed_5.connect(_on_move_timer_speed_5)
 	spawn_timer.timeout.connect(_spawn_object_from_queue)
 	EventBus.game_started.connect(_on_game_start)
 	EventBus.pause_requested.connect(_on_pause_requested)
 
 	item_pickup_observer = ItemPickupObserver.new(self, move_timer)
+	move_timer_notifier = MoveTimerNotifier.new(move_timer, game_object_factory)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -559,31 +556,6 @@ func _on_game_start(_gamemode_name: String) -> void:
 	is_game_started = true
 
 
-func _on_move_timer_speed_1() -> void:
-	var new_event := GameEngine.Event.new("MoveForward")
-	self.game_object_factory.notify_subscribers(new_event, "movable1")
-
-
-func _on_move_timer_speed_2() -> void:
-	var new_event := GameEngine.Event.new("MoveForward")
-	self.game_object_factory.notify_subscribers(new_event, "movable2")
-
-
-func _on_move_timer_speed_3() -> void:
-	var new_event := GameEngine.Event.new("MoveForward")
-	self.game_object_factory.notify_subscribers(new_event, "movable3")
-
-
-func _on_move_timer_speed_4() -> void:
-	var new_event := GameEngine.Event.new("MoveForward")
-	self.game_object_factory.notify_subscribers(new_event, "movable4")
-
-
-func _on_move_timer_speed_5() -> void:
-	var new_event := GameEngine.Event.new("MoveForward")
-	self.game_object_factory.notify_subscribers(new_event, "movable5")
-
-
 func _on_pause_requested() -> void:
 	is_paused = not is_paused
 	if not timer_frozen:
@@ -639,37 +611,3 @@ func spawn_start_barriers() -> void:
 		self.spawn_barrier(Vector2(coordinate, self.max_simple_size.y - 1))
 		self.spawn_barrier(Vector2(0, coordinate))
 		self.spawn_barrier(Vector2(self.max_simple_size.x - 1, coordinate))
-
-
-class SpawnJob:
-	var object_to_spawn: GameEngine.GameObject
-	var preferred_position: Vector2
-	var force_preferred_position: bool
-	var retries: int = 0
-
-	const MAX_RETRIES = 3
-
-	func _init(
-		p_object_to_spawn: GameEngine.GameObject,
-		p_preferred_position: Vector2,
-		p_force_preferred_position: bool = false,
-	) -> void:
-		object_to_spawn = p_object_to_spawn
-		preferred_position = p_preferred_position
-		force_preferred_position = p_force_preferred_position
-
-
-	func can_retry() -> bool:
-		return retries < MAX_RETRIES
-
-
-	func try_requeue_job(spawn_queue: Array[SpawnJob]) -> void:
-		if not can_retry():
-			var warning: String = (
-				"Attempted to requeue job with max retries."
-			)
-			push_warning(warning)
-			return
-
-		spawn_queue.append(self)
-		retries += 1

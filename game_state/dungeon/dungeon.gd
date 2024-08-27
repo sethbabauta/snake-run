@@ -137,6 +137,19 @@ func _on_crown_pickup() -> void:
 	if crown_collected_count == 1:
 		main_node.play_scripted_event(_crown_scripted_event)
 
+		var snake_go: GameEngine.GameObject = (
+			main_node.get_closest_player_controlled(Vector2.ZERO)
+		)
+
+		if not is_instance_valid(snake_go):
+			return
+
+		game_announcer.start_monologue(
+			snake_go.physics_body,
+			"is this thing hurting me?? (drop crown with shift)"
+		)
+
+
 
 func _on_player_moved() -> void:
 	if crown_collected:
@@ -184,4 +197,3 @@ class CrownPoisonCounter:
 				new_event,
 				"player_controlled",
 			)
-			EventBus.ate_poison.emit(1)
