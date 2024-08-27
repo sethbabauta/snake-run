@@ -14,6 +14,7 @@ var is_paused: bool = false
 var is_game_started: bool = false
 var item_pickup_observer: ItemPickupObserver
 var move_timer_notifier: MoveTimerNotifier
+var apple_flipper: AppleFlipper
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -33,6 +34,7 @@ func _ready() -> void:
 
 	item_pickup_observer = ItemPickupObserver.new(self, move_timer)
 	move_timer_notifier = MoveTimerNotifier.new(move_timer, game_object_factory)
+	apple_flipper = AppleFlipper.new(self)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -157,17 +159,6 @@ func cooldown(
 	ability_user.fire_event(new_event)
 
 
-func delete_and_replace(
-	object_to_delete: GameEngine.GameObject,
-	name_of_replacement: String,
-) -> void:
-	var object_position: Vector2 = object_to_delete.physics_body.global_position
-	object_to_delete.delete_self()
-	var new_object := self.game_object_factory.create_object(name_of_replacement, self)
-	var set_position_event := GameEngine.Event.new("SetPosition", {"position": object_position})
-	new_object.fire_event(set_position_event)
-
-
 func end_game_soon() -> void:
 	move_timer.paused = true
 	await get_tree().create_timer(3).timeout
@@ -189,37 +180,11 @@ func fire_delayed_event(
 
 
 func flip_apples(nutritious: bool = false) -> void:
-	flip_objects("Apple", "SlightlyPoisonousAppleNoRespawn")
-
-	var flip_to: String = "AppleNoRespawn"
-	if nutritious:
-		flip_to = "NutritiousAppleNoRespawn"
-
-	flip_objects("SlightlyPoisonousApple", flip_to)
-	flip_objects("DungeonApple", flip_to)
-
+	apple_flipper.flip_apples(nutritious)
 
 
 func flip_apples_back(nutritious: bool = false) -> void:
-	var flip_to: String = "AppleNoRespawn"
-	if nutritious:
-		flip_to = "NutritiousAppleNoRespawn"
-	flip_objects(flip_to, "SlightlyPoisonousApple")
-
-	var slightly_poisonous_apples: Array[GameEngine.GameObject] = await get_game_objects_of_name(
-		"SlightlyPoisonousAppleNoRespawn"
-	)
-	if not slightly_poisonous_apples:
-		queue_object_to_spawn("Apple")
-		return
-
-	flip_objects("SlightlyPoisonousAppleNoRespawn", "Apple")
-
-
-func flip_objects(target_name: String, flip_to: String) -> void:
-	var target_objects: Array[GameEngine.GameObject] = await get_game_objects_of_name(target_name)
-	for target_object in target_objects:
-		delete_and_replace(target_object, flip_to)
+	apple_flipper.flip_apples_back(nutritious)
 
 
 func get_closest_player_controlled(
