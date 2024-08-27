@@ -5,9 +5,10 @@ func try_notify(
 	snake_game_object: GameEngine.GameObject,
 	value: int,
 	game_announcer: GameAnnouncer,
-	_is_poison: bool = false
+	_is_poison: bool = false,
+	extra_hang_time: float = 0.0,
 ) -> void:
-	super(snake_game_object, value, game_announcer, true)
+	super(snake_game_object, value, game_announcer, true, extra_hang_time)
 
 
 func _create_display_value(value: int) -> String:

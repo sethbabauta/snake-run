@@ -180,4 +180,8 @@ class CrownPoisonCounter:
 				"IngestPoison",
 				{"poison_level": 1},
 			)
-			main_node.game_object_factory.notify_subscribers(new_event, "player_controlled")
+			main_node.game_object_factory.notify_subscribers(
+				new_event,
+				"player_controlled",
+			)
+			EventBus.ate_poison.emit(1)

@@ -16,7 +16,8 @@ func try_notify(
 	snake_game_object: GameEngine.GameObject,
 	value: int,
 	game_announcer: GameAnnouncer,
-	is_poison: bool = false
+	is_poison: bool = false,
+	extra_hang_time: float = 0.0,
 ) -> void:
 	if notified_this_turn:
 		return
@@ -28,6 +29,7 @@ func try_notify(
 		display_value,
 		snake_game_object.physics_body,
 		is_poison,
+		extra_hang_time,
 	)
 	notified_this_turn = true
 	notified_counter += 1

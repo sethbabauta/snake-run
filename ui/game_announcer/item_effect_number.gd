@@ -16,6 +16,7 @@ func display_number(
 	value: String,
 	affected_body: Area2D,
 	is_damage: bool = false,
+	extra_hang_time: float = 0.0,
 ) -> void:
 
 	var number_label: Label = _create_label(value, is_damage)
@@ -28,11 +29,11 @@ func display_number(
 	number_label.global_position = text_target_position.get_target_position()
 	number_label.pivot_offset = Vector2(number_label.size / 2)
 
-	await _animate_number(number_label)
+	await _animate_number(number_label, extra_hang_time)
 	number_label.queue_free()
 
 
-func _animate_number(number_label: Label) -> void:
+func _animate_number(number_label: Label, extra_hang_time: float) -> void:
 	var tween: Tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(
@@ -43,7 +44,7 @@ func _animate_number(number_label: Label) -> void:
 	).set_ease(Tween.EASE_IN).set_delay(0.25)
 	tween.tween_property(
 		number_label, "scale", Vector2.ZERO, 0.25
-	).set_ease(Tween.EASE_IN).set_delay(0.5)
+	).set_ease(Tween.EASE_IN).set_delay(0.5 + extra_hang_time)
 
 	await tween.finished
 

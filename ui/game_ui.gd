@@ -17,6 +17,7 @@ func _ready() -> void:
 	EventBus.game_started.connect(_on_game_started)
 	EventBus.game_paused.connect(_on_game_paused)
 	EventBus.settings_toggled.connect(_on_settings_toggled)
+	EventBus.ate_poison.connect(_on_ate_poison)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 	snake_length_label.text = "Snake Length: " + str(main_node.gamemode_node.START_LENGTH)
 	score_label.text = "Score: %d" % ScoreKeeper.score
@@ -33,6 +34,10 @@ func _process(_delta: float) -> void:
 func update_snake_length() -> void:
 	var snake_length: int = await main_node.get_snake_length()
 	snake_length_label.text = "Snake Length: " + str(snake_length)
+
+
+func _on_ate_poison(_amount: int) -> void:
+	update_snake_length()
 
 
 func _on_game_paused(is_paused: bool) -> void:

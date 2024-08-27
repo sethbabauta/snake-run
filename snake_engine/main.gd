@@ -12,8 +12,7 @@ var spawn_queue: Array[SpawnJob] = []
 var timer_frozen: bool = false
 var is_paused: bool = false
 var is_game_started: bool = false
-var poison_turn_counter: PoisonTurnCounter
-var score_turn_counter: ScoreTurnCounter
+var item_pickup_observer: ItemPickupObserver
 
 @onready var move_timer: MoveTimer = %MoveTimer
 @onready var powerup_1_timer: Timer = %Powerup1Timer
@@ -35,11 +34,8 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_spawn_object_from_queue)
 	EventBus.game_started.connect(_on_game_start)
 	EventBus.pause_requested.connect(_on_pause_requested)
-	EventBus.ate_poison.connect(_on_ate_poison)
-	ScoreKeeper.score_changed.connect(_on_score_changed)
 
-	poison_turn_counter = PoisonTurnCounter.new(move_timer.speed_3)
-	score_turn_counter = ScoreTurnCounter.new(move_timer.speed_3)
+	item_pickup_observer = ItemPickupObserver.new(self, move_timer)
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
@@ -558,18 +554,6 @@ func _fire_use_item_event() -> void:
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
-func _on_ate_poison(poison_amount: int) -> void:
-	if not is_game_started:
-		return
-
-	var snake_go: GameEngine.GameObject = get_closest_player_controlled(Vector2.ZERO)
-	poison_turn_counter.try_notify(
-		snake_go,
-		poison_amount,
-		gamemode_node.game_announcer,
-	)
-
-
 func _on_game_start(_gamemode_name: String) -> void:
 	move_timer.start()
 	is_game_started = true
@@ -606,18 +590,6 @@ func _on_pause_requested() -> void:
 		move_timer.paused = is_paused
 
 	EventBus.game_paused.emit(is_paused)
-
-
-func _on_score_changed(_new_score: int, changed_by: int) -> void:
-	if not is_game_started:
-		return
-
-	var snake_go: GameEngine.GameObject = get_closest_player_controlled(Vector2.ZERO)
-	score_turn_counter.try_notify(
-		snake_go,
-		changed_by,
-		gamemode_node.game_announcer,
-	)
 
 
 func _spawn_background_tile(position: Vector2) -> void:

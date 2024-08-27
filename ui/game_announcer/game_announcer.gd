@@ -66,8 +66,14 @@ func display_number(
 	value: String,
 	affected_body: Area2D,
 	is_damage: bool = false,
+	extra_hang_time: float = 0.0,
 ) -> void:
-	item_effect_number.display_number(value, affected_body, is_damage)
+	item_effect_number.display_number(
+		value,
+		affected_body,
+		is_damage,
+		extra_hang_time,
+	)
 
 
 func hide_arrows() -> void:
