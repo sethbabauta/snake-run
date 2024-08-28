@@ -269,6 +269,7 @@ class EquipabbleItem:
 		)
 		Event.queue_after_effect(self.game_object, new_event, event)
 
+
 	func _relinquish_components() -> void:
 		for component_name in self.components_to_inherit:
 			self.game_object.queue_remove_component(component_name)

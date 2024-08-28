@@ -378,7 +378,7 @@ static func overlay_sprite_on_game_object(
 	new_sprite.texture = load(sprite_path)
 	new_sprite.z_index = z_idx
 	new_sprite.name = sprite_node_name
-	target.physics_body.add_child(new_sprite)
+	target.physics_body.equipped_items.add_child(new_sprite)
 	new_sprite.position += offset
 
 
@@ -408,11 +408,12 @@ func queue_object_to_spawn(
 
 static func remove_overlay_sprite_from_physics_body(
 	target: GameEngine.GameObject,
-	sprite_node_name: String,
+	_sprite_node_name: String,
 ) -> void:
-	var sprite_node: Sprite2D = target.physics_body.get_node_or_null(sprite_node_name)
-	if sprite_node:
-		sprite_node.queue_free()
+	var equipped_items: Array[Node] = target.physics_body.equipped_items.get_children()
+	for item in equipped_items:
+		target.physics_body.equipped_items.remove_child(item)
+		item.queue_free()
 
 
 static func remove_shader_from_physics_body(
@@ -507,6 +508,7 @@ func _fire_change_direction_event(input_name: String) -> void:
 
 func _fire_drop_item_event() -> void:
 	var new_event := GameEngine.Event.new("DropItem")
+	new_event.parameters["from"] = "player_command"
 	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
 
 
