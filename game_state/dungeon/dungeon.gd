@@ -133,7 +133,6 @@ func _on_crown_dropped() -> void:
 
 
 func _on_crown_pickup() -> void:
-	print("crown just collected")
 	crown_collected = true
 	crown_collected_count += 1
 	if crown_collected_count == 1:

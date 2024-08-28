@@ -482,8 +482,8 @@ class PhysicsBody:
 			var new_event := Event.new("Eat", {"eater": self.game_object})
 
 			for area in areas:
-				print("eater: ", game_object, " being eaten: ", area.game_object)
 				area.game_object.fire_event(new_event)
+
 
 	func _get_eaten(event: Event) -> void:
 		var kill_self_event := Event.new("KillSelf")

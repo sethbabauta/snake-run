@@ -93,7 +93,7 @@ class GameObject:
 	var components: Dictionary
 	var physics_body: Area2D
 	var factory_from: GameObjectFactory
-	var component_priority: Array
+	var component_priority: Array[Component]
 	var subscribed_to: Array = []
 	var remove_component_queue: Array = []
 
@@ -126,7 +126,7 @@ class GameObject:
 
 		self.components[component_name] = new_component
 		self._insert_component_priority(new_component)
-		print("Comp prio: ", component_priority)
+
 
 	func delete_self() -> void:
 		var subscribed_copy = self.subscribed_to.duplicate(true)
@@ -137,9 +137,9 @@ class GameObject:
 
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
-		#print("\n", self.name, " received event: ", event.id, ".", event.unique_id)
 		# higher priority number first
-		for component in self.component_priority:
+		var component_queue: Array[Component] = component_priority.duplicate(true)
+		for component in component_queue:
 			event = self.components[component.name].fire_event(event)
 
 		if event.parameters["after_effects"]:
