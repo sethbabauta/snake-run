@@ -25,6 +25,7 @@ func _ready() -> void:
 	EventBus.crown_dropped.connect(_on_crown_dropped)
 	EventBus.player_fully_entered.connect(_on_player_fully_entered)
 	EventBus.player_moved.connect(_on_player_moved)
+	EventBus.player_respawned.connect(_on_player_respawned)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 
 
@@ -132,6 +133,7 @@ func _on_crown_dropped() -> void:
 
 
 func _on_crown_pickup() -> void:
+	print("crown just collected")
 	crown_collected = true
 	crown_collected_count += 1
 	if crown_collected_count == 1:
@@ -175,6 +177,14 @@ func _on_player_fully_entered() -> void:
 		await get_tree().create_timer(5).timeout
 		if current_room.get_is_room_complete():
 			main_node.clear_doors(exclusions)
+
+
+func _on_player_respawned() -> void:
+	game_announcer.announce_message("DON'T DIE THIS TIME")
+	await EventBus.announcement_completed
+	game_announcer.announce_message("3 2 1 GO", 1.05)
+	await EventBus.announcement_completed
+	main_node.toggle_timer_freeze()
 
 
 class CrownPoisonCounter:

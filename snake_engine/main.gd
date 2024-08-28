@@ -154,7 +154,7 @@ func cooldown(
 
 
 func end_game_soon() -> void:
-	move_timer.paused = true
+	toggle_timer_freeze()
 	await get_tree().create_timer(3).timeout
 
 	if not check_is_player_alive():
@@ -353,7 +353,16 @@ func is_position_taken(position: Vector2, debug: bool = false, debug_from: Strin
 		is_taken = false
 
 	if debug:
-		print("debug from: ", debug_from, ", searched position: ", position, ", is taken: ", is_taken, ", taken positions: ", taken_positions)
+		print(
+			"debug from: ",
+			debug_from,
+			", searched position: ",
+			position,
+			", is taken: ",
+			is_taken,
+			", taken positions: ",
+			taken_positions,
+		)
 
 	return is_taken
 

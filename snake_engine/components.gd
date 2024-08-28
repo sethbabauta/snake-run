@@ -175,7 +175,7 @@ class Crown:
 		)
 		Event.queue_after_effect(game_object, new_event, event)
 
-		eater.add_component("Royalty", {})
+		eater.add_component("Royalty", {"priority": 102})
 		EventBus.crown_collected.emit()
 
 
@@ -482,6 +482,7 @@ class PhysicsBody:
 			var new_event := Event.new("Eat", {"eater": self.game_object})
 
 			for area in areas:
+				print("eater: ", game_object, " being eaten: ", area.game_object)
 				area.game_object.fire_event(new_event)
 
 	func _get_eaten(event: Event) -> void:
@@ -683,7 +684,6 @@ class Render:
 
 class Royalty:
 	extends Component
-
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "CheckCrown":

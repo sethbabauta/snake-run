@@ -41,7 +41,7 @@ class Component:
 				self[parameter_name] = component_parameters[parameter_name]
 
 	func _to_string() -> String:
-		return "%d, priority: %d" % [self.name, self.priority]
+		return "(%s, priority: %f)" % [self.name, self.priority]
 
 
 class Event:
@@ -126,6 +126,7 @@ class GameObject:
 
 		self.components[component_name] = new_component
 		self._insert_component_priority(new_component)
+		print("Comp prio: ", component_priority)
 
 	func delete_self() -> void:
 		var subscribed_copy = self.subscribed_to.duplicate(true)

@@ -7,14 +7,14 @@ func _init(
 	p_move_timer: MoveTimer,
 	p_game_object_factory: GameEngine.GameObjectFactory,
 ) -> void:
+	move_timer = p_move_timer
+	game_object_factory = p_game_object_factory
+
 	move_timer.speed_1.connect(_on_move_timer_speed_1)
 	move_timer.speed_2.connect(_on_move_timer_speed_2)
 	move_timer.speed_3.connect(_on_move_timer_speed_3)
 	move_timer.speed_4.connect(_on_move_timer_speed_4)
 	move_timer.speed_5.connect(_on_move_timer_speed_5)
-
-	move_timer = p_move_timer
-	game_object_factory = p_game_object_factory
 
 
 func _on_move_timer_speed_1() -> void:
