@@ -97,11 +97,13 @@ func update_rooms(direction: String) -> void:
 
 
 func _crown_scripted_event(_args: Dictionary) -> void:
+	main_node.toggle_timer_freeze()
 	main_node.audio_library.play_sound("earthquake")
 	follow_camera.shake_with_noise()
 	await EventBus.shake_completed
 	game_announcer.announce_message("ESCAPE WITH YOUR LIFE")
 	await EventBus.announcement_completed
+	main_node.toggle_timer_freeze()
 	EventBus.scripted_event_completed.emit()
 
 
@@ -137,6 +139,7 @@ func _on_crown_pickup() -> void:
 	crown_collected_count += 1
 	if crown_collected_count == 1:
 		main_node.play_scripted_event(_crown_scripted_event)
+		await EventBus.scripted_event_completed
 
 		var snake_go: GameEngine.GameObject = (
 			main_node.get_closest_player_controlled(Vector2.ZERO)

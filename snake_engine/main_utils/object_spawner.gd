@@ -126,6 +126,7 @@ func _spawn_object_from_queue() -> void:
 	var current_spawn_job: SpawnJob = spawn_queue.pop_front()
 	var position: Vector2 = current_spawn_job.preferred_position
 	var object_to_spawn: GameEngine.GameObject = current_spawn_job.object_to_spawn
+
 	if (
 		await main_node.is_position_taken(position)
 		and not current_spawn_job.force_preferred_position

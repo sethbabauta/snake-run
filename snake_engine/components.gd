@@ -690,13 +690,19 @@ class Royalty:
 			_end_game()
 		if event.id == "DropItem":
 			_ditch_crown()
+		if event.id == "KillSelf":
+			_ditch_crown(true)
 
 		return event
 
 
-	func _ditch_crown() -> void:
-		var drop_position: Vector2 = self._get_drop_position()
-		self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
+	func _ditch_crown(drop_at_tail: bool = false) -> void:
+		if not drop_at_tail:
+			var drop_position: Vector2 = self._get_drop_position()
+			self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
+		else:
+			game_object.main_node.queue_object_to_spawn("CrownItem")
+
 		self.game_object.queue_remove_component("Royalty")
 		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
 		EventBus.crown_dropped.emit()

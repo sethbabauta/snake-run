@@ -77,6 +77,10 @@ class Event:
 		event.parameters["after_effects"].append(event_job)
 
 
+	func _to_string() -> String:
+		return "(%s, uid: %f)" % [id, unique_id]
+
+
 class EventJob:
 	var target: GameObject
 	var event: Event
@@ -140,7 +144,14 @@ class GameObject:
 		# higher priority number first
 		var component_queue: Array[Component] = component_priority.duplicate(true)
 		for component in component_queue:
-			event = self.components[component.name].fire_event(event)
+			var component_to_recieve_event: Component = components.get(
+				component.name
+			)
+
+			if not component_to_recieve_event:
+				continue
+
+			event = component_to_recieve_event.fire_event(event)
 
 		if event.parameters["after_effects"]:
 			var event_job_queue: Array = event.parameters["after_effects"].duplicate(true)
