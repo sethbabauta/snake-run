@@ -170,7 +170,7 @@ class Crown:
 			Event
 			. new(
 				"SendSprite",
-				{"to": eater, "name": "EquippedItem", "offset": Vector2(0, -32)},
+				{"to": eater, "name": "Crown", "offset": Vector2(0, -32)},
 			)
 		)
 		Event.queue_after_effect(game_object, new_event, event)
@@ -226,8 +226,9 @@ class EquipabbleItem:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._bequeath_components(event)
 			self._make_eater_equip_item(event)
+			self._bequeath_components(event)
+			_drop_own_items()
 		if event.id == "DropItem":
 			self._relinquish_components()
 
@@ -245,11 +246,17 @@ class EquipabbleItem:
 			)
 			eater.add_component(component_name, component_parameters)
 
+
+	func _drop_own_items() -> void:
+		var new_event := GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+
 	func _make_eater_equip_item(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 
 		var new_event := GameEngine.Event.new("DropItem")
-		self.game_object.fire_event(new_event)
+		eater.fire_event(new_event)
 
 		new_event = (
 			Event
@@ -690,14 +697,18 @@ class Royalty:
 		if event.id == "CheckCrown":
 			_end_game()
 		if event.id == "DropItem":
-			_ditch_crown()
+			_ditch_crown(event)
 		if event.id == "KillSelf":
-			_ditch_crown(true)
+			_ditch_crown(event, true)
 
 		return event
 
 
-	func _ditch_crown(drop_at_tail: bool = false) -> void:
+	func _ditch_crown(event: Event, drop_at_tail: bool = false) -> void:
+		var from: Variant = event.parameters.get("from")
+		if not from or from != "player_command":
+			return
+
 		if not drop_at_tail:
 			var drop_position: Vector2 = self._get_drop_position()
 			self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
@@ -705,7 +716,7 @@ class Royalty:
 			game_object.main_node.queue_object_to_spawn("CrownItem")
 
 		self.game_object.queue_remove_component("Royalty")
-		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "Crown")
 		EventBus.crown_dropped.emit()
 
 
@@ -726,12 +737,15 @@ class SingleUseItem:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._bequeath_components(event)
 			self._make_eater_equip_item(event)
+			self._bequeath_components(event)
+			_drop_own_items()
 		if event.id == "ConsumeItem":
 			self._relinquish_components()
 		if event.id == "UseItem":
 			_consume_item(event)
+		if event.id == "DropItem":
+			_relinquish_components()
 
 		return event
 
@@ -753,11 +767,16 @@ class SingleUseItem:
 		Event.queue_after_effect(game_object, new_event, event)
 
 
+	func _drop_own_items() -> void:
+		var new_event := GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+
 	func _make_eater_equip_item(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 
 		var new_event := GameEngine.Event.new("DropItem")
-		self.game_object.fire_event(new_event)
+		eater.fire_event(new_event)
 
 		new_event = (
 			Event

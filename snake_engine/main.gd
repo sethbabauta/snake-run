@@ -408,10 +408,13 @@ func queue_object_to_spawn(
 
 static func remove_overlay_sprite_from_physics_body(
 	target: GameEngine.GameObject,
-	_sprite_node_name: String,
+	sprite_node_name: String,
 ) -> void:
 	var equipped_items: Array[Node] = target.physics_body.equipped_items.get_children()
 	for item in equipped_items:
+		if item.name != sprite_node_name:
+			continue
+
 		target.physics_body.equipped_items.remove_child(item)
 		item.queue_free()
 
