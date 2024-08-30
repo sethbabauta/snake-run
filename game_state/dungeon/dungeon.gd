@@ -58,7 +58,7 @@ func get_current_room_exclusions() -> Array[String]:
 
 func level_change_pause(_args: Dictionary) -> void:
 	main_node.toggle_timer_freeze()
-	game_announcer.announce_message("3 2 1 GO", 1.05)
+	game_announcer.announce_message("3 2 1 GO")
 	await EventBus.announcement_completed
 	EventBus.scripted_event_completed.emit()
 	main_node.toggle_timer_freeze()

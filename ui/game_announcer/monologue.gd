@@ -34,7 +34,10 @@ func finish_monologue() -> void:
 func start_monologue(monologuer: Area2D, speech: String) -> void:
 	physics_body = monologuer
 	monologue_label.text = speech
-	monologue_label.global_position = physics_body.global_position
+	monologue_label.global_position = (
+		physics_body.global_position
+		+ physics_body.get_canvas_transform().origin
+	)
 	monologue_label.visible_ratio = 0
 	monologue_label.visible = true
 

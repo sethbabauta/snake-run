@@ -69,6 +69,7 @@ func _get_is_label_past_margin(
 func _get_label_left_edge() -> float:
 	var label_left_edge: float = (
 		physics_body.global_position.x
+		+ physics_body.get_canvas_transform().origin.x
 		- label_offset
 		- label.size.x
 	)
@@ -78,6 +79,7 @@ func _get_label_left_edge() -> float:
 func _get_label_right_edge() -> float:
 	var label_right_edge: float = (
 		physics_body.global_position.x
+		+ physics_body.get_canvas_transform().origin.x
 		+ label_offset
 		+ label.size.x
 	)
@@ -87,7 +89,10 @@ func _get_label_right_edge() -> float:
 
 func get_target_position() -> Vector2:
 	_check_for_flip()
-	var target_position: Vector2 = physics_body.global_position
+	var target_position: Vector2 = (
+		physics_body.global_position
+		+ physics_body.get_canvas_transform().origin
+	)
 
 	if current_side == Side.RIGHT:
 		target_position += Vector2(label_offset, 0)
