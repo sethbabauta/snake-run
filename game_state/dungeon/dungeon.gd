@@ -156,25 +156,29 @@ func _on_crown_pickup() -> void:
 	crown_collected_count += 1
 	if crown_collected_count == 1:
 		main_node.play_scripted_event(_crown_scripted_event)
-		await EventBus.scripted_event_completed
 
-		var snake_go: GameEngine.GameObject = (
-			main_node.get_closest_player_controlled(Vector2.ZERO)
-		)
 
-		if not is_instance_valid(snake_go):
-			return
+func _on_first_crown_poison(times_poisoned: int) -> void:
+	if times_poisoned != 1:
+		return
 
-		game_announcer.start_monologue(
-			snake_go.physics_body,
-			"is this thing hurting me?? (drop crown with shift)"
-		)
+	var snake_go: GameEngine.GameObject = (
+		main_node.get_closest_player_controlled(Vector2.ZERO)
+	)
 
+	if not is_instance_valid(snake_go):
+		return
+
+	game_announcer.start_monologue(
+		snake_go.physics_body,
+		"is this thing hurting me?? (drop crown with shift)",
+	)
 
 
 func _on_player_moved() -> void:
 	if crown_collected:
-		crown_poison_counter.increment_counter()
+		var times_poisoned: int = crown_poison_counter.increment_counter()
+		_on_first_crown_poison(times_poisoned)
 
 
 func _on_score_changed(_new_score: int, changed_by: int) -> void:
@@ -210,12 +214,13 @@ func _on_player_respawned() -> void:
 class CrownPoisonCounter:
 	var poison_interval: int = CROWN_POISON_RATE
 	var current_interval: int = 0
+	var times_poisoned: int = 0
 	var main_node: Main
 
 	func _init(p_main_node: Main) -> void:
 		main_node = p_main_node
 
-	func increment_counter(amount: int = 1) -> void:
+	func increment_counter(amount: int = 1) -> int:
 		current_interval += amount
 		if current_interval >= poison_interval:
 			current_interval = 0
@@ -227,3 +232,6 @@ class CrownPoisonCounter:
 				new_event,
 				"player_controlled",
 			)
+			times_poisoned += 1
+
+		return times_poisoned

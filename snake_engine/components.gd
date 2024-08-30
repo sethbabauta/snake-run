@@ -341,7 +341,7 @@ class InventorySlot:
 	func _drop_item() -> void:
 		if self.item_name:
 			var drop_position: Vector2 = self._get_drop_position()
-			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position, true)
+			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position)
 			self.item_name = ""
 
 	func _equip_item(event: Event) -> void:
