@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b0xlwmro2kyby"]
+[gd_scene load_steps=18 format=3 uid="uid://b0xlwmro2kyby"]
 
 [ext_resource type="Script" path="res://game_state/game_state_manager.gd" id="1_52rvp"]
 [ext_resource type="Script" path="res://game_state/logo/game_state_logo.gd" id="2_kfmw1"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/enter_room.gd" id="13_ibpqm"]
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/win.gd" id="14_ffv4s"]
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/lose.gd" id="15_qg1fj"]
+[ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/die.gd" id="17_x7t71"]
 
 [node name="GameStateManager" type="Node"]
 script = ExtResource("1_52rvp")
@@ -66,6 +67,9 @@ script = ExtResource("14_ffv4s")
 
 [node name="Lose" parent="States/GameStateDungeon/States" index="7" instance=ExtResource("8_nxkad")]
 script = ExtResource("15_qg1fj")
+
+[node name="Die" parent="States/GameStateDungeon/States" index="8" instance=ExtResource("8_nxkad")]
+script = ExtResource("17_x7t71")
 
 [editable path="States/GameStateLogo"]
 [editable path="States/GameStateMenu"]

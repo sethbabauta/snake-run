@@ -31,6 +31,5 @@ func enter() -> void:
 
 
 func _setup_initial_room() -> void:
-	dungeon.current_room = dungeon.room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
-	dungeon.current_room_neighbors = dungeon.room_mapper.get_room_neighbors(dungeon.current_room)
+	dungeon.set_current_room_to_start()
 	dungeon.load_room(dungeon.current_room)

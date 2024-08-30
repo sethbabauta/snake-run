@@ -155,6 +155,7 @@ func cooldown(
 
 func end_game_soon() -> void:
 	toggle_timer_freeze()
+	EventBus.player_died.emit()
 	await get_tree().create_timer(3).timeout
 
 	if not check_is_player_alive():
@@ -493,7 +494,10 @@ func spawn_player_snake(
 	)
 
 
-func toggle_timer_freeze() -> void:
+func toggle_timer_freeze(allow_unpause: bool = true) -> void:
+	if timer_frozen and not allow_unpause:
+		return
+
 	timer_frozen = not timer_frozen
 	move_timer.paused = not move_timer.paused
 

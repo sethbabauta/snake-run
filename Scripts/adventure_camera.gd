@@ -93,6 +93,7 @@ func _on_game_start(_gamemode_name: String) -> void:
 
 
 func _on_level_changed(direction: String) -> void:
+	print("lvl changed: ", direction)
 	if direction == "Start":
 		return
 

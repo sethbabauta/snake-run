@@ -11,6 +11,7 @@ signal game_started(gamemode_name: String)
 signal level_completed
 signal level_changed(direction: String)
 signal pause_requested
+signal player_died
 signal player_fully_entered
 signal player_moved
 signal player_respawned

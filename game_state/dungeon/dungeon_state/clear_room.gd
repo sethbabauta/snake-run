@@ -9,14 +9,15 @@ func enter() -> void:
 
 	dungeon.main_node.toggle_timer_freeze()
 
-	var pickups_cleared: int = 0
-	var clear_pickup_tries: int = 0
-	while pickups_cleared == 0 and clear_pickup_tries < 10:
-		pickups_cleared += await dungeon.main_node.clear_pickups()
-		clear_pickup_tries += 1
+	await dungeon.clear_pickups()
 
-	await dungeon.main_node.play_scripted_event(_level_cleared_event)
-	await dungeon.game_announcer.announce_arrows(exclusions)
+	if (
+		dungeon.current_room.get_is_room_complete()
+		and not dungeon.current_room.cleared_message_played
+	):
+		await dungeon.main_node.play_scripted_event(_level_cleared_event)
+		await dungeon.game_announcer.announce_arrows(exclusions)
+		dungeon.current_room.cleared_message_played = true
 
 	dungeon.main_node.toggle_timer_freeze()
 

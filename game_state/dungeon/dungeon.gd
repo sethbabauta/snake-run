@@ -29,6 +29,14 @@ func _ready() -> void:
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 
 
+func clear_pickups() -> void:
+	var pickups_cleared: int = 0
+	var clear_pickup_tries: int = 0
+	while pickups_cleared == 0 and clear_pickup_tries < 10:
+		pickups_cleared += await main_node.clear_pickups()
+		clear_pickup_tries += 1
+
+
 func get_current_room_exclusions() -> Array[String]:
 	var exclusions: Array[String] = []
 
@@ -63,6 +71,15 @@ func load_room(room: Room) -> void:
 	var position_offset:= Vector2(room.layout_x * 20, room.layout_y * -20)
 	main_node.level_factory.setup_level(room_tile_map.room_tile_map, position_offset)
 	loaded_rooms.append(room)
+
+
+func set_current_room_to_start() -> void:
+	current_room = room_mapper.get_room_at_layout_coordinates(
+		Vector2(0, 0)
+	)
+	current_room_neighbors = room_mapper.get_room_neighbors(
+		current_room
+	)
 
 
 func spawn_doors_and_apple() -> void:
@@ -182,6 +199,7 @@ func _on_player_fully_entered() -> void:
 
 
 func _on_player_respawned() -> void:
+	set_current_room_to_start()
 	game_announcer.announce_message("DON'T DIE THIS TIME")
 	await EventBus.announcement_completed
 	game_announcer.announce_message("3 2 1 GO", 1.05)
