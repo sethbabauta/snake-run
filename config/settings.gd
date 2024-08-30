@@ -3,7 +3,8 @@ extends Node
 const BASE_MOVE_SPEED = 32.0
 
 # general paths
-const BLUEPRINTS_PATH = "res://config/object_blueprints.txt"
+#const BLUEPRINTS_PATH = "res://config/object_blueprints.txt"
+const BLUEPRINTS_PATH = "res://config/object_blueprints.svg"
 const SPRITES_PATH = "res://sprites/"
 const SHADERS_PATH = "res://shaders/"
 const LEVELS_PATH = "res://levels/legacy_levels/"
