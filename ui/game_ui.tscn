@@ -53,6 +53,7 @@ text = "Snake Length: 0"
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/HBoxContainer"]
 layout_mode = 2
+theme_override_constants/margin_right = 35
 
 [node name="Powerup1Label" type="Label" parent="Panel/HBoxContainer/MarginContainer3"]
 unique_name_in_owner = true
@@ -60,6 +61,16 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Powerup: OFF"
+
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="ExtraLifeLabel" type="Label" parent="Panel/HBoxContainer/MarginContainer4"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Extra Lives: 0"
 
 [node name="PauseDialog" parent="." instance=ExtResource("2_33cnr")]
 unique_name_in_owner = true

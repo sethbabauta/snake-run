@@ -5,6 +5,8 @@ signal ate_item(item_name: String, eater: String)
 signal ate_poison(poison_amount: int)
 signal crown_collected
 signal crown_dropped
+signal extra_life_collected
+signal extra_life_expended
 signal game_ended(won: bool)
 signal game_paused(is_paused: bool)
 signal game_started(gamemode_name: String)

@@ -301,6 +301,7 @@ class ExtraLife:
 		var start_length: int = game_object.main_node.gamemode_node.START_LENGTH
 		game_object.main_node.spawn_player_snake(start_position, start_length)
 		game_object.remove_component("ExtraLife")
+		EventBus.extra_life_expended.emit()
 
 
 class ExtraLifeItem:
@@ -317,6 +318,7 @@ class ExtraLifeItem:
 	func _gain_extra_life(event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		eater.add_component("ExtraLife", {})
+		EventBus.extra_life_collected.emit()
 
 
 class InventorySlot:
@@ -330,6 +332,8 @@ class InventorySlot:
 			self._drop_item()
 		if event.id == "ConsumeItem":
 			_destroy_item()
+		if event.id == "KillSelf":
+			_drop_item()
 
 		return event
 

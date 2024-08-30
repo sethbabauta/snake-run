@@ -5,12 +5,14 @@ const POWERUP_1_TEXT: String = "Powerup: "
 @export var main_node: Main
 
 var is_settings_active: bool = false
+var extra_life_count: int = 0
 
 @onready var pause_dialog: PauseDialog = %PauseDialog
 @onready var settings_dialog: Control = %SettingsDialog
 @onready var score_label: Label = %ScoreLabel
 @onready var snake_length_label: Label = %SnakeLengthLabel
 @onready var powerup_1_label: Label = %Powerup1Label
+@onready var extra_life_label: Label = %ExtraLifeLabel
 
 
 func _ready() -> void:
@@ -18,6 +20,8 @@ func _ready() -> void:
 	EventBus.game_paused.connect(_on_game_paused)
 	EventBus.settings_toggled.connect(_on_settings_toggled)
 	EventBus.ate_poison.connect(_on_ate_poison)
+	EventBus.extra_life_collected.connect(_on_extra_life_collected)
+	EventBus.extra_life_expended.connect(_on_extra_life_expended)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
 	snake_length_label.text = "Snake Length: " + str(main_node.gamemode_node.START_LENGTH)
 	score_label.text = "Score: %d" % ScoreKeeper.score
@@ -40,14 +44,26 @@ func _on_ate_poison(_amount: int) -> void:
 	update_snake_length()
 
 
+func _on_extra_life_collected() -> void:
+	extra_life_count += 1
+	extra_life_label.text = "Extra Lives: " + str(extra_life_count)
+
+
+func _on_extra_life_expended() -> void:
+	extra_life_count -= 1
+	extra_life_label.text = "Extra Lives: " + str(extra_life_count)
+
+
 func _on_game_paused(is_paused: bool) -> void:
 	pause_dialog.visible = is_paused
 
 
 func _on_game_started(gamemode_name: String) -> void:
 	update_snake_length()
-	if gamemode_name == "Snakeo" or "Dungeon":
+	if gamemode_name == "Snakeo" or gamemode_name == "Dungeon":
 		powerup_1_label.visible = true
+	if gamemode_name == "Dungeon":
+		extra_life_label.visible = true
 
 
 func _on_score_changed(new_score: int, _changed_by: int) -> void:
