@@ -12,6 +12,8 @@ var is_game_paused: bool = false
 @onready var dungeon_arrow_east: DungeonArrow = %DungeonArrowEast
 @onready var dungeon_arrow_south: DungeonArrow = %DungeonArrowSouth
 @onready var dungeon_arrow_west: DungeonArrow = %DungeonArrowWest
+@onready var monologue: Control = %Monologue
+@onready var item_effect_number: Control = %ItemEffectNumber
 
 
 func _init() -> void:
@@ -60,11 +62,29 @@ func announce_message(
 	EventBus.announcement_completed.emit()
 
 
+func display_number(
+	value: String,
+	affected_body: Area2D,
+	is_damage: bool = false,
+	extra_hang_time: float = 0.0,
+) -> void:
+	item_effect_number.display_number(
+		value,
+		affected_body,
+		is_damage,
+		extra_hang_time,
+	)
+
+
 func hide_arrows() -> void:
 	dungeon_arrow_north.visible = false
 	dungeon_arrow_east.visible = false
 	dungeon_arrow_south.visible = false
 	dungeon_arrow_west.visible = false
+
+
+func start_monologue(monologuer: Area2D, speech: String) -> void:
+	monologue.start_monologue(monologuer, speech)
 
 
 func _announce_arrow(direction: String) -> DungeonArrow:

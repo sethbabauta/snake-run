@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://yu3uq3s2e4yl"]
 
-[ext_resource type="Script" path="res://scripts/dungeon_door_arrow.gd" id="1_b5dgh"]
+[ext_resource type="Script" path="res://ui/game_announcer/dungeon_arrows/dungeon_door_arrow.gd" id="1_b5dgh"]
 
 [node name="DungeonArrowNorth" type="Control"]
 layout_mode = 3

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://wlhnyhesiauy"]
 
 [ext_resource type="Script" path="res://scripts/adventure_camera.gd" id="1_43pfi"]
-[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://scenes/collision_query.tscn" id="2_3jvgn"]
+[ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://snake_engine/collision_query.tscn" id="2_3jvgn"]
 
 [node name="FollowCamera" type="Camera2D"]
 position = Vector2(320, 320)

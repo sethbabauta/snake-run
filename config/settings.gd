@@ -1,13 +1,13 @@
 extends Node
 
-const BASE_MOVE_SPEED = 32
+const BASE_MOVE_SPEED = 32.0
 
 # general paths
-const BLUEPRINTS_PATH = "res://config/object_blueprints.txt"
+const BLUEPRINTS_PATH = "res://data/object_blueprints.txt"
 const SPRITES_PATH = "res://sprites/"
 const SHADERS_PATH = "res://shaders/"
 const LEVELS_PATH = "res://levels/legacy_levels/"
-const PHYSICS_OBJECT_PATH = "res://scenes/physics_object.tscn"
+const PHYSICS_OBJECT_PATH = "res://snake_engine/physics_object.tscn"
 
 const GRASS_BACKGROUND_SCENE_PATH = "res://scenes/grass_background.tscn"
 const GRASS_BACKGROUND_PATHS = [

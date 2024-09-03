@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmrtbc0g3167a"]
+
+[ext_resource type="Script" path="res://ui/game_announcer/text_target_position.gd" id="1_2plsn"]
+
+[node name="TextTargetPosition" type="Node"]
+script = ExtResource("1_2plsn")

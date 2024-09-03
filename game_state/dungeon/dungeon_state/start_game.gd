@@ -9,7 +9,9 @@ func enter() -> void:
 	dungeon_state_manager.set_dungeon_for_all_states(new_dungeon)
 
 	_setup_initial_room()
-	dungeon.crown_poison_counter = Dungeon.CrownPoisonCounter.new(dungeon.main_node)
+	dungeon.crown_poison_counter = Dungeon.CrownPoisonCounter.new(
+		dungeon.main_node,
+	)
 	dungeon.update_rooms("Start")
 
 	var start_position: Vector2 = Utils.convert_simple_to_world_coordinates(
@@ -31,6 +33,5 @@ func enter() -> void:
 
 
 func _setup_initial_room() -> void:
-	dungeon.current_room = dungeon.room_mapper.get_room_at_layout_coordinates(Vector2(0, 0))
-	dungeon.current_room_neighbors = dungeon.room_mapper.get_room_neighbors(dungeon.current_room)
+	dungeon.set_current_room_to_start()
 	dungeon.load_room(dungeon.current_room)

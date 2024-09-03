@@ -170,12 +170,12 @@ class Crown:
 			Event
 			. new(
 				"SendSprite",
-				{"to": eater, "name": "EquippedItem", "offset": Vector2(0, -32)},
+				{"to": eater, "name": "Crown", "offset": Vector2(0, -32)},
 			)
 		)
 		Event.queue_after_effect(game_object, new_event, event)
 
-		eater.add_component("Royalty", {})
+		eater.add_component("Royalty", {"priority": 102})
 		EventBus.crown_collected.emit()
 
 
@@ -226,8 +226,9 @@ class EquipabbleItem:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._bequeath_components(event)
 			self._make_eater_equip_item(event)
+			self._bequeath_components(event)
+			_drop_own_items()
 		if event.id == "DropItem":
 			self._relinquish_components()
 
@@ -245,11 +246,17 @@ class EquipabbleItem:
 			)
 			eater.add_component(component_name, component_parameters)
 
+
+	func _drop_own_items() -> void:
+		var new_event := GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+
 	func _make_eater_equip_item(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 
 		var new_event := GameEngine.Event.new("DropItem")
-		self.game_object.fire_event(new_event)
+		eater.fire_event(new_event)
 
 		new_event = (
 			Event
@@ -268,6 +275,7 @@ class EquipabbleItem:
 			)
 		)
 		Event.queue_after_effect(self.game_object, new_event, event)
+
 
 	func _relinquish_components() -> void:
 		for component_name in self.components_to_inherit:
@@ -293,6 +301,7 @@ class ExtraLife:
 		var start_length: int = game_object.main_node.gamemode_node.START_LENGTH
 		game_object.main_node.spawn_player_snake(start_position, start_length)
 		game_object.remove_component("ExtraLife")
+		EventBus.extra_life_expended.emit()
 
 
 class ExtraLifeItem:
@@ -309,6 +318,7 @@ class ExtraLifeItem:
 	func _gain_extra_life(event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 		eater.add_component("ExtraLife", {})
+		EventBus.extra_life_collected.emit()
 
 
 class InventorySlot:
@@ -322,6 +332,8 @@ class InventorySlot:
 			self._drop_item()
 		if event.id == "ConsumeItem":
 			_destroy_item()
+		if event.id == "KillSelf":
+			_drop_item()
 
 		return event
 
@@ -333,7 +345,7 @@ class InventorySlot:
 	func _drop_item() -> void:
 		if self.item_name:
 			var drop_position: Vector2 = self._get_drop_position()
-			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position, true)
+			self.game_object.main_node.queue_object_to_spawn(item_name, drop_position)
 			self.item_name = ""
 
 	func _equip_item(event: Event) -> void:
@@ -473,6 +485,8 @@ class PhysicsBody:
 		self.game_object.physics_body = self.physics_body_node
 		self.game_object.main_node.add_child(self.physics_body_node)
 		self.physics_body_node.game_object = self.game_object
+		physics_body_node.name = game_object.name + str(game_object.unique_id)
+
 
 	func _check_eat() -> void:
 		if self.physics_body_node.has_overlapping_areas():
@@ -481,6 +495,7 @@ class PhysicsBody:
 
 			for area in areas:
 				area.game_object.fire_event(new_event)
+
 
 	func _get_eaten(event: Event) -> void:
 		var kill_self_event := Event.new("KillSelf")
@@ -682,21 +697,30 @@ class Render:
 class Royalty:
 	extends Component
 
-
 	func fire_event(event: Event) -> Event:
 		if event.id == "CheckCrown":
 			_end_game()
 		if event.id == "DropItem":
-			_ditch_crown()
+			_ditch_crown(event)
+		if event.id == "KillSelf":
+			_ditch_crown(event, true)
 
 		return event
 
 
-	func _ditch_crown() -> void:
-		var drop_position: Vector2 = self._get_drop_position()
-		self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
+	func _ditch_crown(event: Event, drop_at_tail: bool = false) -> void:
+		var from: Variant = event.parameters.get("from")
+		if not from or from != "player_command":
+			return
+
+		if not drop_at_tail:
+			var drop_position: Vector2 = self._get_drop_position()
+			self.game_object.main_node.queue_object_to_spawn("CrownItem", drop_position, true)
+		else:
+			game_object.main_node.queue_object_to_spawn("CrownItem")
+
 		self.game_object.queue_remove_component("Royalty")
-		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+		Main.remove_overlay_sprite_from_physics_body(self.game_object, "Crown")
 		EventBus.crown_dropped.emit()
 
 
@@ -717,12 +741,15 @@ class SingleUseItem:
 
 	func fire_event(event: Event) -> Event:
 		if event.id == "Eat":
-			self._bequeath_components(event)
 			self._make_eater_equip_item(event)
+			self._bequeath_components(event)
+			_drop_own_items()
 		if event.id == "ConsumeItem":
 			self._relinquish_components()
 		if event.id == "UseItem":
 			_consume_item(event)
+		if event.id == "DropItem":
+			_relinquish_components()
 
 		return event
 
@@ -744,11 +771,16 @@ class SingleUseItem:
 		Event.queue_after_effect(game_object, new_event, event)
 
 
+	func _drop_own_items() -> void:
+		var new_event := GameEngine.Event.new("DropItem")
+		self.game_object.fire_event(new_event)
+
+
 	func _make_eater_equip_item(event: Event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
 
 		var new_event := GameEngine.Event.new("DropItem")
-		self.game_object.fire_event(new_event)
+		eater.fire_event(new_event)
 
 		new_event = (
 			Event
@@ -893,6 +925,7 @@ class SnakeBody:
 				)
 			)
 			Event.queue_after_effect(self.next_body, new_event, event)
+			EventBus.ate_poison.emit(poison_level)
 
 
 class SpeedIncrease:

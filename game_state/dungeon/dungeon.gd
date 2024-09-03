@@ -25,7 +25,16 @@ func _ready() -> void:
 	EventBus.crown_dropped.connect(_on_crown_dropped)
 	EventBus.player_fully_entered.connect(_on_player_fully_entered)
 	EventBus.player_moved.connect(_on_player_moved)
+	EventBus.player_respawned.connect(_on_player_respawned)
 	ScoreKeeper.score_changed.connect(_on_score_changed)
+
+
+func clear_pickups() -> void:
+	var pickups_cleared: int = 0
+	var clear_pickup_tries: int = 0
+	while pickups_cleared == 0 and clear_pickup_tries < 10:
+		pickups_cleared += await main_node.clear_pickups()
+		clear_pickup_tries += 1
 
 
 func get_current_room_exclusions() -> Array[String]:
@@ -49,7 +58,7 @@ func get_current_room_exclusions() -> Array[String]:
 
 func level_change_pause(_args: Dictionary) -> void:
 	main_node.toggle_timer_freeze()
-	game_announcer.announce_message("3 2 1 GO", 1.05)
+	game_announcer.announce_message("3 2 1 GO")
 	await EventBus.announcement_completed
 	EventBus.scripted_event_completed.emit()
 	main_node.toggle_timer_freeze()
@@ -62,6 +71,15 @@ func load_room(room: Room) -> void:
 	var position_offset:= Vector2(room.layout_x * 20, room.layout_y * -20)
 	main_node.level_factory.setup_level(room_tile_map.room_tile_map, position_offset)
 	loaded_rooms.append(room)
+
+
+func set_current_room_to_start() -> void:
+	current_room = room_mapper.get_room_at_layout_coordinates(
+		Vector2(0, 0)
+	)
+	current_room_neighbors = room_mapper.get_room_neighbors(
+		current_room
+	)
 
 
 func spawn_doors_and_apple() -> void:
@@ -96,11 +114,13 @@ func update_rooms(direction: String) -> void:
 
 
 func _crown_scripted_event(_args: Dictionary) -> void:
+	main_node.toggle_timer_freeze()
 	main_node.audio_library.play_sound("earthquake")
 	follow_camera.shake_with_noise()
 	await EventBus.shake_completed
 	game_announcer.announce_message("ESCAPE WITH YOUR LIFE")
 	await EventBus.announcement_completed
+	main_node.toggle_timer_freeze()
 	EventBus.scripted_event_completed.emit()
 
 
@@ -138,9 +158,27 @@ func _on_crown_pickup() -> void:
 		main_node.play_scripted_event(_crown_scripted_event)
 
 
+func _on_first_crown_poison(times_poisoned: int) -> void:
+	if times_poisoned != 1:
+		return
+
+	var snake_go: GameEngine.GameObject = (
+		main_node.get_closest_player_controlled(Vector2.ZERO)
+	)
+
+	if not is_instance_valid(snake_go):
+		return
+
+	game_announcer.start_monologue(
+		snake_go.physics_body,
+		"is this thing hurting me?? (drop crown with shift)",
+	)
+
+
 func _on_player_moved() -> void:
 	if crown_collected:
-		crown_poison_counter.increment_counter()
+		var times_poisoned: int = crown_poison_counter.increment_counter()
+		_on_first_crown_poison(times_poisoned)
 
 
 func _on_score_changed(_new_score: int, changed_by: int) -> void:
@@ -164,15 +202,25 @@ func _on_player_fully_entered() -> void:
 			main_node.clear_doors(exclusions)
 
 
+func _on_player_respawned() -> void:
+	set_current_room_to_start()
+	game_announcer.announce_message("DON'T DIE THIS TIME")
+	await EventBus.announcement_completed
+	game_announcer.announce_message("3 2 1 GO", 1.05)
+	await EventBus.announcement_completed
+	main_node.toggle_timer_freeze()
+
+
 class CrownPoisonCounter:
 	var poison_interval: int = CROWN_POISON_RATE
 	var current_interval: int = 0
+	var times_poisoned: int = 0
 	var main_node: Main
 
 	func _init(p_main_node: Main) -> void:
 		main_node = p_main_node
 
-	func increment_counter(amount: int = 1) -> void:
+	func increment_counter(amount: int = 1) -> int:
 		current_interval += amount
 		if current_interval >= poison_interval:
 			current_interval = 0
@@ -180,4 +228,10 @@ class CrownPoisonCounter:
 				"IngestPoison",
 				{"poison_level": 1},
 			)
-			main_node.game_object_factory.notify_subscribers(new_event, "player_controlled")
+			main_node.game_object_factory.notify_subscribers(
+				new_event,
+				"player_controlled",
+			)
+			times_poisoned += 1
+
+		return times_poisoned

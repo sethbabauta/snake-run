@@ -7,6 +7,7 @@ class_name Room extends Resource
 @export var walled_off_directions: Array[String] = []
 
 var current_room_score: int = 0
+var cleared_message_played: bool = false
 
 
 func _to_string() -> String:

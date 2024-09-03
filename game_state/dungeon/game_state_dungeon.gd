@@ -11,6 +11,7 @@ var current_screen: Node
 @onready var enter_room: DungeonState = $States/EnterRoom
 @onready var win: DungeonState = $States/Win
 @onready var lose: DungeonState = $States/Lose
+@onready var die: Node = $States/Die
 
 
 func _init() -> void:
@@ -40,18 +41,19 @@ func choose_next_state() -> void:
 		start_game:
 			dungeon_state_machine.set_state(collect_apples)
 		collect_apples:
-			dungeon_state_machine.set_state(clear_room)
+			_dungeon_next_state(collect_apples)
 		clear_room:
 			dungeon_state_machine.set_state(roam_free)
 		roam_free:
-			dungeon_state_machine.set_state(enter_room)
+			_dungeon_next_state(roam_free)
 		enter_room:
 			dungeon_state_machine.set_state(collect_apples)
 		win:
 			_dungeon_next_state(win)
 		lose:
 			_dungeon_next_state(lose)
-
+		die:
+			_dungeon_next_state(die)
 
 func enter() -> void:
 	dungeon_state_machine.set_state(start_game)
@@ -67,10 +69,12 @@ func set_current_screen_to_dungeon(new_screen: Dungeon) -> void:
 func set_dungeon_for_all_states(new_dungeon: Dungeon) -> void:
 	for dungeon_state in states.get_children():
 		dungeon_state.dungeon = new_dungeon
+		dungeon_state._on_dungeon_state_set()
 
 
 func _dungeon_next_state(dungeon_state: DungeonState) -> void:
 	var next_dungeon_state: State = dungeon_state.next_state
+	dungeon_state.next_state = null
 	dungeon_state_machine.set_state(next_dungeon_state)
 
 

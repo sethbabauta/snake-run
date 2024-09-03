@@ -41,7 +41,7 @@ class Component:
 				self[parameter_name] = component_parameters[parameter_name]
 
 	func _to_string() -> String:
-		return "%d, priority: %d" % [self.name, self.priority]
+		return "(%s, priority: %f)" % [self.name, self.priority]
 
 
 class Event:
@@ -77,6 +77,10 @@ class Event:
 		event.parameters["after_effects"].append(event_job)
 
 
+	func _to_string() -> String:
+		return "(%s, uid: %f)" % [id, unique_id]
+
+
 class EventJob:
 	var target: GameObject
 	var event: Event
@@ -93,7 +97,7 @@ class GameObject:
 	var components: Dictionary
 	var physics_body: Area2D
 	var factory_from: GameObjectFactory
-	var component_priority: Array
+	var component_priority: Array[Component]
 	var subscribed_to: Array = []
 	var remove_component_queue: Array = []
 
@@ -127,6 +131,7 @@ class GameObject:
 		self.components[component_name] = new_component
 		self._insert_component_priority(new_component)
 
+
 	func delete_self() -> void:
 		var subscribed_copy = self.subscribed_to.duplicate(true)
 		for list_name in subscribed_copy:
@@ -136,10 +141,17 @@ class GameObject:
 
 	# return event so that it's clear that event is changing in place
 	func fire_event(event: Event) -> Event:
-		#print("\n", self.name, " received event: ", event.id, ".", event.unique_id)
 		# higher priority number first
-		for component in self.component_priority:
-			event = self.components[component.name].fire_event(event)
+		var component_queue: Array[Component] = component_priority.duplicate(true)
+		for component in component_queue:
+			var component_to_recieve_event: Component = components.get(
+				component.name
+			)
+
+			if not component_to_recieve_event:
+				continue
+
+			event = component_to_recieve_event.fire_event(event)
 
 		if event.parameters["after_effects"]:
 			var event_job_queue: Array = event.parameters["after_effects"].duplicate(true)
