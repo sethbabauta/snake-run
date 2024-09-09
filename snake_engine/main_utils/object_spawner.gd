@@ -9,6 +9,39 @@ func _init(p_main_node: Main) -> void:
 	main_node = p_main_node
 
 
+func clear_doors(exclusions: Array[String] = []) -> void:
+	var door_locations: Array[Vector2] = (
+		main_node.get_simple_door_locations(exclusions)
+	)
+	for door_location in door_locations:
+		var door_world_location: Vector2 = (
+			Utils.convert_simple_to_world_coordinates(door_location)
+		)
+		var door_game_object: GameEngine.GameObject = (
+			_get_game_object_at_position_or_null(door_world_location)
+		)
+		if not door_game_object:
+			continue
+
+		if door_game_object.name != "Door":
+			continue
+
+		door_game_object.delete_self()
+
+
+func clear_pickups() -> int:
+	var pickups_to_clear: Array = [
+		"Apple",
+		"PoisonApple",
+	]
+
+	var pickups_cleared: int = 0
+	for pickup_name in pickups_to_clear:
+		pickups_cleared += await _clear_pickup(pickup_name)
+
+	return pickups_cleared
+
+
 func queue_object_to_spawn(
 	object_name: String,
 	position: Vector2 = await main_node.get_random_valid_world_position(),
@@ -44,7 +77,9 @@ func spawn_barrier(position: Vector2) -> void:
 
 
 func spawn_doors(exclusions: Array[String] = []) -> void:
-	var door_positions: Array = main_node.get_simple_door_locations(exclusions)
+	var door_positions: Array[Vector2] = (
+		main_node.get_simple_door_locations(exclusions)
+	)
 
 	for position in door_positions:
 		var world_position: Vector2 = Utils.convert_simple_to_world_coordinates(position)
@@ -109,6 +144,28 @@ func spawn_start_barriers() -> void:
 		spawn_barrier(Vector2(coordinate, main_node.max_simple_size.y - 1))
 		spawn_barrier(Vector2(0, coordinate))
 		spawn_barrier(Vector2(main_node.max_simple_size.x - 1, coordinate))
+
+
+func _clear_pickup(pickup_name: String) -> int:
+	var pickups: Array[GameEngine.GameObject] = await main_node.get_game_objects_of_name(pickup_name)
+	var pickups_cleared: int = 0
+	for pickup in pickups:
+		pickup.delete_self()
+		pickups_cleared += 1
+
+	return pickups_cleared
+
+
+func _get_game_object_at_position_or_null(position: Vector2) -> Variant:
+	if not main_node.query_area.has_overlapping_areas():
+		return null
+
+	var found_game_object: GameEngine.GameObject
+	for area in main_node.query_area.get_overlapping_areas():
+		if area.global_position.is_equal_approx(position):
+			found_game_object = area.game_object
+
+	return found_game_object
 
 
 func _spawn_background_tile(position: Vector2) -> void:

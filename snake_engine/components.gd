@@ -24,7 +24,10 @@ class ActiveCamoAbility:
 
 	func _end_cooldown() -> void:
 		self.on_cooldown = false
-		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+		ObjectOverlayer.remove_shader_from_physics_body(
+			self.game_object,
+			"EquippedItem",
+		)
 
 	func _hide_position_if_active(event: Event) -> void:
 		if self.ability_active:
@@ -32,14 +35,14 @@ class ActiveCamoAbility:
 
 	func _remove_effects() -> void:
 		if self.ability_active:
-			Main.remove_shader_from_snake(self.game_object)
+			ObjectOverlayer.remove_shader_from_snake(self.game_object)
 
 	func _start_cooldown() -> void:
 		self.ability_active = false
 		self.on_cooldown = true
-		Main.remove_shader_from_snake(self.game_object)
+		ObjectOverlayer.remove_shader_from_snake(self.game_object)
 		(
-			Main
+			ObjectOverlayer
 			. apply_shader_to_physics_body(
 				self.game_object,
 				"EquippedItem",
@@ -61,7 +64,7 @@ class ActiveCamoAbility:
 				)
 			)
 			(
-				Main
+				ObjectOverlayer
 				. apply_shader_to_snake(
 					self.game_object,
 					"transparent_material.tres",
@@ -148,7 +151,7 @@ class Crown:
 
 	func _init(p_name: String, p_game_object: GameObject = null) -> void:
 		super(p_name, p_game_object)
-		Main.overlay_sprite_on_game_object(
+		ObjectOverlayer.overlay_sprite_on_game_object(
 			Settings.SPRITES_PATH + "get_text.png",
 			game_object,
 			"getIndicator",
@@ -280,7 +283,11 @@ class EquipabbleItem:
 	func _relinquish_components() -> void:
 		for component_name in self.components_to_inherit:
 			self.game_object.queue_remove_component(component_name)
-		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+
+		ObjectOverlayer.remove_overlay_sprite_from_physics_body(
+			self.game_object,
+			"EquippedItem",
+		)
 
 
 class ExtraLife:
@@ -683,9 +690,17 @@ class Render:
 		var target: GameEngine.GameObject = event.parameters.get("to")
 		var sprite_node_name: String = event.parameters.get("name")
 		var offset := Vector2(0, 0)
+
 		if event.parameters.get("offset"):
 			offset = event.parameters.get("offset")
-		Main.overlay_sprite_on_game_object(texture, target, sprite_node_name, 3, offset)
+
+		ObjectOverlayer.overlay_sprite_on_game_object(
+			texture,
+			target,
+			sprite_node_name,
+			3,
+			offset,
+		)
 
 
 	func _set_position(event: Event) -> void:
@@ -720,7 +735,10 @@ class Royalty:
 			game_object.main_node.queue_object_to_spawn("CrownItem")
 
 		self.game_object.queue_remove_component("Royalty")
-		Main.remove_overlay_sprite_from_physics_body(self.game_object, "Crown")
+		ObjectOverlayer.remove_overlay_sprite_from_physics_body(
+			self.game_object,
+			"Crown",
+		)
 		EventBus.crown_dropped.emit()
 
 
@@ -803,7 +821,10 @@ class SingleUseItem:
 	func _relinquish_components() -> void:
 		for component_name in self.components_to_inherit:
 			self.game_object.queue_remove_component(component_name)
-		Main.remove_overlay_sprite_from_physics_body(self.game_object, "EquippedItem")
+		ObjectOverlayer.remove_overlay_sprite_from_physics_body(
+			self.game_object,
+			"EquippedItem",
+		)
 
 
 class SnakeBody:
@@ -1022,7 +1043,10 @@ class SpeedDecreaseAbility:
 
 	func _end_cooldown() -> void:
 		self.on_cooldown = false
-		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+		ObjectOverlayer.remove_shader_from_physics_body(
+			self.game_object,
+			"EquippedItem",
+		)
 
 	func _remove_effects(event: Event) -> void:
 		if self.ability_active:
@@ -1039,7 +1063,7 @@ class SpeedDecreaseAbility:
 		self.on_cooldown = true
 		self.ability_active = false
 		(
-			Main
+			ObjectOverlayer
 			. apply_shader_to_physics_body(
 				self.game_object,
 				"EquippedItem",
@@ -1079,7 +1103,10 @@ class SpeedIncreaseAbility:
 
 	func _end_cooldown() -> void:
 		self.on_cooldown = false
-		Main.remove_shader_from_physics_body(self.game_object, "EquippedItem")
+		ObjectOverlayer.remove_shader_from_physics_body(
+			self.game_object,
+			"EquippedItem",
+		)
 
 	func _remove_effects(event: Event) -> void:
 		if self.ability_active:
@@ -1096,7 +1123,7 @@ class SpeedIncreaseAbility:
 		self.on_cooldown = true
 		self.ability_active = false
 		(
-			Main
+			ObjectOverlayer
 			. apply_shader_to_physics_body(
 				self.game_object,
 				"EquippedItem",
