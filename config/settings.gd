@@ -6,10 +6,11 @@ const BASE_MOVE_SPEED = 32.0
 const BLUEPRINTS_PATH = "res://data/object_blueprints.txt"
 const SPRITES_PATH = "res://sprites/"
 const SHADERS_PATH = "res://shaders/"
-const LEVELS_PATH = "res://levels/legacy_levels/"
-const PHYSICS_OBJECT_PATH = "res://snake_engine/physics_object.tscn"
+const PHYSICS_OBJECT_PATH = "res://snake_engine/base_objects/physics_object.tscn"
 
-const GRASS_BACKGROUND_SCENE_PATH = "res://scenes/grass_background.tscn"
+const GRASS_BACKGROUND_SCENE_PATH = (
+	"res://snake_engine/base_objects/grass_background.tscn"
+)
 const GRASS_BACKGROUND_PATHS = [
 	"res://sprites/grass_background1.png",
 	"res://sprites/grass_background2.png",
