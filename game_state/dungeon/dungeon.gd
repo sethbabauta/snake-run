@@ -1,17 +1,15 @@
 class_name Dungeon extends Node
 
-const CROWN_POISON_RATE = 20
 const START_LENGTH = 3
 
 @export var dungeon_death_screen: PackedScene
 @export var dungeon_win_screen: PackedScene
 
 var current_room: Room
-var current_room_neighbors: RoomMapper.RoomNeighbors
-var loaded_rooms: Array[Room]
 var crown_poison_counter: CrownPoisonCounter
 var crown_collected: bool = false
 var crown_collected_count: int = 0
+var room_manager: RoomManager
 
 @onready var follow_camera: FollowCamera = %FollowCamera
 @onready var main_node: Main = %Main
@@ -21,12 +19,8 @@ var crown_collected_count: int = 0
 
 
 func _ready() -> void:
-	EventBus.crown_collected.connect(_on_crown_pickup)
-	EventBus.crown_dropped.connect(_on_crown_dropped)
-	EventBus.player_fully_entered.connect(_on_player_fully_entered)
-	EventBus.player_moved.connect(_on_player_moved)
-	EventBus.player_respawned.connect(_on_player_respawned)
-	ScoreKeeper.score_changed.connect(_on_score_changed)
+	room_manager = RoomManager.new(self)
+	_connect_signals()
 
 
 func clear_pickups() -> void:
@@ -38,20 +32,9 @@ func clear_pickups() -> void:
 
 
 func get_current_room_exclusions() -> Array[String]:
-	var exclusions: Array[String] = []
-
-	if not current_room_neighbors.up:
-		exclusions.append("N")
-	if not current_room_neighbors.down:
-		exclusions.append("S")
-	if not current_room_neighbors.left:
-		exclusions.append("W")
-	if not current_room_neighbors.right:
-		exclusions.append("E")
-
-	if current_room:
-		var walled_off_directions: Array[String] = current_room.walled_off_directions.duplicate()
-		exclusions = exclusions + walled_off_directions
+	var exclusions: Array[String] = (
+		room_manager.get_current_room_exclusions()
+	)
 
 	return exclusions
 
@@ -65,21 +48,11 @@ func level_change_pause(_args: Dictionary) -> void:
 
 
 func load_room(room: Room) -> void:
-	var room_tile_map: RoomTileMap = room.tile_map.instantiate()
-	room_mapper.add_child(room_tile_map)
-	room_tile_map.visible = false
-	var position_offset:= Vector2(room.layout_x * 20, room.layout_y * -20)
-	main_node.level_factory.setup_level(room_tile_map.room_tile_map, position_offset)
-	loaded_rooms.append(room)
+	room_manager.load_room(room)
 
 
 func set_current_room_to_start() -> void:
-	current_room = room_mapper.get_room_at_layout_coordinates(
-		Vector2(0, 0)
-	)
-	current_room_neighbors = room_mapper.get_room_neighbors(
-		current_room
-	)
+	room_manager.set_current_room_to_start()
 
 
 func spawn_doors_and_apple() -> void:
@@ -90,27 +63,19 @@ func spawn_doors_and_apple() -> void:
 
 
 func update_rooms(direction: String) -> void:
-	if direction == "ERROR":
-		return
-
-	match direction:
-		"N":
-			current_room = current_room_neighbors.up
-		"S":
-			current_room = current_room_neighbors.down
-		"E":
-			current_room = current_room_neighbors.right
-		"W":
-			current_room = current_room_neighbors.left
-
-	if not current_room:
-		return
-
-	current_room_neighbors = room_mapper.get_room_neighbors(current_room)
-	_load_room_neighbors()
+	room_manager.update_rooms(direction)
 
 	if direction != "Start":
 		main_node.play_scripted_event(level_change_pause)
+
+
+func _connect_signals() -> void:
+	EventBus.crown_collected.connect(_on_crown_pickup)
+	EventBus.crown_dropped.connect(_on_crown_dropped)
+	EventBus.player_fully_entered.connect(_on_player_fully_entered)
+	EventBus.player_moved.connect(_on_player_moved)
+	EventBus.player_respawned.connect(_on_player_respawned)
+	ScoreKeeper.score_changed.connect(_on_score_changed)
 
 
 func _crown_scripted_event(_args: Dictionary) -> void:
@@ -122,29 +87,6 @@ func _crown_scripted_event(_args: Dictionary) -> void:
 	await EventBus.announcement_completed
 	main_node.toggle_timer_freeze()
 	EventBus.scripted_event_completed.emit()
-
-
-func _load_room_neighbors() -> void:
-	if (
-		current_room_neighbors.left not in loaded_rooms
-		and current_room_neighbors.left
-	):
-		load_room(current_room_neighbors.left)
-	if (
-		current_room_neighbors.right not in loaded_rooms
-		and current_room_neighbors.right
-	):
-		load_room(current_room_neighbors.right)
-	if (
-		current_room_neighbors.up not in loaded_rooms
-		and current_room_neighbors.up
-	):
-		load_room(current_room_neighbors.up)
-	if (
-		current_room_neighbors.down not in loaded_rooms
-		and current_room_neighbors.down
-	):
-		load_room(current_room_neighbors.down)
 
 
 func _on_crown_dropped() -> void:
@@ -209,29 +151,3 @@ func _on_player_respawned() -> void:
 	game_announcer.announce_message("3 2 1 GO", 1.05)
 	await EventBus.announcement_completed
 	main_node.toggle_timer_freeze()
-
-
-class CrownPoisonCounter:
-	var poison_interval: int = CROWN_POISON_RATE
-	var current_interval: int = 0
-	var times_poisoned: int = 0
-	var main_node: Main
-
-	func _init(p_main_node: Main) -> void:
-		main_node = p_main_node
-
-	func increment_counter(amount: int = 1) -> int:
-		current_interval += amount
-		if current_interval >= poison_interval:
-			current_interval = 0
-			var new_event := GameEngine.Event.new(
-				"IngestPoison",
-				{"poison_level": 1},
-			)
-			main_node.game_object_factory.notify_subscribers(
-				new_event,
-				"player_controlled",
-			)
-			times_poisoned += 1
-
-		return times_poisoned

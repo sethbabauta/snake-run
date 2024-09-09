@@ -9,7 +9,7 @@ func enter() -> void:
 	dungeon_state_manager.set_dungeon_for_all_states(new_dungeon)
 
 	_setup_initial_room()
-	dungeon.crown_poison_counter = Dungeon.CrownPoisonCounter.new(
+	dungeon.crown_poison_counter = CrownPoisonCounter.new(
 		dungeon.main_node,
 	)
 	dungeon.update_rooms("Start")
