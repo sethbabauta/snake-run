@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7rgnws7a8hxw"]
+[gd_scene load_steps=3 format=3 uid="uid://b7rgnws7a8hxw"]
 
 [ext_resource type="Texture2D" uid="uid://nnekdo18xepe" path="res://sprites/RRG_Logo.png" id="1_12dj0"]
+[ext_resource type="Script" path="res://game_state/logo/logo.gd" id="1_37snc"]
 
 [node name="Logo" type="Control"]
 layout_mode = 3
@@ -9,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_37snc")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
