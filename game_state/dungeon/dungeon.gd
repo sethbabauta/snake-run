@@ -2,9 +2,6 @@ class_name Dungeon extends Node
 
 const START_LENGTH = 3
 
-@export var dungeon_death_screen: PackedScene
-@export var dungeon_win_screen: PackedScene
-
 var current_room: Room
 var crown_poison_counter: CrownPoisonCounter
 var crown_collected: bool = false

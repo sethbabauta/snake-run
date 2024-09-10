@@ -1,5 +1,7 @@
 extends GameState
 
+@export var dev_high_score: int = 0
+
 var classic_state_machine:= StateMachine.new()
 
 
@@ -18,13 +20,14 @@ func _on_game_ended(won: bool) -> void:
 	if won:
 		return
 
-	var death_screen: Control = _change_scene(Settings.CLASSIC_DEATH_SCREEN)
+	var death_screen: DeathScreen = _change_scene(Settings.DEATH_SCREEN)
 
 	if not death_screen:
 		return
 
 	death_screen.play_again.pressed.connect(_on_play_again_pressed)
 	death_screen.menu.pressed.connect(_on_menu_pressed)
+	death_screen.set_dev_high_score(dev_high_score)
 
 
 func _on_menu_pressed() -> void:

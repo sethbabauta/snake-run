@@ -20,17 +20,20 @@ resources_spreadsheet_view/context_menu_on_leftclick=false
 
 [application]
 
-config/name="Snake Run"
+config/name="SNAKEO MODE"
 run/main_scene="res://game_state/game_state_manager.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
-config/icon="res://sprites/icon.svg"
+config/icon="res://sprites/icon/snakeo_logo.png"
+config/windows_native_icon="res://sprites/icon/snakeo_logo.ico"
 
 [autoload]
 
 ScoreKeeper="*res://singletons/score_keeper.gd"
 Utils="*res://singletons/utils.gd"
-Settings="*res://config/settings.gd"
+Settings="*res://singletons/settings.gd"
 EventBus="*res://singletons/event_bus.gd"
+DeathMessagesDb="*res://singletons/death_messages_db.gd"
+LevelClearedMessagesDb="*res://singletons/level_cleared_messages_db.gd"
 
 [display]
 

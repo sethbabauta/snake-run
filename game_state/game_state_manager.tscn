@@ -35,10 +35,12 @@ script = ExtResource("3_srn44")
 [node name="GameStateClassic" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("4_vuupf")
+dev_high_score = 105
 
 [node name="GameStateSnakeo" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("5_7m04d")
+dev_high_score = 193
 
 [node name="GameStateDungeon" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true

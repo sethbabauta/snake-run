@@ -3,8 +3,6 @@ class_name Snakeo extends Node
 const START_LENGTH = 3
 const POWERUP_1_INTERVAL = 30
 
-@export var snakeo_death_screen: PackedScene
-
 var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
 @onready var main_node: Main = %Main

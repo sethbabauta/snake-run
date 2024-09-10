@@ -1,9 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dpw256kf8oe84"]
+[gd_scene load_steps=7 format=3 uid="uid://dpw256kf8oe84"]
 
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon.gd" id="1_pqnat"]
-[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://game_state/dungeon/dungeon_death_screen.tscn" id="2_6by23"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="2_ynyrs"]
-[ext_resource type="PackedScene" uid="uid://ev0uehnt8emi" path="res://game_state/dungeon/dungeon_win_screen.tscn" id="3_7shf6"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="3_waiuv"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://ui/camera/follow_camera.tscn" id="4_qb1ah"]
 [ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://levels/template/room_mapper.tscn" id="5_jia6d"]
@@ -11,8 +9,6 @@
 
 [node name="Dungeon" type="Node"]
 script = ExtResource("1_pqnat")
-dungeon_death_screen = ExtResource("2_6by23")
-dungeon_win_screen = ExtResource("3_7shf6")
 
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("3_waiuv")]
 unique_name_in_owner = true

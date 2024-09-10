@@ -3,7 +3,7 @@ extends DungeonState
 
 func enter() -> void:
 	dungeon_state_manager.current_screen = dungeon_state_manager._change_scene(
-		Settings.DUNGEON_DEATH_SCREEN
+		Settings.DEATH_SCREEN
 	)
 
 	if not dungeon_state_manager.current_screen:

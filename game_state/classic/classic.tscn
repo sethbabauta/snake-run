@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bung5knnx5cud"]
+[gd_scene load_steps=6 format=3 uid="uid://bung5knnx5cud"]
 
 [ext_resource type="Script" path="res://game_state/classic/classic.gd" id="1_rch0c"]
-[ext_resource type="PackedScene" uid="uid://bbgwhsfyw5xdo" path="res://game_state/classic/classic_death_screen.tscn" id="2_6qh41"]
 [ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="3_t4vht"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="4_f8r07"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://ui/camera/follow_camera.tscn" id="5_c87cb"]
@@ -9,7 +8,6 @@
 
 [node name="Classic" type="Node"]
 script = ExtResource("1_rch0c")
-classic_death_screen = ExtResource("2_6qh41")
 
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_f8r07")]
 unique_name_in_owner = true
