@@ -1,0 +1,94 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgi8lrxrspnn8"]
+
+[ext_resource type="Theme" uid="uid://b1roaedg3560a" path="res://ui/themes/gba/gbaui.tres" id="1_630xb"]
+[ext_resource type="Texture2D" uid="uid://jcfe16lofd2t" path="res://ui/themes/gba/icons/gbadpad_no_labels.svg" id="2_e3aef"]
+
+[node name="GBAUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_630xb")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftPanel" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftPanel/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_e3aef")
+
+[node name="TopButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -11.5
+offset_right = 11.5
+offset_bottom = 34.0
+grow_horizontal = 2
+theme_override_constants/margin_top = 8
+
+[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect/TopButton"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "W"
+horizontal_alignment = 1
+
+[node name="LeftButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -23.5
+offset_right = 23.0
+offset_bottom = 23.5
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+
+[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect/LeftButton"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "A
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameWindow" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.61
+
+[node name="RightPanel" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer/RightPanel"]
+layout_mode = 2

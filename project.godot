@@ -37,7 +37,7 @@ LevelClearedMessagesDb="*res://singletons/level_cleared_messages_db.gd"
 
 [display]
 
-window/size/viewport_width=640
+window/size/viewport_width=1138
 window/size/viewport_height=640
 window/size/mode=2
 window/stretch/mode="viewport"
