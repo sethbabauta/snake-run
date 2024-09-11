@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cgi8lrxrspnn8"]
+[gd_scene load_steps=5 format=3 uid="uid://cgi8lrxrspnn8"]
 
 [ext_resource type="Theme" uid="uid://b1roaedg3560a" path="res://ui/themes/gba/gbaui.tres" id="1_630xb"]
+[ext_resource type="Theme" uid="uid://da0wd6smpwt67" path="res://ui/themes/gba/dpad.tres" id="2_0fgfv"]
 [ext_resource type="Texture2D" uid="uid://jcfe16lofd2t" path="res://ui/themes/gba/icons/gbadpad_no_labels.svg" id="2_e3aef"]
+[ext_resource type="Theme" uid="uid://kcrcykj3rohv" path="res://ui/themes/gba/left_panel.tres" id="4_5qrmo"]
 
 [node name="GBAUI" type="Control"]
 layout_mode = 3
@@ -35,9 +37,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Spacer" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = ExtResource("2_0fgfv")
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer"]
 layout_mode = 2
@@ -80,6 +87,97 @@ text = "A
 "
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RightButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -37.0
+offset_top = -23.5
+offset_bottom = 23.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_right = 16
+
+[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect/RightButton"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "D
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -11.5
+offset_top = -47.0
+offset_right = 11.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/CenterContainer/TextureRect/BottomButton"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "S"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4_5qrmo")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="SnakeLengthContainer" type="HBoxContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer/SnakeLengthContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer/SnakeLengthContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer/SnakeLengthContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer/SnakeLengthContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ScoreContainer" type="HBoxContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Spacer2" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="GameWindow" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
