@@ -292,6 +292,7 @@ class EquipabbleItem:
 
 class ExtraLife:
 	extends Component
+	var extra_lives: int = 1
 
 
 	func fire_event(event: Event) -> Event:
@@ -307,7 +308,12 @@ class ExtraLife:
 		)
 		var start_length: int = game_object.main_node.gamemode_node.START_LENGTH
 		game_object.main_node.spawn_player_snake(start_position, start_length)
-		game_object.remove_component("ExtraLife")
+
+		if extra_lives > 1:
+			extra_lives -= 1
+		else:
+			game_object.remove_component("ExtraLife")
+
 		EventBus.extra_life_expended.emit()
 
 
@@ -324,7 +330,13 @@ class ExtraLifeItem:
 
 	func _gain_extra_life(event) -> void:
 		var eater: GameEngine.GameObject = event.parameters.get("eater")
-		eater.add_component("ExtraLife", {})
+
+		if "ExtraLife" in eater.components:
+			var extra_life_component: ExtraLife = eater.components["ExtraLife"]
+			extra_life_component.extra_lives += 1
+		else:
+			eater.add_component("ExtraLife", {})
+
 		EventBus.extra_life_collected.emit()
 
 

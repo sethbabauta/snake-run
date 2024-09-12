@@ -18,7 +18,7 @@ func _on_extra_life_collected() -> void:
 
 
 func _on_extra_life_expended() -> void:
-	extra_life_count += 1
+	extra_life_count -= 1
 	_update_label()
 
 

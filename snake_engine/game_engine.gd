@@ -122,7 +122,10 @@ class GameObject:
 		component_parameters: Dictionary,
 	) -> void:
 		var components_class: Components = Components.new()
-		var new_component: Variant = components_class[component_name].new(component_name, self)
+		var new_component: Variant = components_class[component_name].new(
+			component_name,
+			self,
+		)
 		new_component.set_parameters(component_parameters)
 		new_component.first_time_setup()
 
