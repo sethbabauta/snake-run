@@ -33,6 +33,7 @@ grow_vertical = 2
 
 [node name="DeathMessage" parent="VBoxContainer" instance=ExtResource("2_a8ej2")]
 layout_mode = 2
+autowrap_mode = 3
 
 [node name="DevHighScore" type="Label" parent="VBoxContainer"]
 layout_mode = 2
