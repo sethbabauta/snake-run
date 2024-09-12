@@ -1,13 +1,14 @@
 [gd_scene load_steps=6 format=3 uid="uid://bung5knnx5cud"]
 
 [ext_resource type="Script" path="res://game_state/classic/classic.gd" id="1_rch0c"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="3_t4vht"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="4_f8r07"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://ui/camera/follow_camera.tscn" id="5_c87cb"]
+[ext_resource type="PackedScene" uid="uid://cgi8lrxrspnn8" path="res://ui/gba_ui.tscn" id="5_e1hhr"]
 [ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer/game_announcer.tscn" id="6_l58uj"]
 
-[node name="Classic" type="Node"]
+[node name="Classic" type="Node" node_paths=PackedStringArray("game_ui")]
 script = ExtResource("1_rch0c")
+game_ui = NodePath("CanvasLayer/GBAUI")
 
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_f8r07")]
 unique_name_in_owner = true
@@ -24,6 +25,5 @@ gamemode_node = NodePath("..")
 [node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("6_l58uj")]
 unique_name_in_owner = true
 
-[node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("3_t4vht")]
-unique_name_in_owner = true
+[node name="GBAUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("5_e1hhr")]
 main_node = NodePath("../../Main")

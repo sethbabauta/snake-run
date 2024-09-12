@@ -11,9 +11,7 @@ func _init() -> void:
 
 func enter() -> void:
 	var snakeo_node: Snakeo = _change_scene(Settings.SNAKEO_SCENE)
-	snakeo_node.game_ui.pause_dialog.main_menu_button.pressed.connect(
-		_on_menu_pressed
-	)
+	snakeo_node.game_ui.menu_pressed.connect(_on_menu_pressed)
 
 
 func _on_game_ended(won: bool) -> void:

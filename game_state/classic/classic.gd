@@ -2,9 +2,10 @@ class_name Classic extends Node
 
 const START_LENGTH = 5
 
+@export var game_ui: GBAUI
+
 @onready var main_node: Main = %Main
 @onready var game_announcer: GameAnnouncer = %GameAnnouncer
-@onready var game_ui: GameUI = %GameUI
 
 
 func _ready():

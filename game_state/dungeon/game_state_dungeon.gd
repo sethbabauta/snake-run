@@ -61,9 +61,7 @@ func enter() -> void:
 
 func set_current_screen_to_dungeon(new_screen: Dungeon) -> void:
 	current_screen = new_screen
-	current_screen.game_ui.pause_dialog.main_menu_button.pressed.connect(
-		_on_menu_pressed
-	)
+	current_screen.game_ui.menu_pressed.connect(_on_menu_pressed)
 
 
 func set_dungeon_for_all_states(new_dungeon: Dungeon) -> void:

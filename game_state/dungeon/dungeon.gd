@@ -2,6 +2,8 @@ class_name Dungeon extends Node
 
 const START_LENGTH = 3
 
+@export var game_ui: GBAUI
+
 var current_room: Room
 var crown_poison_counter: CrownPoisonCounter
 var crown_collected: bool = false
@@ -12,7 +14,7 @@ var room_manager: RoomManager
 @onready var main_node: Main = %Main
 @onready var room_mapper: RoomMapper = %room_mapper
 @onready var game_announcer: GameAnnouncer = %GameAnnouncer
-@onready var game_ui: GameUI = %GameUI
+
 
 
 func _ready() -> void:

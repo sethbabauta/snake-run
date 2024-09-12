@@ -1,17 +1,25 @@
-[gd_scene load_steps=11 format=3 uid="uid://cgi8lrxrspnn8"]
+[gd_scene load_steps=19 format=3 uid="uid://cgi8lrxrspnn8"]
 
 [ext_resource type="Theme" uid="uid://b1roaedg3560a" path="res://ui/themes/gba/gbaui.tres" id="1_630xb"]
 [ext_resource type="Theme" uid="uid://da0wd6smpwt67" path="res://ui/themes/gba/dpad.tres" id="2_0fgfv"]
+[ext_resource type="Script" path="res://ui/gba_ui.gd" id="2_8lyt1"]
 [ext_resource type="Texture2D" uid="uid://jcfe16lofd2t" path="res://ui/themes/gba/icons/gbadpad_no_labels.svg" id="2_e3aef"]
 [ext_resource type="Theme" uid="uid://kcrcykj3rohv" path="res://ui/themes/gba/left_panel.tres" id="4_5qrmo"]
 [ext_resource type="Texture2D" uid="uid://ba4o81joqbfjp" path="res://ui/themes/gba/icons/snake_length.svg" id="5_ttiv5"]
+[ext_resource type="Script" path="res://ui/snake_length_container.gd" id="6_0bhxr"]
 [ext_resource type="Texture2D" uid="uid://cvxpvjahw1srt" path="res://ui/themes/gba/icons/score_label.svg" id="6_xwhn2"]
 [ext_resource type="Texture2D" uid="uid://bm1y38mavv3mm" path="res://ui/themes/gba/icons/space_key.svg" id="7_dgi7g"]
 [ext_resource type="Texture2D" uid="uid://ccf55dlikbbr8" path="res://ui/themes/gba/icons/shift_key.svg" id="8_hpatj"]
+[ext_resource type="Script" path="res://ui/score_container.gd" id="8_kyr06"]
 [ext_resource type="Texture2D" uid="uid://c37mqcc6bdm7l" path="res://ui/themes/gba/icons/star_icon.svg" id="9_4oxa6"]
+[ext_resource type="Script" path="res://ui/right_controls.gd" id="10_jyni5"]
+[ext_resource type="Script" path="res://ui/powerup_container.gd" id="10_si2n0"]
 [ext_resource type="Texture2D" uid="uid://fouyqnl255q0" path="res://ui/themes/gba/icons/heart_icon.svg" id="10_svtws"]
+[ext_resource type="Script" path="res://ui/extra_life_container.gd" id="11_i78sr"]
+[ext_resource type="PackedScene" uid="uid://c2rxm4oown5nh" path="res://ui/pause_menu/pause_dialog.tscn" id="12_ev7nk"]
+[ext_resource type="PackedScene" uid="uid://co1motepffns5" path="res://ui/pause_menu/settings_dialog.tscn" id="13_rlvx0"]
 
-[node name="GBAUI" type="Control"]
+[node name="GBAUI" type="Control" node_paths=PackedStringArray("powerup_container", "snake_length_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,8 +27,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_630xb")
+script = ExtResource("2_8lyt1")
+powerup_container = NodePath("UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer")
+snake_length_container = NodePath("UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="UIElements" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,14 +39,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LeftPanel" type="PanelContainer" parent="HBoxContainer"]
+[node name="LeftPanel" type="PanelContainer" parent="UIElements"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Panel" type="Panel" parent="HBoxContainer/LeftPanel"]
+[node name="Panel" type="Panel" parent="UIElements/LeftPanel"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftPanel/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/LeftPanel/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,22 +54,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Controls" type="CenterContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
+[node name="Controls" type="CenterContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0fgfv")
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls"]
+[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("2_e3aef")
 
-[node name="TopButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
+[node name="TopButton" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -69,13 +80,13 @@ offset_bottom = 34.0
 grow_horizontal = 2
 theme_override_constants/margin_top = 8
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/TopButton"]
+[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/TopButton"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "W"
 horizontal_alignment = 1
 
-[node name="LeftButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
+[node name="LeftButton" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -86,7 +97,7 @@ offset_bottom = 23.5
 grow_vertical = 2
 theme_override_constants/margin_left = 16
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/LeftButton"]
+[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/LeftButton"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "A
@@ -94,7 +105,7 @@ text = "A
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
+[node name="RightButton" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -108,7 +119,7 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/margin_right = 16
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/RightButton"]
+[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/RightButton"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "D
@@ -116,7 +127,7 @@ text = "D
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BottomButton" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
+[node name="BottomButton" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -130,102 +141,113 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_bottom = 8
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/BottomButton"]
+[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Controls/TextureRect/BottomButton"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "S"
 horizontal_alignment = 1
 
-[node name="Score" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer"]
+[node name="Score" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4_5qrmo")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score"]
 layout_mode = 2
 
-[node name="SnakeLengthContainer" type="HBoxContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer"]
+[node name="SnakeLengthContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer" node_paths=PackedStringArray("number_label")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("6_0bhxr")
+number_label = NodePath("HBoxContainer/MarginContainer2/Number")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 theme_override_constants/margin_left = 28
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("5_ttiv5")
 stretch_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_constants/margin_right = 16
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/MarginContainer2"]
+[node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScoreContainer" type="HBoxContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer"]
+[node name="ScoreContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer" node_paths=PackedStringArray("number_label")]
+layout_mode = 2
+script = ExtResource("8_kyr06")
+number_label = NodePath("HBoxContainer/MarginContainer2/Number")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer"]
+[node name="Icon" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 theme_override_constants/margin_left = 28
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("6_xwhn2")
 stretch_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/MarginContainer"]
+[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "SCORE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_constants/margin_right = 16
 
-[node name="Label" type="Label" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/MarginContainer2"]
+[node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Spacer2" type="MarginContainer" parent="HBoxContainer/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer"]
+[node name="Spacer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GameWindow" type="MarginContainer" parent="HBoxContainer"]
+[node name="GameWindow" type="MarginContainer" parent="UIElements"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.61
+size_flags_stretch_ratio = 2.57
 
-[node name="RightPanel" type="PanelContainer" parent="HBoxContainer"]
+[node name="RightPanel" type="PanelContainer" parent="UIElements"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Panel" type="Panel" parent="HBoxContainer/RightPanel"]
+[node name="Panel" type="Panel" parent="UIElements/RightPanel"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -233,46 +255,48 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Controls" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer"]
+[node name="Controls" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer" node_paths=PackedStringArray("container")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("10_jyni5")
+container = NodePath("VBoxContainer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_right = 16
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 16
 
-[node name="DropItemIcon" type="TextureRect" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer"]
+[node name="DropItemIcon" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("7_dgi7g")
 stretch_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="Hint" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/VBoxContainer"]
+[node name="Hint" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 14
@@ -280,7 +304,7 @@ text = "USE ITEM"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonText" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/VBoxContainer"]
+[node name="ButtonText" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0fgfv")
@@ -289,34 +313,34 @@ text = "SPACE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 16
 
-[node name="DropItemIcon" type="TextureRect" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer"]
+[node name="DropItemIcon" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("8_hpatj")
 stretch_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer"]
 layout_mode = 2
 
-[node name="Hint" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer/VBoxContainer"]
+[node name="Hint" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 14
@@ -324,7 +348,7 @@ text = "DROP ITEM"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonText" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer/VBoxContainer"]
+[node name="ButtonText" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0fgfv")
@@ -333,42 +357,49 @@ text = "SHIFT"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Controls/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Powerups" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer"]
+[node name="Powerups" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups"]
 layout_mode = 2
 
-[node name="PowerupContainer" type="HBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer"]
+[node name="PowerupContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer" node_paths=PackedStringArray("container", "number_label")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("10_si2n0")
+container = NodePath("HBoxContainer")
+number_label = NodePath("HBoxContainer/Number/Label")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Number" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer"]
+[node name="Number" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 
-[node name="Label" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/Number"]
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Number"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("4_5qrmo")
 theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
-text = "1"
+text = "0"
 horizontal_alignment = 1
 
-[node name="Sec" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer"]
+[node name="Sec" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/Sec"]
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Sec"]
 layout_mode = 2
 theme = ExtResource("4_5qrmo")
 theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
@@ -376,56 +407,77 @@ text = "SEC"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Icon" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer"]
+[node name="Icon" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/Icon"]
+[node name="TextureRect" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Icon"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("9_4oxa6")
 stretch_mode = 2
 
-[node name="ExtraLifeContainer" type="HBoxContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer"]
+[node name="ExtraLifeContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer" node_paths=PackedStringArray("number_label", "container")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("11_i78sr")
+number_label = NodePath("HBoxContainer/Number/Label")
+container = NodePath("HBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Number" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer"]
+[node name="Number" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 
-[node name="Label" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/Number"]
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Number"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("4_5qrmo")
 theme_override_colors/font_color = Color(0.792157, 0.439216, 0.419608, 1)
-text = "+1"
+text = "+0"
 horizontal_alignment = 1
 
-[node name="Sec" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer"]
+[node name="Life" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/Sec"]
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Life"]
 layout_mode = 2
 theme = ExtResource("4_5qrmo")
-theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
+theme_override_colors/font_color = Color(0.792157, 0.439216, 0.419608, 1)
 text = "LIFE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Icon" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer"]
+[node name="Icon" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/Icon"]
+[node name="TextureRect" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Icon"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("10_svtws")
 stretch_mode = 2
 
-[node name="Spacer" type="MarginContainer" parent="HBoxContainer/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="PauseDialog" parent="." instance=ExtResource("12_ev7nk")]
+visible = false
+layout_mode = 1
+offset_left = -148.0
+offset_top = -106.5
+offset_right = 148.0
+offset_bottom = 106.5
+
+[node name="SettingsDialog" parent="." instance=ExtResource("13_rlvx0")]
+visible = false
+layout_mode = 1
+
+[connection signal="menu_pressed" from="PauseDialog" to="." method="_on_pause_dialog_menu_pressed"]

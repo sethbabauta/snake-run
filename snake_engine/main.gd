@@ -33,7 +33,6 @@ func _ready() -> void:
 	_setup_utils()
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
-	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
 	self.max_simple_size = (
 		Vector2(640, 640) / Settings.BASE_MOVE_SPEED
 	)

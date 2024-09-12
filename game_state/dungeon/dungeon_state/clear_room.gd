@@ -25,7 +25,9 @@ func enter() -> void:
 
 
 func _level_cleared_event(_args: Dictionary) -> void:
-	var cleared_message: String = LevelClearedMessagesDb.get_random_message()
+	var cleared_message: String = (
+		LevelClearedMessagesDb.get_random_message().to_upper()
+	)
 	dungeon.game_announcer.announce_message(cleared_message)
 	await get_tree().create_timer(1).timeout
 	EventBus.scripted_event_completed.emit()

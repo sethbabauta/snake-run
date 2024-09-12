@@ -11,9 +11,7 @@ func _init() -> void:
 
 func enter() -> void:
 	var classic_node: Classic = _change_scene(Settings.CLASSIC_SCENE)
-	classic_node.game_ui.pause_dialog.main_menu_button.pressed.connect(
-		_on_menu_pressed
-	)
+	classic_node.game_ui.menu_pressed.connect(_on_menu_pressed)
 
 
 func _on_game_ended(won: bool) -> void:

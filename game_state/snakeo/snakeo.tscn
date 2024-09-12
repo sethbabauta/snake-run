@@ -3,11 +3,12 @@
 [ext_resource type="Script" path="res://game_state/snakeo/snakeo.gd" id="1_by8yj"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="4_csxen"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://ui/camera/follow_camera.tscn" id="5_1xoox"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="5_m1c66"]
+[ext_resource type="PackedScene" uid="uid://cgi8lrxrspnn8" path="res://ui/gba_ui.tscn" id="5_d40nq"]
 [ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer/game_announcer.tscn" id="6_4fbu5"]
 
-[node name="Snakeo" type="Node"]
+[node name="Snakeo" type="Node" node_paths=PackedStringArray("game_ui")]
 script = ExtResource("1_by8yj")
+game_ui = NodePath("CanvasLayer/GBAUI")
 
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("4_csxen")]
 unique_name_in_owner = true
@@ -20,15 +21,9 @@ main_node = NodePath("../Main")
 gamemode_node = NodePath("..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-offset = Vector2(-249, 0)
-transform = Transform2D(1, 0, 0, 1, -249, 0)
 
 [node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("6_4fbu5")]
 unique_name_in_owner = true
-offset_left = 249.0
-offset_right = -889.0
-offset_bottom = -640.0
 
-[node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("5_m1c66")]
-unique_name_in_owner = true
+[node name="GBAUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("5_d40nq")]
 main_node = NodePath("../../Main")
