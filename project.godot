@@ -47,6 +47,10 @@ window/handheld/orientation=4
 
 enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg", "res://addons/resources_spreadsheet_view/plugin.cfg")
 
+[gui]
+
+theme/custom_font="res://ui/fonts/Inter_18pt-SemiBold.ttf"
+
 [input]
 
 turn_up={

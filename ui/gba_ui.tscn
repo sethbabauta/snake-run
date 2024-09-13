@@ -54,9 +54,93 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Spacer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
+[node name="Score" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = ExtResource("4_5qrmo")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score"]
+layout_mode = 2
+
+[node name="Spacer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SnakeLengthContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer" node_paths=PackedStringArray("number_label")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("6_0bhxr")
+number_label = NodePath("HBoxContainer/MarginContainer2/Number")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/margin_left = 28
+
+[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("5_ttiv5")
+stretch_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/margin_right = 16
+
+[node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ScoreContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer" node_paths=PackedStringArray("number_label")]
+layout_mode = 2
+script = ExtResource("8_kyr06")
+number_label = NodePath("HBoxContainer/MarginContainer2/Number")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Icon" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/margin_left = 28
+
+[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("6_xwhn2")
+stretch_mode = 2
+
+[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "SCORE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/margin_right = 16
+
+[node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="Controls" type="CenterContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
@@ -147,91 +231,7 @@ size_flags_horizontal = 4
 text = "S"
 horizontal_alignment = 1
 
-[node name="Score" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("4_5qrmo")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score"]
-layout_mode = 2
-
-[node name="SnakeLengthContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer" node_paths=PackedStringArray("number_label")]
-layout_mode = 2
-size_flags_vertical = 3
-script = ExtResource("6_0bhxr")
-number_label = NodePath("HBoxContainer/MarginContainer2/Number")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
-theme_override_constants/margin_left = 28
-
-[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("5_ttiv5")
-stretch_mode = 2
-
-[node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme_override_constants/margin_right = 16
-
-[node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "0"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="ScoreContainer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer" node_paths=PackedStringArray("number_label")]
-layout_mode = 2
-script = ExtResource("8_kyr06")
-number_label = NodePath("HBoxContainer/MarginContainer2/Number")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Icon" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
-theme_override_constants/margin_left = 28
-
-[node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("6_xwhn2")
-stretch_mode = 2
-
-[node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "SCORE"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme_override_constants/margin_right = 16
-
-[node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/MarginContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "0"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="Spacer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -255,9 +255,108 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer"]
+[node name="Powerups" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups"]
+layout_mode = 2
+
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PowerupContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer" node_paths=PackedStringArray("container", "number_label")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("10_si2n0")
+container = NodePath("HBoxContainer")
+number_label = NodePath("HBoxContainer/Number/Label")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Number" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Number"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("4_5qrmo")
+theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="Sec" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Sec"]
+layout_mode = 2
+theme = ExtResource("4_5qrmo")
+theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
+text = "SEC"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Icon" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Icon"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("9_4oxa6")
+stretch_mode = 2
+
+[node name="ExtraLifeContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer" node_paths=PackedStringArray("number_label", "container")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("11_i78sr")
+number_label = NodePath("HBoxContainer/Number/Label")
+container = NodePath("HBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Number" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Number"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("4_5qrmo")
+theme_override_colors/font_color = Color(0.792157, 0.439216, 0.419608, 1)
+text = "+0"
+horizontal_alignment = 1
+
+[node name="Life" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Life"]
+layout_mode = 2
+theme = ExtResource("4_5qrmo")
+theme_override_colors/font_color = Color(0.792157, 0.439216, 0.419608, 1)
+text = "LIFE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Icon" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Icon"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("10_svtws")
+stretch_mode = 2
 
 [node name="Controls" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer" node_paths=PackedStringArray("container")]
 layout_mode = 2
@@ -365,106 +464,7 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Powerups" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups"]
-layout_mode = 2
-
-[node name="PowerupContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer" node_paths=PackedStringArray("container", "number_label")]
-layout_mode = 2
-size_flags_vertical = 3
-script = ExtResource("10_si2n0")
-container = NodePath("HBoxContainer")
-number_label = NodePath("HBoxContainer/Number/Label")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Number" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-
-[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Number"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-theme = ExtResource("4_5qrmo")
-theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
-text = "0"
-horizontal_alignment = 1
-
-[node name="Sec" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Sec"]
-layout_mode = 2
-theme = ExtResource("4_5qrmo")
-theme_override_colors/font_color = Color(0.905882, 0.905882, 0.211765, 1)
-text = "SEC"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Icon" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TextureRect" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer/HBoxContainer/Icon"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("9_4oxa6")
-stretch_mode = 2
-
-[node name="ExtraLifeContainer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer" node_paths=PackedStringArray("number_label", "container")]
-layout_mode = 2
-size_flags_vertical = 3
-script = ExtResource("11_i78sr")
-number_label = NodePath("HBoxContainer/Number/Label")
-container = NodePath("HBoxContainer")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Number" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-
-[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Number"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-theme = ExtResource("4_5qrmo")
-theme_override_colors/font_color = Color(0.792157, 0.439216, 0.419608, 1)
-text = "+0"
-horizontal_alignment = 1
-
-[node name="Life" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Life"]
-layout_mode = 2
-theme = ExtResource("4_5qrmo")
-theme_override_colors/font_color = Color(0.792157, 0.439216, 0.419608, 1)
-text = "LIFE"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Icon" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TextureRect" type="TextureRect" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/ExtraLifeContainer/HBoxContainer/Icon"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("10_svtws")
-stretch_mode = 2
-
-[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer"]
+[node name="Spacer" type="MarginContainer" parent="UIElements/RightPanel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
