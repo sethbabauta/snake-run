@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://co1motepffns5"]
+[gd_scene load_steps=6 format=3 uid="uid://co1motepffns5"]
 
 [ext_resource type="Script" path="res://ui/pause_menu/settings_dialog.gd" id="1_mg4te"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qwgd3"]
-bg_color = Color(0.338882, 0.589121, 0.202314, 1)
+[ext_resource type="Theme" uid="uid://bif7w43bcgo83" path="res://ui/themes/pause/pause_menu.tres" id="1_y7tul"]
+[ext_resource type="Script" path="res://state_machine/settings_state.gd" id="3_poa27"]
+[ext_resource type="PackedScene" uid="uid://eq4eqcmkqxdc" path="res://ui/pause_menu/left_right_picker.tscn" id="4_7wkj5"]
+[ext_resource type="Texture2D" uid="uid://c2gm47202ob4d" path="res://ui/themes/pause/icons/back_symbol.svg" id="4_th6y5"]
 
 [node name="SettingsDialog" type="Control"]
 layout_mode = 3
@@ -12,7 +13,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_y7tul")
 script = ExtResource("1_mg4te")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Video" type="Node" parent="States"]
+script = ExtResource("3_poa27")
+
+[node name="Audio" type="Node" parent="States"]
+script = ExtResource("3_poa27")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -21,80 +31,129 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_qwgd3")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="SettingsTitle" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Panel" type="Panel" parent="PanelContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/SettingsTitle"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
-text = "Settings (Currently does nothing)"
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/SettingsTitle"]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "X"
-
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="MasterVolume" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Sections" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Sections"]
+layout_mode = 2
+
+[node name="Spacer1" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VideoContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VideoSectionButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer/VideoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "VIDEO"
+
+[node name="AudioContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioSectionButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer/AudioContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AUDIO"
+
+[node name="Spacer2" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Controls" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="VideoControlsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls"]
+layout_mode = 2
+
+[node name="ScreenModeContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer"]
 layout_mode = 2
 size_flags_vertical = 6
-theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MasterVolume"]
-custom_minimum_size = Vector2(200, 0)
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer"]
 layout_mode = 2
-text = "Master Volume"
+size_flags_horizontal = 3
 
-[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/VBoxContainer/MasterVolume"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "SCREEN MODE"
+vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/MasterVolume/CenterContainer"]
-custom_minimum_size = Vector2(200, 0)
+[node name="Spacer2" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer"]
 layout_mode = 2
-value = 100.0
+size_flags_horizontal = 3
 
-[node name="MusicVolume" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer"]
 layout_mode = 2
-size_flags_vertical = 6
-theme_override_constants/separation = 20
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MusicVolume"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "Music Volume"
-
-[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/VBoxContainer/MusicVolume"]
+[node name="ScreenMode" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer/MarginContainer" instance=ExtResource("4_7wkj5")]
 layout_mode = 2
 
-[node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/MusicVolume/CenterContainer"]
-custom_minimum_size = Vector2(200, 0)
+[node name="Spacer3" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer"]
 layout_mode = 2
-value = 80.0
+size_flags_horizontal = 3
 
-[node name="Fullscreen" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Fullscreen"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "Fullscreen"
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/Fullscreen"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-
-[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/VBoxContainer/Fullscreen/MarginContainer"]
+[node name="ResolutionContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer"]
 layout_mode = 2
 
-[node name="CheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/Fullscreen/MarginContainer/CenterContainer"]
+[node name="AudioControlsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls"]
 layout_mode = 2
 
-[connection signal="pressed" from="PanelContainer/VBoxContainer/SettingsTitle/CloseButton" to="." method="_on_close_button_pressed"]
+[node name="BottomBarButtons" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons"]
+layout_mode = 2
+
+[node name="BackContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer/BackContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer/BackContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BACK"
+icon = ExtResource("4_th6y5")
+
+[node name="ResetContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="ResetButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer/ResetContainer"]
+layout_mode = 2
+text = "RESET TO DEFAULT"
+
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer/BackContainer/HBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

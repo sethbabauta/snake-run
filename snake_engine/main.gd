@@ -251,10 +251,16 @@ func _on_game_start(_gamemode_name: String) -> void:
 
 func _on_pause_requested() -> void:
 	is_paused = not is_paused
+
+	EventBus.game_paused.emit(is_paused)
+
+	if not is_paused:
+		gamemode_node.game_announcer.announce_message("3 2 1 GO", 0.25)
+		await EventBus.announcement_completed
+
 	if not timer_frozen:
 		move_timer.paused = is_paused
 
-	EventBus.game_paused.emit(is_paused)
 
 
 func _setup_utils() -> void:

@@ -1,0 +1,60 @@
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://bif7w43bcgo83"]
+
+[ext_resource type="FontFile" uid="uid://bam2aqsrxr26" path="res://ui/fonts/Inter_18pt-SemiBold.ttf" id="1_3h2ml"]
+[ext_resource type="StyleBox" uid="uid://wij7ypsu5nxt" path="res://ui/themes/pause/green_style_box.tres" id="1_ahjhm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xgomb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y4n06"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_crhps"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vbdh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8n3op"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ugo4y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x2xbn"]
+
+[resource]
+Button/colors/font_color = Color(0.654902, 0.788235, 0.341176, 1)
+Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Button/colors/font_focus_color = Color(0.654902, 0.788235, 0.341176, 1)
+Button/colors/font_hover_color = Color(0.803922, 0.85098, 0.576471, 1)
+Button/colors/font_hover_pressed_color = Color(0.94902, 0.909804, 0.811765, 1)
+Button/colors/font_outline_color = Color(1, 1, 1, 0)
+Button/colors/font_pressed_color = Color(0.94902, 0.909804, 0.811765, 1)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
+Button/colors/icon_focus_color = Color(0.654902, 0.788235, 0.341176, 1)
+Button/colors/icon_hover_color = Color(0.803922, 0.85098, 0.576471, 1)
+Button/colors/icon_hover_pressed_color = Color(0.94902, 0.909804, 0.811765, 1)
+Button/colors/icon_normal_color = Color(0.654902, 0.788235, 0.341176, 1)
+Button/colors/icon_pressed_color = Color(0.94902, 0.909804, 0.811765, 1)
+Button/constants/h_separation = 4
+Button/constants/icon_max_width = 0
+Button/constants/outline_size = 0
+Button/font_sizes/font_size = 36
+Button/fonts/font = ExtResource("1_3h2ml")
+Button/styles/disabled = SubResource("StyleBoxEmpty_xgomb")
+Button/styles/focus = SubResource("StyleBoxEmpty_y4n06")
+Button/styles/hover = SubResource("StyleBoxEmpty_crhps")
+Button/styles/normal = SubResource("StyleBoxEmpty_6vbdh")
+Button/styles/pressed = SubResource("StyleBoxEmpty_8n3op")
+Label/colors/font_color = Color(0.654902, 0.788235, 0.341176, 1)
+Label/colors/font_outline_color = Color(1, 1, 1, 0)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
+Label/constants/line_spacing = 3
+Label/constants/outline_size = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/constants/shadow_outline_size = 1
+Label/font_sizes/font_size = 24
+Label/fonts/font = ExtResource("1_3h2ml")
+Label/styles/normal = SubResource("StyleBoxEmpty_ugo4y")
+MarginContainer/constants/margin_bottom = 16
+MarginContainer/constants/margin_left = 0
+MarginContainer/constants/margin_right = 0
+MarginContainer/constants/margin_top = 16
+Panel/styles/panel = ExtResource("1_ahjhm")
+PanelContainer/styles/panel = SubResource("StyleBoxEmpty_x2xbn")
