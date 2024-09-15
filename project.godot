@@ -34,12 +34,13 @@ Settings="*res://singletons/settings.gd"
 EventBus="*res://singletons/event_bus.gd"
 DeathMessagesDb="*res://singletons/death_messages_db.gd"
 LevelClearedMessagesDb="*res://singletons/level_cleared_messages_db.gd"
+ConfigFileHandler="*res://singletons/config_file_handler.gd"
 
 [display]
 
 window/size/viewport_width=1138
 window/size/viewport_height=640
-window/size/mode=2
+window/size/resizable=false
 window/stretch/mode="viewport"
 window/handheld/orientation=4
 

@@ -1,4 +1,4 @@
-class_name Announcement extends RefCounted
+class_name IDCounter extends RefCounted
 
 var id: int
 

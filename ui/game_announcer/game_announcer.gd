@@ -6,7 +6,7 @@ const BASE_FONT_SIZE = 75.0
 
 var font_offset: float = 0.0
 var is_game_paused: bool = false
-var current_announcement_id: int = 0
+var announcement_id_factory:= IDFactory.new("game_announcer")
 
 @onready var announcement_label: Label = %Announcement
 @onready var dungeon_arrow_north: DungeonArrow = %DungeonArrowNorth
@@ -54,12 +54,12 @@ func announce_message(
 	announce_text: String,
 	time_between_words: float = 0.5,
 ) -> void:
-	var announcement: Announcement = create_announcement()
+	var announcement: IDCounter = announcement_id_factory.create_new_id()
 
 	var announce_split_array: PackedStringArray = announce_text.split(" ")
 	for word in announce_split_array:
 		# if a new announcement starts then stop current one
-		if announcement.id != current_announcement_id:
+		if not announcement_id_factory.is_id_current(announcement):
 			break
 
 		font_offset = INITIAL_OFFSET_AMOUNT
@@ -67,13 +67,6 @@ func announce_message(
 
 	announcement_label.text = ""
 	EventBus.announcement_completed.emit()
-
-
-func create_announcement() -> Announcement:
-	current_announcement_id += 1
-	var new_announcement:= Announcement.new(current_announcement_id)
-
-	return new_announcement
 
 
 func display_number(
