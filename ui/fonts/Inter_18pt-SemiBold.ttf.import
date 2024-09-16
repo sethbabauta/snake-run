@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://lvjcgpwde1ae"
-path="res://.godot/imported/Inter-VariableFont_opsz,wght.ttf-16b2f7ec37efde46b210f96fcddc20f7.fontdata"
+uid="uid://bam2aqsrxr26"
+path="res://.godot/imported/Inter_18pt-SemiBold.ttf-f7d0e4426376de5d1c6dc7d252bba4f1.fontdata"
 
 [deps]
 
-source_file="res://ui/fonts/Inter-VariableFont_opsz,wght.ttf"
-dest_files=["res://.godot/imported/Inter-VariableFont_opsz,wght.ttf-16b2f7ec37efde46b210f96fcddc20f7.fontdata"]
+source_file="res://ui/fonts/Inter_18pt-SemiBold.ttf"
+dest_files=["res://.godot/imported/Inter_18pt-SemiBold.ttf-f7d0e4426376de5d1c6dc7d252bba4f1.fontdata"]
 
 [params]
 

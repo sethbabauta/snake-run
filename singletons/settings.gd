@@ -1,7 +1,7 @@
 extends Node
 
 
-const BASE_MOVE_SPEED = 9.0
+const BASE_MOVE_SPEED = 32.0
 
 # general paths
 const SETTINGS_FILE_PATH = "user://settings.ini"

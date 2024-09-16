@@ -38,11 +38,10 @@ ConfigFileHandler="*res://singletons/config_file_handler.gd"
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=360
+window/size/viewport_width=1138
+window/size/viewport_height=640
 window/size/resizable=false
 window/stretch/mode="viewport"
-window/stretch/aspect="ignore"
 window/handheld/orientation=4
 
 [editor_plugins]
@@ -51,7 +50,7 @@ enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg", "res:
 
 [gui]
 
-theme/custom_font="res://ui/fonts/Inter-VariableFont_opsz,wght.ttf"
+theme/custom_font="res://ui/fonts/Inter_18pt-SemiBold.ttf"
 
 [input]
 
