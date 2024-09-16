@@ -26,6 +26,4 @@ gamemode_node = NodePath("..")
 unique_name_in_owner = true
 
 [node name="GBAUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("5_d40nq")]
-offset_left = -180.0
-offset_right = -180.0
 main_node = NodePath("../../Main")
