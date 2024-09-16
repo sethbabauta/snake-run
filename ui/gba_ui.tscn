@@ -56,7 +56,7 @@ grow_vertical = 2
 
 [node name="Score" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 4
 theme = ExtResource("4_5qrmo")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score"]
@@ -84,15 +84,12 @@ theme_override_constants/margin_left = 28
 
 [node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 texture = ExtResource("5_ttiv5")
-stretch_mode = 2
+expand_mode = 3
 
 [node name="MarginContainer2" type="MarginContainer" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_constants/margin_right = 16
 
 [node name="Number" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
@@ -118,10 +115,8 @@ theme_override_constants/margin_left = 28
 
 [node name="TextureRect" type="TextureRect" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 texture = ExtResource("6_xwhn2")
-stretch_mode = 2
+expand_mode = 2
 
 [node name="Label" type="Label" parent="UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/ScoreContainer/HBoxContainer/Icon"]
 layout_mode = 2

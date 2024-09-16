@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cldb30o8i8473" path="res://snake_engine/base_objects/collision_query.tscn" id="2_3jvgn"]
 
 [node name="FollowCamera" type="Camera2D"]
-position = Vector2(320, 320)
+position = Vector2(180, 180)
 script = ExtResource("1_43pfi")
 
 [node name="CollisionQuery" parent="." instance=ExtResource("2_3jvgn")]

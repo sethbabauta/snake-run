@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=4 format=3 uid="uid://b1roaedg3560a"]
 
-[ext_resource type="FontFile" uid="uid://bam2aqsrxr26" path="res://ui/fonts/Inter_18pt-SemiBold.ttf" id="1_c8r5c"]
+[ext_resource type="FontFile" path="res://ui/fonts/Inter_18pt-SemiBold.ttf" id="1_c8r5c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixwyc"]
 bg_color = Color(0.521569, 0.392157, 0.505882, 1)

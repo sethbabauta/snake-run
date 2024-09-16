@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=2 format=3 uid="uid://da0wd6smpwt67"]
 
-[ext_resource type="FontFile" uid="uid://bam2aqsrxr26" path="res://ui/fonts/Inter_18pt-SemiBold.ttf" id="1_r1kas"]
+[ext_resource type="FontFile" path="res://ui/fonts/Inter_18pt-SemiBold.ttf" id="1_r1kas"]
 
 [resource]
 Label/colors/font_color = Color(0.45098, 0.45098, 0.45098, 1)
