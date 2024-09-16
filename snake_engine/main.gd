@@ -34,7 +34,7 @@ func _ready() -> void:
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
 	self.max_simple_size = (
-		Vector2(640, 640) / Settings.BASE_MOVE_SPEED
+		Vector2(360, 360) / Settings.BASE_MOVE_SPEED
 	)
 
 
