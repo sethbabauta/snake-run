@@ -36,6 +36,8 @@ const DUNGEON_WIN_SCREEN = "res://game_state/dungeon/dungeon_win_screen.tscn"
 
 const DEATH_SCREEN = "res://ui/death_screens/death_screen.tscn"
 
+const SETTINGS_SCENE = "res://ui/settings_menu/settings_dialog.tscn"
+
 
 # settings options
 func get_screen_mode_options() -> Array[String]:

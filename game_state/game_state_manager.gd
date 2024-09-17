@@ -7,6 +7,7 @@ var state_machine:= StateMachine.new()
 @onready var game_state_classic: GameState = %GameStateClassic
 @onready var game_state_snakeo: GameState = %GameStateSnakeo
 @onready var game_state_dungeon: GameState = %GameStateDungeon
+@onready var game_state_settings: GameState = %GameStateSettings
 @onready var states: Node = %States
 
 
@@ -40,6 +41,8 @@ func choose_next_state() -> void:
 			_gamemode_next_state(game_state_snakeo)
 		game_state_dungeon:
 			_gamemode_next_state(game_state_dungeon)
+		game_state_settings:
+			_gamemode_next_state(game_state_settings)
 
 
 func _gamemode_next_state(game_state: GameState) -> void:
