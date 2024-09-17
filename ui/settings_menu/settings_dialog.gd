@@ -1,5 +1,7 @@
 class_name SettingsDialog extends Control
 
+signal back_pressed
+
 var state_machine:= StateMachine.new()
 
 # containers
@@ -11,7 +13,6 @@ var state_machine:= StateMachine.new()
 
 
 func _ready() -> void:
-	EventBus.settings_toggled.connect(_on_settings_toggled)
 	set_state(video)
 
 
@@ -25,12 +26,8 @@ func set_state(next_state: SettingsState) -> void:
 	state_machine.set_state(next_state, true)
 
 
-func _on_settings_toggled() -> void:
-	visible = not visible
-
-
 func _on_back_button_pressed() -> void:
-	EventBus.settings_toggled.emit()
+	back_pressed.emit()
 
 
 func _on_video_section_button_pressed() -> void:

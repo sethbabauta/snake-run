@@ -40,8 +40,8 @@ func save_video_setting(key: String, value) -> void:
 
 func set_audio_defaults() -> void:
 	config.set_value("audio", "Master_volume", 1)
-	config.set_value("audio", "music_volume", 1)
-	config.set_value("audio", "sfx_volume", 1)
+	config.set_value("audio", "music_volume", 0.75)
+	config.set_value("audio", "sfx_volume", 0.75)
 
 
 func set_config_defaults() -> void:

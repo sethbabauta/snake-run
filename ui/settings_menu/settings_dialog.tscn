@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://co1motepffns5"]
+[gd_scene load_steps=13 format=3 uid="uid://co1motepffns5"]
 
 [ext_resource type="Script" path="res://ui/settings_menu/settings_dialog.gd" id="1_mg4te"]
 [ext_resource type="Theme" uid="uid://bif7w43bcgo83" path="res://ui/themes/pause/pause_menu.tres" id="1_y7tul"]
@@ -9,6 +9,9 @@
 [ext_resource type="Script" path="res://ui/settings_menu/screen_mode_picker.gd" id="5_3d6k5"]
 [ext_resource type="Texture2D" uid="uid://b7bha6sk4pfnn" path="res://ui/themes/pause/icons/back_symbol_flipped.svg" id="7_uw3da"]
 [ext_resource type="Script" path="res://ui/settings_menu/resolution_picker.gd" id="8_5dlqd"]
+[ext_resource type="Script" path="res://ui/settings_menu/volume_slider.gd" id="10_joijo"]
+[ext_resource type="Script" path="res://ui/settings_menu/audio_controls_container.gd" id="10_l8wp4"]
+[ext_resource type="Script" path="res://ui/settings_menu/volume_text_edit.gd" id="12_jld2h"]
 
 [node name="SettingsDialog" type="Control" node_paths=PackedStringArray("containers", "video", "audio")]
 layout_mode = 3
@@ -232,14 +235,233 @@ size_flags_vertical = 4
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AudioControlsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls"]
+[node name="AudioControlsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls" node_paths=PackedStringArray("master_slider", "music_slider", "sfx_slider", "master_text_edit", "music_text_edit", "sfx_text_edit")]
 layout_mode = 2
+script = ExtResource("10_l8wp4")
+master_slider = NodePath("HBoxContainer/SliderMarginContainer/VBoxContainer/MasterContainer/MasterVolumeSlider")
+music_slider = NodePath("HBoxContainer/SliderMarginContainer/VBoxContainer/MusicContainer/MusicVolumeSlider")
+sfx_slider = NodePath("HBoxContainer/SliderMarginContainer/VBoxContainer/SFXContainer/SFXVolumeSlider")
+master_text_edit = NodePath("HBoxContainer/VolumeMarginContainer/VBoxContainer/MasterContainer/MasterLineEdit")
+music_text_edit = NodePath("HBoxContainer/VolumeMarginContainer/VBoxContainer/MusicContainer/MusicTextEdit")
+sfx_text_edit = NodePath("HBoxContainer/VolumeMarginContainer/VBoxContainer/SFXContainer/SFXTextEdit")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/MarginContainer"]
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelMarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="MasterContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer/MasterContainer"]
+layout_mode = 2
+text = "MASTER VOLUME"
+
+[node name="Spacer3" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MusicContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer/MusicContainer"]
+layout_mode = 2
+text = "MUSIC VOLUME"
+
+[node name="Spacer4" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SFXContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer/SFXContainer"]
+layout_mode = 2
+text = "SFX VOLUME"
+
+[node name="Spacer5" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/LabelMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="SliderMarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="MasterContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MasterVolumeSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer/MasterContainer" node_paths=PackedStringArray("text_edit")]
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.001
+value = 0.75
+script = ExtResource("10_joijo")
+text_edit = NodePath("../../../../VolumeMarginContainer/VBoxContainer/MasterContainer/MasterLineEdit")
+
+[node name="Spacer3" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MusicContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MusicVolumeSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer/MusicContainer" node_paths=PackedStringArray("text_edit")]
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.001
+value = 0.75
+script = ExtResource("10_joijo")
+bus_name = "music"
+text_edit = NodePath("../../../../VolumeMarginContainer/VBoxContainer/MusicContainer/MusicTextEdit")
+
+[node name="Spacer4" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SFXContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SFXVolumeSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer/SFXContainer" node_paths=PackedStringArray("text_edit")]
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.001
+value = 0.75
+script = ExtResource("10_joijo")
+bus_name = "sfx"
+text_edit = NodePath("../../../../VolumeMarginContainer/VBoxContainer/SFXContainer/SFXTextEdit")
+
+[node name="Spacer2" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/SliderMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="VolumeMarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="MasterContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="MasterLineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer/MasterContainer" node_paths=PackedStringArray("slider")]
+layout_mode = 2
+text = "100"
+alignment = 1
+max_length = 3
+context_menu_enabled = false
+script = ExtResource("12_jld2h")
+slider = NodePath("../../../../SliderMarginContainer/VBoxContainer/MasterContainer/MasterVolumeSlider")
+
+[node name="Spacer3" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MusicContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="MusicTextEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer/MusicContainer" node_paths=PackedStringArray("slider")]
+layout_mode = 2
+text = "100"
+alignment = 1
+max_length = 3
+context_menu_enabled = false
+script = ExtResource("12_jld2h")
+bus_name = "music"
+slider = NodePath("../../../../SliderMarginContainer/VBoxContainer/MusicContainer/MusicVolumeSlider")
+
+[node name="Spacer4" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SFXContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="SFXTextEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer/SFXContainer" node_paths=PackedStringArray("slider")]
+layout_mode = 2
+text = "100"
+alignment = 1
+max_length = 3
+context_menu_enabled = false
+script = ExtResource("12_jld2h")
+bus_name = "sfx"
+slider = NodePath("../../../../SliderMarginContainer/VBoxContainer/SFXContainer/SFXVolumeSlider")
+
+[node name="Spacer5" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer/VolumeMarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="Spacer2" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="BottomBarButtons" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2

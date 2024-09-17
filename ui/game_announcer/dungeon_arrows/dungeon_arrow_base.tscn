@@ -82,3 +82,4 @@ texture = SubResource("CompressedTexture2D_sj7vl")
 
 [node name="Beep" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+bus = &"sfx"

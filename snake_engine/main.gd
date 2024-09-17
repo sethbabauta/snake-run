@@ -38,7 +38,7 @@ func _ready() -> void:
 	)
 
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	input_handler.handle_input(event)
 
 

@@ -60,7 +60,7 @@ func announce_message(
 	for word in announce_split_array:
 		# if a new announcement starts then stop current one
 		if not announcement_id_factory.is_id_current(announcement):
-			break
+			return
 
 		font_offset = INITIAL_OFFSET_AMOUNT
 		await _announce_word(word, time_between_words)

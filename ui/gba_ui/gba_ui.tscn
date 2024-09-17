@@ -1,9 +1,11 @@
-[gd_scene load_steps=19 format=3 uid="uid://cgi8lrxrspnn8"]
+[gd_scene load_steps=21 format=3 uid="uid://cgi8lrxrspnn8"]
 
 [ext_resource type="Theme" uid="uid://b1roaedg3560a" path="res://ui/themes/gba/gbaui.tres" id="1_630xb"]
 [ext_resource type="Theme" uid="uid://da0wd6smpwt67" path="res://ui/themes/gba/dpad.tres" id="2_0fgfv"]
 [ext_resource type="Script" path="res://ui/gba_ui/gba_ui.gd" id="2_8lyt1"]
 [ext_resource type="Texture2D" uid="uid://jcfe16lofd2t" path="res://ui/themes/gba/icons/gbadpad_no_labels.svg" id="2_e3aef"]
+[ext_resource type="Script" path="res://util_classes/state_machine/ui_state.gd" id="3_c6a3t"]
+[ext_resource type="Script" path="res://ui/gba_ui/unpaused.gd" id="3_srnmi"]
 [ext_resource type="Theme" uid="uid://kcrcykj3rohv" path="res://ui/themes/gba/left_panel.tres" id="4_5qrmo"]
 [ext_resource type="Texture2D" uid="uid://ba4o81joqbfjp" path="res://ui/themes/gba/icons/snake_length.svg" id="5_ttiv5"]
 [ext_resource type="Script" path="res://ui/gba_ui/snake_length_container.gd" id="6_0bhxr"]
@@ -19,7 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://c2rxm4oown5nh" path="res://ui/pause_menu/pause_dialog.tscn" id="12_ev7nk"]
 [ext_resource type="PackedScene" uid="uid://co1motepffns5" path="res://ui/settings_menu/settings_dialog.tscn" id="13_rlvx0"]
 
-[node name="GBAUI" type="Control" node_paths=PackedStringArray("powerup_container", "snake_length_container")]
+[node name="GBAUI" type="Control" node_paths=PackedStringArray("powerup_container", "snake_length_container", "pause_dialog", "settings_dialog", "unpaused", "pause_menu", "settings_menu")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,6 +32,24 @@ theme = ExtResource("1_630xb")
 script = ExtResource("2_8lyt1")
 powerup_container = NodePath("UIElements/RightPanel/Panel/VBoxContainer/Powerups/VBoxContainer/PowerupContainer")
 snake_length_container = NodePath("UIElements/LeftPanel/Panel/VBoxContainer/Score/VBoxContainer/SnakeLengthContainer")
+pause_dialog = NodePath("PauseDialog")
+settings_dialog = NodePath("SettingsDialog")
+unpaused = NodePath("States/Unpaused")
+pause_menu = NodePath("States/PauseMenu")
+settings_menu = NodePath("States/SettingsMenu")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Unpaused" type="Node" parent="States"]
+script = ExtResource("3_srnmi")
+
+[node name="PauseMenu" type="Node" parent="States" node_paths=PackedStringArray("dialog")]
+script = ExtResource("3_c6a3t")
+dialog = NodePath("../../PauseDialog")
+
+[node name="SettingsMenu" type="Node" parent="States" node_paths=PackedStringArray("dialog")]
+script = ExtResource("3_c6a3t")
+dialog = NodePath("../../SettingsDialog")
 
 [node name="UIElements" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -481,3 +501,6 @@ visible = false
 layout_mode = 1
 
 [connection signal="menu_pressed" from="PauseDialog" to="." method="_on_pause_dialog_menu_pressed"]
+[connection signal="resume_pressed" from="PauseDialog" to="." method="_on_pause_dialog_resume_pressed"]
+[connection signal="settings_pressed" from="PauseDialog" to="." method="_on_pause_dialog_settings_pressed"]
+[connection signal="back_pressed" from="SettingsDialog" to="." method="_on_settings_dialog_back_pressed"]
