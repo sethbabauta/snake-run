@@ -53,10 +53,38 @@ func set_display_label(option_selected: String) -> void:
 	display_label.text = option_selected.capitalize()
 
 
+func set_option(new_option: String) -> bool:
+	var option_index: int = options.find(new_option)
+	if option_index == -1:
+		return false
+
+	index_selected = option_index
+	set_display_label(options[index_selected])
+	save_function()
+
+	return true
+
+
+func set_option_by_index(new_option_index: int) -> void:
+	index_selected = new_option_index
+	set_display_label(options[index_selected])
+	save_setting()
+
+
 func set_options(new_options: Array[String]) -> void:
 	options = new_options
 	index_selected = 0
 	set_display_label(options[index_selected])
+
+
+func disable_buttons() -> void:
+	left_button.disabled = true
+	right_button.disabled = true
+
+
+func enable_buttons() -> void:
+	left_button.disabled = false
+	right_button.disabled = false
 
 
 func _on_left_button_pressed() -> void:

@@ -1,15 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://co1motepffns5"]
+[gd_scene load_steps=10 format=3 uid="uid://co1motepffns5"]
 
-[ext_resource type="Script" path="res://ui/pause_menu/settings_dialog.gd" id="1_mg4te"]
+[ext_resource type="Script" path="res://ui/settings_menu/settings_dialog.gd" id="1_mg4te"]
 [ext_resource type="Theme" uid="uid://bif7w43bcgo83" path="res://ui/themes/pause/pause_menu.tres" id="1_y7tul"]
-[ext_resource type="Script" path="res://util_classes/state_machine/settings_state.gd" id="3_uikg5"]
-[ext_resource type="Script" path="res://ui/pause_menu/video_controls_container.gd" id="4_rlism"]
+[ext_resource type="Script" path="res://ui/settings_menu/video_state.gd" id="3_euuj8"]
+[ext_resource type="Script" path="res://ui/settings_menu/video_controls_container.gd" id="4_rlism"]
 [ext_resource type="Texture2D" uid="uid://c2gm47202ob4d" path="res://ui/themes/pause/icons/back_symbol.svg" id="4_th6y5"]
-[ext_resource type="Script" path="res://ui/pause_menu/screen_mode_picker.gd" id="5_3d6k5"]
+[ext_resource type="Script" path="res://ui/settings_menu/audio_state.gd" id="4_vgu57"]
+[ext_resource type="Script" path="res://ui/settings_menu/screen_mode_picker.gd" id="5_3d6k5"]
 [ext_resource type="Texture2D" uid="uid://b7bha6sk4pfnn" path="res://ui/themes/pause/icons/back_symbol_flipped.svg" id="7_uw3da"]
-[ext_resource type="Script" path="res://ui/pause_menu/resolution_picker.gd" id="8_5dlqd"]
+[ext_resource type="Script" path="res://ui/settings_menu/resolution_picker.gd" id="8_5dlqd"]
 
-[node name="SettingsDialog" type="Control"]
+[node name="SettingsDialog" type="Control" node_paths=PackedStringArray("containers", "video", "audio")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,14 +19,21 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_y7tul")
 script = ExtResource("1_mg4te")
+containers = NodePath("PanelContainer/MarginContainer/VBoxContainer/Controls")
+video = NodePath("States/Video")
+audio = NodePath("States/Audio")
 
 [node name="States" type="Node" parent="."]
 
-[node name="Video" type="Node" parent="States"]
-script = ExtResource("3_uikg5")
+[node name="Video" type="Node" parent="States" node_paths=PackedStringArray("container", "section_button")]
+script = ExtResource("3_euuj8")
+container = NodePath("../../PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer")
+section_button = NodePath("../../PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer/VideoContainer/VideoSectionButton")
 
-[node name="Audio" type="Node" parent="States"]
-script = ExtResource("3_uikg5")
+[node name="Audio" type="Node" parent="States" node_paths=PackedStringArray("container", "section_button")]
+script = ExtResource("4_vgu57")
+container = NodePath("../../PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer")
+section_button = NodePath("../../PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer/AudioContainer/AudioSectionButton")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -87,12 +95,13 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 4.0
 
 [node name="VideoControlsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls" node_paths=PackedStringArray("screen_mode_picker", "resolution_picker")]
+visible = false
 layout_mode = 2
 script = ExtResource("4_rlism")
 screen_mode_picker = NodePath("ScreenModeContainer/MarginContainer/ScreenModePicker")
 resolution_picker = NodePath("ResolutionContainer/MarginContainer/ResolutionPicker")
 
-[node name="Spacer3" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer"]
+[node name="Spacer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -224,7 +233,12 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="AudioControlsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls"]
-visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/Controls/AudioControlsContainer/MarginContainer"]
 layout_mode = 2
 
 [node name="BottomBarButtons" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
@@ -260,8 +274,11 @@ text = "RESET TO DEFAULT"
 layout_mode = 2
 size_flags_horizontal = 3
 
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer/VideoContainer/VideoSectionButton" to="." method="_on_video_section_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Sections/HBoxContainer/AudioContainer/AudioSectionButton" to="." method="_on_audio_section_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer/MarginContainer/ScreenModePicker/LeftButton" to="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer/MarginContainer/ScreenModePicker" method="_on_left_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer/MarginContainer/ScreenModePicker/RightButton" to="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ScreenModeContainer/MarginContainer/ScreenModePicker" method="_on_right_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ResolutionContainer/MarginContainer/ResolutionPicker/LeftButton" to="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ResolutionContainer/MarginContainer/ResolutionPicker" method="_on_left_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ResolutionContainer/MarginContainer/ResolutionPicker/RightButton" to="PanelContainer/MarginContainer/VBoxContainer/Controls/VideoControlsContainer/ResolutionContainer/MarginContainer/ResolutionPicker" method="_on_right_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer/BackContainer/HBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBarButtons/HBoxContainer/ResetContainer/ResetButton" to="." method="_on_reset_button_pressed"]

@@ -41,7 +41,7 @@ const DEATH_SCREEN = "res://ui/death_screens/death_screen.tscn"
 func get_screen_mode_options() -> Array[String]:
 	var screen_mode_options: Array[String] = [
 		"fullscreen",
-		"borderless_windowed",
+		"borderless_fullscreen",
 		"windowed",
 	]
 

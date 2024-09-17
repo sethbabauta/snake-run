@@ -8,3 +8,7 @@ var state_manager: VBoxContainer
 
 func enter() -> void:
 	container.visible = true
+
+
+func reset_to_defaults() -> void:
+	pass # override

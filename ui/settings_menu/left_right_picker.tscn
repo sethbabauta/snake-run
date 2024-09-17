@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://eq4eqcmkqxdc"]
 
-[ext_resource type="Script" path="res://ui/pause_menu/left_right_picker.gd" id="1_p1urh"]
+[ext_resource type="Script" path="res://ui/settings_menu/left_right_picker.gd" id="1_p1urh"]
 [ext_resource type="Texture2D" uid="uid://c2gm47202ob4d" path="res://ui/themes/pause/icons/back_symbol.svg" id="2_eyyaj"]
 [ext_resource type="Texture2D" uid="uid://b7bha6sk4pfnn" path="res://ui/themes/pause/icons/back_symbol_flipped.svg" id="3_u28jw"]
 

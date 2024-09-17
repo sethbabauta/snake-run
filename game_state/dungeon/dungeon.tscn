@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="3_waiuv"]
 [ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://ui/camera/follow_camera.tscn" id="4_qb1ah"]
 [ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://levels/template/room_mapper.tscn" id="5_jia6d"]
-[ext_resource type="PackedScene" uid="uid://cgi8lrxrspnn8" path="res://ui/gba_ui.tscn" id="6_hwwjh"]
+[ext_resource type="PackedScene" uid="uid://cgi8lrxrspnn8" path="res://ui/gba_ui/gba_ui.tscn" id="6_hwwjh"]
 [ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer/game_announcer.tscn" id="8_hmc5f"]
 
 [node name="Dungeon" type="Node" node_paths=PackedStringArray("game_ui")]

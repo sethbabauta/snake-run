@@ -30,13 +30,28 @@ static func resolution_array_to_string_array(
 	return result
 
 
-func resolution_to_settings_string(resolution: Resolution) -> String:
+static func resolution_to_settings_string(resolution: Resolution) -> String:
 	var result: String = "%dx%d" % [resolution.width, resolution.height]
 
 	return result
 
 
-func settings_string_to_resolution(settings_string: String) -> Resolution:
+static func search_array_with_vector2i(
+	search_vector: Vector2i,
+	resolutions: Array[Resolution],
+) -> int:
+	var search_index: int = -1
+	for resolution in resolutions:
+		if (
+			resolution.width == search_vector.x
+			and resolution.height == search_vector.y
+		):
+			search_index = resolutions.find(resolution)
+
+	return search_index
+
+
+static func settings_string_to_resolution(settings_string: String) -> Resolution:
 	var split_array: PackedStringArray = settings_string.split("x")
 	var resolution_options: Array[Resolution] = Settings.get_resolution_options()
 	var found_resolution: Resolution

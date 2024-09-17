@@ -7,31 +7,9 @@ var config = ConfigFile.new()
 
 func _ready() -> void:
 	if !FileAccess.file_exists(Settings.SETTINGS_FILE_PATH):
-		_set_config_defaults()
+		set_config_defaults()
 	else:
 		config.load(Settings.SETTINGS_FILE_PATH)
-
-
-func _get_section_setting_string(settings_section: ConfigSections) -> String:
-	var settings_section_string: String
-	match settings_section:
-		ConfigSections.AUDIO:
-			settings_section_string = "audio"
-		ConfigSections.VIDEO:
-			settings_section_string = "video"
-
-	return settings_section_string
-
-
-func _set_config_defaults() -> void:
-	config.set_value("audio", "Master_volume", 1)
-	config.set_value("audio", "music_volume", 1)
-	config.set_value("audio", "sfx_volume", 1)
-
-	config.set_value("video", "screen_mode", "windowed")
-	config.set_value("video", "resolution", "1280x720")
-
-	config.save(Settings.SETTINGS_FILE_PATH)
 
 
 func save_audio_setting(key: String, value) -> void:
@@ -57,8 +35,24 @@ func save_video_setting(key: String, value) -> void:
 		_get_section_setting_string(ConfigSections.VIDEO)
 	)
 	config.set_value(settings_section_string, key, value)
-	print("saving ", key, " : ", value)
 	config.save(Settings.SETTINGS_FILE_PATH)
+
+
+func set_audio_defaults() -> void:
+	config.set_value("audio", "Master_volume", 1)
+	config.set_value("audio", "music_volume", 1)
+	config.set_value("audio", "sfx_volume", 1)
+
+
+func set_config_defaults() -> void:
+	set_audio_defaults()
+	set_video_defaults()
+	config.save(Settings.SETTINGS_FILE_PATH)
+
+
+func set_video_defaults() -> void:
+	config.set_value("video", "screen_mode", "fullscreen")
+	config.set_value("video", "resolution", "1920x1080")
 
 
 func load_settings(settings_section: ConfigSections) -> Dictionary:
@@ -70,3 +64,14 @@ func load_settings(settings_section: ConfigSections) -> Dictionary:
 		settings[key] = config.get_value(settings_section_string, key)
 
 	return settings
+
+
+func _get_section_setting_string(settings_section: ConfigSections) -> String:
+	var settings_section_string: String
+	match settings_section:
+		ConfigSections.AUDIO:
+			settings_section_string = "audio"
+		ConfigSections.VIDEO:
+			settings_section_string = "video"
+
+	return settings_section_string
