@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://d3jk28ud0p4t0"
-path="res://.godot/imported/g_note.wav-dc010b14240235e30256936f78d143de.sample"
+path="res://.godot/imported/g_note.wav-3cf9257473e0841da065ca3b97e5685b.sample"
 
 [deps]
 
-source_file="res://audio/g_note.wav"
-dest_files=["res://.godot/imported/g_note.wav-dc010b14240235e30256936f78d143de.sample"]
+source_file="res://audio/dungeon_mode/dungeon_arrows/g_note.wav"
+dest_files=["res://.godot/imported/g_note.wav-3cf9257473e0841da065ca3b97e5685b.sample"]
 
 [params]
 

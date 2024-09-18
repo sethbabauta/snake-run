@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://xpre5dvclwxs"
-path="res://.godot/imported/earthquake1.wav-336d4646b2b12ae55f7ac79914645eba.sample"
+path="res://.godot/imported/earthquake1.wav-754f48f9ab11484be0d6f398b9b7e28e.sample"
 
 [deps]
 
-source_file="res://audio/earthquake1.wav"
-dest_files=["res://.godot/imported/earthquake1.wav-336d4646b2b12ae55f7ac79914645eba.sample"]
+source_file="res://audio/dungeon_mode/earthquake1.wav"
+dest_files=["res://.godot/imported/earthquake1.wav-754f48f9ab11484be0d6f398b9b7e28e.sample"]
 
 [params]
 
