@@ -35,6 +35,7 @@ EventBus="*res://singletons/event_bus.gd"
 DeathMessagesDb="*res://singletons/death_messages_db.gd"
 LevelClearedMessagesDb="*res://singletons/level_cleared_messages_db.gd"
 ConfigFileHandler="*res://singletons/config_file_handler.gd"
+DisplayServerHandler="*res://singletons/display_server_handler.gd"
 
 [display]
 

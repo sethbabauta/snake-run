@@ -16,6 +16,7 @@ func _ready() -> void:
 		game_state.game_state_manager = self
 
 	state_machine.set_state(game_state_logo)
+	_load_video_settings()
 
 
 func _physics_process(_delta: float) -> void:
@@ -48,3 +49,15 @@ func choose_next_state() -> void:
 func _gamemode_next_state(game_state: GameState) -> void:
 	var next_state: State = game_state.next_state
 	state_machine.set_state(next_state)
+
+
+func _load_video_settings() -> void:
+	var video_settings: Dictionary = ConfigFileHandler.load_settings(
+		ConfigFileHandler.ConfigSections.VIDEO,
+	)
+	DisplayServerHandler.set_screen_mode_from_settings_string(
+		video_settings["screen_mode"],
+	)
+	DisplayServerHandler.set_resolution_from_settings_string(
+		video_settings["resolution"],
+	)
