@@ -1,18 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://dpw256kf8oe84"]
+[gd_scene load_steps=7 format=3 uid="uid://dpw256kf8oe84"]
 
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon.gd" id="1_pqnat"]
-[ext_resource type="PackedScene" uid="uid://blk3nwgjh1k6k" path="res://game_state/dungeon/dungeon_death_screen.tscn" id="2_6by23"]
-[ext_resource type="PackedScene" uid="uid://2esaq6uvofnq" path="res://ui/game_ui.tscn" id="2_ynyrs"]
-[ext_resource type="PackedScene" uid="uid://ev0uehnt8emi" path="res://game_state/dungeon/dungeon_win_screen.tscn" id="3_7shf6"]
 [ext_resource type="PackedScene" uid="uid://b7ty05m56ksow" path="res://snake_engine/main.tscn" id="3_waiuv"]
-[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://scenes/follow_camera.tscn" id="4_qb1ah"]
+[ext_resource type="PackedScene" uid="uid://wlhnyhesiauy" path="res://ui/camera/follow_camera.tscn" id="4_qb1ah"]
 [ext_resource type="PackedScene" uid="uid://gfsecx2r220q" path="res://levels/template/room_mapper.tscn" id="5_jia6d"]
+[ext_resource type="PackedScene" uid="uid://cgi8lrxrspnn8" path="res://ui/gba_ui/gba_ui.tscn" id="6_hwwjh"]
 [ext_resource type="PackedScene" uid="uid://bnjk6212auow8" path="res://ui/game_announcer/game_announcer.tscn" id="8_hmc5f"]
 
-[node name="Dungeon" type="Node"]
+[node name="Dungeon" type="Node" node_paths=PackedStringArray("game_ui")]
 script = ExtResource("1_pqnat")
-dungeon_death_screen = ExtResource("2_6by23")
-dungeon_win_screen = ExtResource("3_7shf6")
+game_ui = NodePath("CanvasLayer/GBAUI")
 
 [node name="Main" parent="." node_paths=PackedStringArray("follow_camera", "gamemode_node") instance=ExtResource("3_waiuv")]
 unique_name_in_owner = true
@@ -32,8 +29,7 @@ unique_name_in_owner = true
 [node name="GameAnnouncer" parent="CanvasLayer" instance=ExtResource("8_hmc5f")]
 unique_name_in_owner = true
 
-[node name="GameUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("2_ynyrs")]
-unique_name_in_owner = true
+[node name="GBAUI" parent="CanvasLayer" node_paths=PackedStringArray("main_node") instance=ExtResource("6_hwwjh")]
 main_node = NodePath("../../Main")
 
 [editable path="CanvasLayer/GameAnnouncer"]

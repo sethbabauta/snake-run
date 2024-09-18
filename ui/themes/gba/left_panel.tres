@@ -1,0 +1,8 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://kcrcykj3rohv"]
+
+[ext_resource type="FontFile" uid="uid://bam2aqsrxr26" path="res://ui/fonts/Inter_18pt-SemiBold.ttf" id="1_xne10"]
+
+[resource]
+Label/colors/font_color = Color(0.94902, 0.909804, 0.811765, 1)
+Label/font_sizes/font_size = 40
+Label/fonts/font = ExtResource("1_xne10")

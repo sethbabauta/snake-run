@@ -3,13 +3,12 @@ class_name Snakeo extends Node
 const START_LENGTH = 3
 const POWERUP_1_INTERVAL = 30
 
-@export var snakeo_death_screen: PackedScene
+@export var game_ui: GBAUI
 
 var temp_apple_flipper_spawner: ScoreCheckpointSpawner
 
 @onready var main_node: Main = %Main
 @onready var game_announcer: GameAnnouncer = %GameAnnouncer
-@onready var game_ui: GameUI = %GameUI
 
 
 func _ready() -> void:

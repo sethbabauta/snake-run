@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ge6taw4wireo"]
+
+[ext_resource type="Script" path="res://ui/death_screens/score_label/score_label.gd" id="1_x0req"]
+
+[node name="ScoreLabel" type="Label"]
+text = "Score: 0"
+horizontal_alignment = 1
+script = ExtResource("1_x0req")

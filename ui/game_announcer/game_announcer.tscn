@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://ui/game_announcer/game_announcer.gd" id="1_xt5pp"]
 [ext_resource type="PackedScene" uid="uid://cqddmtc4lrco6" path="res://ui/game_announcer/dungeon_arrows/dungeon_arrow_base.tscn" id="2_jw2vv"]
-[ext_resource type="AudioStream" uid="uid://bhncceffefguf" path="res://audio/middle_c_note.wav" id="3_v1rec"]
-[ext_resource type="AudioStream" uid="uid://c8ibc2io4i0ob" path="res://audio/e_note.wav" id="4_47w0f"]
-[ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://audio/g_note.wav" id="5_d87xu"]
-[ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://audio/higher_c_note.wav" id="6_7bmws"]
+[ext_resource type="AudioStream" uid="uid://bhncceffefguf" path="res://audio/dungeon_mode/dungeon_arrows/middle_c_note.wav" id="3_v1rec"]
+[ext_resource type="AudioStream" uid="uid://c8ibc2io4i0ob" path="res://audio/dungeon_mode/dungeon_arrows/e_note.wav" id="4_47w0f"]
+[ext_resource type="AudioStream" uid="uid://d3jk28ud0p4t0" path="res://audio/dungeon_mode/dungeon_arrows/g_note.wav" id="5_d87xu"]
+[ext_resource type="AudioStream" uid="uid://0c6whndjsqar" path="res://audio/dungeon_mode/dungeon_arrows/higher_c_note.wav" id="6_7bmws"]
 [ext_resource type="PackedScene" uid="uid://bqvkxod686681" path="res://ui/game_announcer/monologue.tscn" id="7_hfy3j"]
 [ext_resource type="PackedScene" uid="uid://bwmwop5re10mg" path="res://ui/game_announcer/item_effect_number.tscn" id="8_61mas"]
 
@@ -14,6 +14,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 249.0
+offset_right = -249.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xt5pp")

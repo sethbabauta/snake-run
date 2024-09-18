@@ -9,6 +9,8 @@ var item_pickup_observer: ItemPickupObserver
 var move_timer_notifier: MoveTimerNotifier
 var apple_flipper: AppleFlipper
 var object_spawner: ObjectSpawner
+var input_handler: InputHandler
+var world_info: WorldInfo
 var query_area: Area2D
 var max_simple_size: Vector2
 var timer_frozen: bool = false
@@ -31,110 +33,21 @@ func _ready() -> void:
 	_setup_utils()
 
 	self.query_area = follow_camera.get_node("CollisionQuery")
-	ScoreKeeper.set_score(gamemode_node.START_LENGTH)
-	self.max_simple_size = (get_viewport().get_visible_rect().size / Settings.BASE_MOVE_SPEED)
+	self.max_simple_size = (
+		Vector2(640, 640) / Settings.BASE_MOVE_SPEED
+	)
 
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("turn_up"):
-		self._fire_change_direction_event("turn_up")
-
-	if event.is_action_pressed("turn_left"):
-		self._fire_change_direction_event("turn_left")
-
-	if event.is_action_pressed("turn_down"):
-		self._fire_change_direction_event("turn_down")
-
-	if event.is_action_pressed("turn_right"):
-		self._fire_change_direction_event("turn_right")
-
-	if event.is_action_pressed("drop_item"):
-		self._fire_drop_item_event()
-
-	if event.is_action_pressed("use_item"):
-		self._fire_use_item_event()
-
-	if event.is_action_pressed("pause"):
-		EventBus.pause_requested.emit()
-
-
-static func apply_shader_to_physics_body(
-	target: GameEngine.GameObject,
-	sprite_node_name: String,
-	material_name: String,
-) -> void:
-	var shader_material_path: String = Settings.SHADERS_PATH + material_name
-	var shader_material: Material = load(shader_material_path)
-	var sprite_node: Sprite2D = target.physics_body.get_node(sprite_node_name)
-	sprite_node.material = shader_material
-
-
-static func apply_shader_to_snake(
-	target_head: GameEngine.GameObject,
-	material_name: String,
-) -> void:
-	Main.apply_shader_to_physics_body(target_head, "EquippedItem", material_name)
-
-	var current_snakebody: Components.SnakeBody = target_head.components.get("SnakeBody")
-	while current_snakebody != null:
-		(
-			Main
-			. apply_shader_to_physics_body(
-				current_snakebody.game_object,
-				"PhysicsObjectSprite",
-				material_name,
-			)
-		)
-		var prev_body: GameEngine.GameObject = current_snakebody.prev_body
-		if not prev_body:
-			break
-		current_snakebody = prev_body.components.get("SnakeBody")
-
-
-func check_is_player_alive() -> bool:
-	var player_positions: Array = game_object_factory.subscribe_lists["player_controlled"]
-	var is_player_alive: bool = false
-	if player_positions.size() > 0:
-		is_player_alive = true
-
-	return is_player_alive
+func _unhandled_input(event: InputEvent) -> void:
+	input_handler.handle_input(event)
 
 
 func clear_doors(exclusions: Array = []) -> void:
-	var door_locations: Array = get_simple_door_locations(exclusions)
-	for door_location in door_locations:
-		var door_world_location: Vector2 = Utils.convert_simple_to_world_coordinates(door_location)
-		var door_game_object: GameEngine.GameObject = get_game_object_at_position_or_null(
-			door_world_location
-		)
-		if not door_game_object:
-			continue
-
-		if door_game_object.name != "Door":
-			continue
-
-		door_game_object.delete_self()
-
-
-func clear_pickup(pickup_name: String) -> int:
-	var pickups: Array[GameEngine.GameObject] = await get_game_objects_of_name(pickup_name)
-	var pickups_cleared: int = 0
-	for pickup in pickups:
-		pickup.delete_self()
-		pickups_cleared += 1
-
-	return pickups_cleared
+	object_spawner.clear_doors(exclusions)
 
 
 func clear_pickups() -> int:
-	var pickups_to_clear: Array = [
-		"Apple",
-		"PoisonApple",
-	]
-
-	var pickups_cleared: int = 0
-	for pickup_name in pickups_to_clear:
-		pickups_cleared += await clear_pickup(pickup_name)
+	var pickups_cleared: int = await object_spawner.clear_pickups()
 
 	return pickups_cleared
 
@@ -158,7 +71,7 @@ func end_game_soon() -> void:
 	EventBus.player_died.emit()
 	await get_tree().create_timer(3).timeout
 
-	if not check_is_player_alive():
+	if not world_info.check_is_player_alive():
 		EventBus.game_ended.emit(false)
 		return
 
@@ -185,202 +98,63 @@ func flip_apples_back(nutritious: bool = false) -> void:
 func get_closest_player_controlled(
 	position_to_compare: Vector2,
 ) -> GameEngine.GameObject:
-	var player_positions: Array = self.game_object_factory.subscribe_lists["player_controlled"]
-	var closest_object: GameEngine.GameObject
-	var shortest_distance: float
-
-	for current_game_object in player_positions:
-		var current_distance: float = current_game_object.physics_body.global_position.distance_to(
-			position_to_compare
-		)
-
-		if not shortest_distance:
-			shortest_distance = current_distance
-			closest_object = current_game_object
-			continue
-
-		if shortest_distance > current_distance:
-			shortest_distance = current_distance
-			closest_object = current_game_object
+	var closest_object: GameEngine.GameObject = (
+		world_info.get_closest_player_controlled(position_to_compare)
+	)
 
 	return closest_object
 
 
-func get_game_object_at_position_or_null(position: Vector2) -> Variant:
-	if not self.query_area.has_overlapping_areas():
-		return null
-
-	var found_game_object: GameEngine.GameObject
-	for area in query_area.get_overlapping_areas():
-		if area.global_position.is_equal_approx(position):
-			found_game_object = area.game_object
-
-	return found_game_object
-
-
-func get_game_objects_of_name(search_name: String) -> Array[GameEngine.GameObject]:
-	var visible_game_objects: Array[GameEngine.GameObject] = await get_visible_game_objects()
-	var found_game_objects: Array[GameEngine.GameObject] = []
-	if not visible_game_objects:
-		return found_game_objects
-
-	for object in visible_game_objects:
-		if object.name == search_name:
-			found_game_objects.append(object)
+func get_game_objects_of_name(
+	search_name: String,
+) -> Array[GameEngine.GameObject]:
+	var found_game_objects: Array[GameEngine.GameObject] = (
+		await world_info.get_game_objects_of_name(search_name)
+	)
 
 	return found_game_objects
 
 
 func get_random_valid_world_position() -> Vector2:
-	var position := Vector2.ONE
-
-	for try_count in range(1000):
-		position = self.get_random_world_position()
-		if not await is_position_taken(position):
-			break
+	var position: Vector2 = await world_info.get_random_valid_world_position()
 
 	return position
 
 
-func get_random_world_position() -> Vector2:
-	var rng := RandomNumberGenerator.new()
-	var position := Vector2(
-		rng.randf_range(0, self.max_simple_size.x - 1.0),
-		rng.randf_range(0, self.max_simple_size.y - 1.0),
+func get_simple_door_locations(
+	exclusions: Array[String] = []
+) -> Array[Vector2]:
+	var door_positions: Array[Vector2] = world_info.get_simple_door_locations(
+		exclusions
 	)
-	var camera_offset: Vector2 = (
-		Utils.convert_world_to_simple_coordinates(self.follow_camera.global_position)
-		- Vector2(10, 10)
-	)
-	position += camera_offset
-	position = Utils.convert_simple_to_world_coordinates(position)
-
-	return position
-
-
-func get_simple_door_locations(exclusions: Array[String] = []) -> Array:
-	var camera_coordinates: Vector2 = follow_camera.global_position
-	var simple_camera_coordinates: Vector2 = Utils.convert_world_to_simple_coordinates(
-		camera_coordinates
-	)
-	var door_positions_north: Array = [
-		simple_camera_coordinates + Vector2(0, -10),
-		simple_camera_coordinates + Vector2(-1, -10),
-	]
-	var door_positions_south: Array = [
-		simple_camera_coordinates + Vector2(0, 9),
-		simple_camera_coordinates + Vector2(-1, 9),
-	]
-	var door_positions_east: Array = [
-		simple_camera_coordinates + Vector2(9, 0),
-		simple_camera_coordinates + Vector2(9, -1),
-	]
-	var door_positions_west: Array = [
-		simple_camera_coordinates + Vector2(-10, 0),
-		simple_camera_coordinates + Vector2(-10, -1),
-	]
-
-	var door_positions: Array = []
-	if "N" not in exclusions:
-		door_positions += door_positions_north
-	if "S" not in exclusions:
-		door_positions += door_positions_south
-	if "E" not in exclusions:
-		door_positions += door_positions_east
-	if "W" not in exclusions:
-		door_positions += door_positions_west
 
 	return door_positions
 
 
 func get_snake_length() -> int:
-	var snake_length: int = 0
-
-	if not get_tree():
-		return snake_length
-
-	await get_tree().create_timer(0.05).timeout
-	var snake_heads: Array[GameEngine.GameObject] = await get_game_objects_of_name("PlayerSnakeHead")
-
-	if snake_heads:
-		var snake_component: Components.SnakeBody = snake_heads[0].components.get("SnakeBody")
-		snake_length = snake_component.get_length_from_here()
+	var snake_length: int = await world_info.get_snake_length()
 
 	return snake_length
 
 
-func get_taken_positions() -> Array:
-	var taken_positions: Array = []
-	await get_tree().physics_frame
-	if self.query_area.has_overlapping_areas():
-		for area in query_area.get_overlapping_areas():
-			taken_positions.append(area.global_position)
-
-	return taken_positions
-
-
-func get_visible_game_objects() -> Array[GameEngine.GameObject]:
-	var game_objects: Array[GameEngine.GameObject] = []
-
-	if not get_tree():
-		return game_objects
-
-	await get_tree().physics_frame
-
-	if not self.query_area.has_overlapping_areas():
-		return game_objects
-
-	for area in query_area.get_overlapping_areas():
-		game_objects.append(area.game_object)
-
-	return game_objects
-
-
 func get_is_object_visible(object: GameEngine.GameObject) -> bool:
-	var visible_objects: Array = await get_visible_game_objects()
-	var is_visible: bool = false
-
-	if object in visible_objects:
-		is_visible = true
+	var is_visible: bool = await world_info.get_is_object_visible(object)
 
 	return is_visible
 
 
-func is_position_taken(position: Vector2, debug: bool = false, debug_from: String = "") -> bool:
-	var taken_positions: Array = await get_taken_positions()
-	var is_taken: bool = true
-
-	if position not in taken_positions:
-		is_taken = false
-
-	if debug:
-		print(
-			"debug from: ",
-			debug_from,
-			", searched position: ",
-			position,
-			", is taken: ",
-			is_taken,
-			", taken positions: ",
-			taken_positions,
-		)
+func is_position_taken(
+	position: Vector2,
+	debug: bool = false,
+	debug_from: String = "",
+) -> bool:
+	var is_taken: bool = await world_info.is_position_taken(
+		position,
+		debug,
+		debug_from,
+	)
 
 	return is_taken
-
-
-static func overlay_sprite_on_game_object(
-	sprite_path: String,
-	target: GameEngine.GameObject,
-	sprite_node_name: String,
-	z_idx: int = 1,
-	offset := Vector2(0, 0)
-) -> void:
-	var new_sprite := Sprite2D.new()
-	new_sprite.texture = load(sprite_path)
-	new_sprite.z_index = z_idx
-	new_sprite.name = sprite_node_name
-	target.physics_body.equipped_items.add_child(new_sprite)
-	new_sprite.position += offset
 
 
 func play_scripted_event(
@@ -405,48 +179,6 @@ func queue_object_to_spawn(
 	)
 
 	return spawned_object
-
-
-static func remove_overlay_sprite_from_physics_body(
-	target: GameEngine.GameObject,
-	sprite_node_name: String,
-) -> void:
-	var equipped_items: Array[Node] = target.physics_body.equipped_items.get_children()
-	for item in equipped_items:
-		if item.name != sprite_node_name:
-			continue
-
-		target.physics_body.equipped_items.remove_child(item)
-		item.queue_free()
-
-
-static func remove_shader_from_physics_body(
-	target: GameEngine.GameObject,
-	sprite_node_name: String,
-) -> void:
-	var sprite_node: Sprite2D = target.physics_body.get_node_or_null(sprite_node_name)
-	if sprite_node:
-		sprite_node.material = null
-
-
-static func remove_shader_from_snake(
-	target_head: GameEngine.GameObject,
-) -> void:
-	Main.remove_shader_from_physics_body(target_head, "EquippedItem")
-
-	var current_snakebody: Components.SnakeBody = target_head.components.get("SnakeBody")
-	while current_snakebody != null:
-		(
-			Main
-			. remove_shader_from_physics_body(
-				current_snakebody.game_object,
-				"PhysicsObjectSprite",
-			)
-		)
-		var prev_body: GameEngine.GameObject = current_snakebody.prev_body
-		if not prev_body:
-			break
-		current_snakebody = prev_body.components.get("SnakeBody")
 
 
 func spawn_background(offset:= Vector2(0, 0)) -> void:
@@ -494,6 +226,10 @@ func spawn_player_snake(
 	)
 
 
+func spawn_start_barriers() -> void:
+	object_spawner.spawn_start_barriers()
+
+
 func toggle_timer_freeze(allow_unpause: bool = true) -> void:
 	if timer_frozen and not allow_unpause:
 		return
@@ -508,22 +244,6 @@ func _connect_signals() -> void:
 	EventBus.pause_requested.connect(_on_pause_requested)
 
 
-func _fire_change_direction_event(input_name: String) -> void:
-	var new_event := GameEngine.Event.new("TryChangeDirection", {"input": input_name})
-	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
-
-
-func _fire_drop_item_event() -> void:
-	var new_event := GameEngine.Event.new("DropItem")
-	new_event.parameters["from"] = "player_command"
-	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
-
-
-func _fire_use_item_event() -> void:
-	var new_event := GameEngine.Event.new("UseItem")
-	self.game_object_factory.notify_subscribers(new_event, "player_controlled")
-
-
 func _on_game_start(_gamemode_name: String) -> void:
 	move_timer.start()
 	is_game_started = true
@@ -531,10 +251,16 @@ func _on_game_start(_gamemode_name: String) -> void:
 
 func _on_pause_requested() -> void:
 	is_paused = not is_paused
+
+	EventBus.game_paused.emit(is_paused)
+
+	if not is_paused:
+		gamemode_node.game_announcer.announce_message("3 2 1 GO", 0.25)
+		await EventBus.announcement_completed
+
 	if not timer_frozen:
 		move_timer.paused = is_paused
 
-	EventBus.game_paused.emit(is_paused)
 
 
 func _setup_utils() -> void:
@@ -542,11 +268,9 @@ func _setup_utils() -> void:
 	move_timer_notifier = MoveTimerNotifier.new(move_timer, game_object_factory)
 	apple_flipper = AppleFlipper.new(self)
 	object_spawner = ObjectSpawner.new(self)
+	input_handler = InputHandler.new(game_object_factory)
+	world_info = WorldInfo.new(game_object_factory, self)
 
 
 func _spawn_object_from_queue() -> void:
 	object_spawner._spawn_object_from_queue()
-
-
-func spawn_start_barriers() -> void:
-	object_spawner.spawn_start_barriers()

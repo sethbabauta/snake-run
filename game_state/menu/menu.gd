@@ -3,6 +3,7 @@ extends Control
 @export var start_classic: Button
 @export var start_snake_o_mode: Button
 @export var start_dungeon: Button
+@export var settings_button: Button
 
 
 func _ready() -> void:

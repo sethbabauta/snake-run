@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b0xlwmro2kyby"]
+[gd_scene load_steps=19 format=3 uid="uid://b0xlwmro2kyby"]
 
 [ext_resource type="Script" path="res://game_state/game_state_manager.gd" id="1_52rvp"]
 [ext_resource type="Script" path="res://game_state/logo/game_state_logo.gd" id="2_kfmw1"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/win.gd" id="14_ffv4s"]
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/lose.gd" id="15_qg1fj"]
 [ext_resource type="Script" path="res://game_state/dungeon/dungeon_state/die.gd" id="17_x7t71"]
+[ext_resource type="Script" path="res://game_state/settings/game_state_settings.gd" id="18_wkp4b"]
 
 [node name="GameStateManager" type="Node"]
 script = ExtResource("1_52rvp")
@@ -35,10 +36,12 @@ script = ExtResource("3_srn44")
 [node name="GameStateClassic" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("4_vuupf")
+dev_high_score = 105
 
 [node name="GameStateSnakeo" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
 script = ExtResource("5_7m04d")
+dev_high_score = 378
 
 [node name="GameStateDungeon" parent="States" instance=ExtResource("4_b7lyr")]
 unique_name_in_owner = true
@@ -71,8 +74,13 @@ script = ExtResource("15_qg1fj")
 [node name="Die" parent="States/GameStateDungeon/States" index="8" instance=ExtResource("8_nxkad")]
 script = ExtResource("17_x7t71")
 
+[node name="GameStateSettings" parent="States" instance=ExtResource("4_b7lyr")]
+unique_name_in_owner = true
+script = ExtResource("18_wkp4b")
+
 [editable path="States/GameStateLogo"]
 [editable path="States/GameStateMenu"]
 [editable path="States/GameStateClassic"]
 [editable path="States/GameStateSnakeo"]
 [editable path="States/GameStateDungeon"]
+[editable path="States/GameStateSettings"]

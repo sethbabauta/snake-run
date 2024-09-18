@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7f11puwfib6s"]
+
+[ext_resource type="Script" path="res://snake_engine/base_objects/physics_object.gd" id="1_xokus"]
+[ext_resource type="Texture2D" uid="uid://c0ugsissxvnu5" path="res://sprites/johngoals.png" id="2_k538e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h5tqg"]
+size = Vector2(30, 30)
+
+[node name="PhysicsObject" type="Area2D"]
+visible = false
+script = ExtResource("1_xokus")
+
+[node name="PhysicsObjectSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_k538e")
+
+[node name="PhysicsObjectCollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_h5tqg")
+
+[node name="EquippedItems" type="Node2D" parent="."]
